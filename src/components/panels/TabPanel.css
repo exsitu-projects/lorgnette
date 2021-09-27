@@ -1,0 +1,15 @@
+.TabPanel {
+    width: 100%;
+    height: 100%;
+    padding: 1em;
+    background-color: #EEE;
+}
+
+.code-editor-menu-bar {
+    margin: 0 0 1ex 0;
+}
+
+.code-range {
+    color: #999;
+    list-style-type: none;
+}

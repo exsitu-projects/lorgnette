@@ -1,0 +1,14 @@
+.code-editor .highlight {
+    position: absolute;
+}
+
+.code-editor .highlight.pattern {
+    position: absolute;
+    background-color: rgba(255, 255, 0, 0.25);
+}
+
+.code-editor .highlight.site {
+    position: absolute;
+    border: 1px solid rgba(0, 0, 0, 0.4)
+    /* background-color: rgba(255, 0, 0, 0.2); */
+}

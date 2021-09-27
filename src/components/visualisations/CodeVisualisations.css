@@ -1,0 +1,67 @@
+.code-visualisation-list-element {
+    padding: 1ex;
+    background-color: #FFF;
+    cursor: pointer;
+}
+
+.code-visualisation-list-element:hover {
+    background-color: #EEE;
+}
+
+.code-visualisation-list-element .name {
+    margin: 0;
+    font-size: "1.1rem";
+    font-weight: bold;
+}
+
+.code-visualisation-list-element .type {
+    color: #999;
+    user-select: none;
+}
+
+.code-visualisation-details {
+    height: 100%;
+    padding: 1em;
+    background-color: #FFF;
+    border: 2px solid #999;
+}
+
+.code-visualisation-details .name {
+    font-size: 1.4em;
+}
+
+.code-visualisation-details .type {
+    color: #999;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+.code-visualisation-details .pattern-finder-details.regex .pattern-editor {
+    width: 100%;
+    margin: 1em 0 0 0;
+}
+
+.code-visualisation-details .pattern-finder-details.regex .pattern-editor .pattern-and-context {
+    display: flex;
+    margin: 1em 0 0 0;
+}
+
+.code-visualisation-details .pattern-finder-details.regex .pattern-editor .pattern-and-context .context {
+    padding: 0.5ex;
+    color: #999;
+}
+
+.code-visualisation-details .pattern-finder-details.regex .pattern-and-context .pattern {
+    width: 100%;
+    padding: 0.25ex;
+    background-color: #FAFAFA;
+    border: 1px solid #999;
+}
+
+.code-visualisation-details .site-provider-list {
+    margin: 1em 0 0 0;
+}
+
+.code-visualisation-details .site-provider-list-element {
+    padding: 1ex;
+}
