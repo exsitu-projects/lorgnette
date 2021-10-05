@@ -1,14 +1,14 @@
 import React from "react";
-import AceEditor, { IMarker } from "react-ace";
-
 import "./CodeEditor.css";
+import AceEditor, { IMarker } from "react-ace";
+import { Site } from "../../core/sites/Site";
+import { Pattern } from "../../core/code-patterns/Pattern";
+import { CodeVisualisation } from "../../core/visualisations/CodeVisualisation";
 
 // Configuration files for the Ace editor.
 import "ace-builds/src-min-noconflict/mode-typescript";
 import "ace-builds/src-noconflict/theme-tomorrow";
-import { Site } from "../../core/sites/Site";
-import { Pattern } from "../../core/code-patterns/Pattern";
-import { CodeVisualisation } from "../../core/visualisations/CodeVisualisation";
+import { Language } from "../../core/languages/Language";
 
 /* `start` and `end` use 0-based row and column indices. */
 export interface RangeToHighlight {
@@ -52,15 +52,14 @@ function createRangesToHiglightForSite(site: Site, pattern: Pattern): RangeToHig
 }
 
 type Props = {
-  language: string;
-  onContentChange: (newContent: string) => void;
+  language: Language;
   initialContent?: string;
+  onContentChange: (newContent: string) => void;
   rangesToHighlight?: RangeToHighlight[];
 };
 
 export default class CodeEditor extends React.Component<Props> {
   state: {
-    language: string;
     theme: string;
   };
 
@@ -68,7 +67,6 @@ export default class CodeEditor extends React.Component<Props> {
     super(props);
 
     this.state = {
-      language: props.language,
       theme: "tomorrow"
     };
   }
@@ -91,10 +89,10 @@ export default class CodeEditor extends React.Component<Props> {
     return (
       <AceEditor
         className="code-editor"
-        value={this.props.initialContent ?? ""}
-        mode={this.state.language}
+        value={this.props.initialContent ?? this.props.language.codeExample}
+        mode={this.props.language.codeEditorLanguageId}
         theme={this.state.theme}
-        onChange={(newContent, e) => {console.log("event", e); this.props.onContentChange(newContent)}}
+        onChange={newContent => {this.props.onContentChange(newContent)}}
         editorProps={{ $blockScrolling: true }}
         placeholder="Write your code here!"
         enableLiveAutocompletion={true}

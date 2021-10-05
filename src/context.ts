@@ -1,6 +1,6 @@
 import React from "react";
 import { Document } from "./core/documents/Document";
-import { Language, SUPPORTED_LANGUAGES } from "./core/Language";
+import { Language, SUPPORTED_LANGUAGES } from "./core/languages/Language";
 import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
 import { CodeVisualisationProvider } from "./core/visualisations/CodeVisualisationProvider";
 

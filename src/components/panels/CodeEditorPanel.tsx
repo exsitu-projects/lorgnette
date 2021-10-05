@@ -1,42 +1,59 @@
 import React from "react";
 import TabPanel from "./TabPanel";
-import { Select } from "@blueprintjs/select";
+import { ItemRenderer, Select } from "@blueprintjs/select";
 import CodeEditor, { createCodeRangesToHighlightForCodeVisualisations } from "../code-editor/CodeEditor";
-import { Button } from "@blueprintjs/core";
+import { Button, MenuItem } from "@blueprintjs/core";
 import { GlobalContext } from "../../context";
-import { Language, SUPPORTED_LANGUAGES } from "../../core/Language";
+import { Language, SUPPORTED_LANGUAGES } from "../../core/languages/Language";
 import { Pattern } from "../../core/code-patterns/Pattern";
 import { Site } from "../../core/sites/Site";
 import { Range } from "../../core/documents/Range";
 import { CodeVisualisationProvider } from "../../core/visualisations/CodeVisualisationProvider";
+import { GenericAstNode } from "../ast/GenericAstNode";
+import { Document } from "../../core/documents/Document";
+import { GenericAst } from "../ast/GenericAst";
+import { CodeRange } from "../utilities/CodeRange";
+import { Ast } from "../ast/Ast";
 
 export const LanguageSelect = Select.ofType<Language>();
 
 export default class CodeEditorPanel extends React.PureComponent {
   render() {
-    type OnLanguageChange = (newLanguage: Language) => void;
-    const LanguageSelector = (props: { onLanguageChange: OnLanguageChange }) => <LanguageSelect
-      items={[...SUPPORTED_LANGUAGES]}
-      itemRenderer={language => (<span className="select-item">{language.name}</span>)}
-      onItemSelect={item => props.onLanguageChange(item)}
-    >
-      <Button text={SUPPORTED_LANGUAGES[0].name} rightIcon="double-caret-vertical" />
-    </LanguageSelect>
-    
-    const CodeRangeCoords = (props: {range: Range}) => {
-      const start = props.range.start;
-      const end = props.range.end;
+    const renderLanguageSelectorItem: ItemRenderer<Language> = (
+      language,
+      { handleClick, modifiers }
+    ) => {
+      if (!modifiers.matchesPredicate) {
+          return null;
+      }
 
       return (
-        <p className="code-range">
-          {start.row};{start.column}–{end.row};{end.column
-        }</p>
+          <MenuItem
+              active={modifiers.active}
+              key={language.key}
+              label={language.key}
+              onClick={handleClick}
+              text={language.name}
+          />
       );
-    }
+  };
+
+    type OnLanguageChange = (newLanguage: Language) => void;
+    const LanguageSelector = (props: {
+      currentLanguage: Language,
+      onLanguageChange: OnLanguageChange,
+    }) => <LanguageSelect
+      items={[...SUPPORTED_LANGUAGES]}
+      itemRenderer={renderLanguageSelectorItem}
+      onItemSelect={language => props.onLanguageChange(language)}
+      activeItem={props.currentLanguage}
+    >
+      <Button text={props.currentLanguage.name} rightIcon="double-caret-vertical" />
+    </LanguageSelect>
 
     const AbsoluteSiteRangeCoords = (props: {pattern: Pattern, site: Site}) => {
       const absoluteSiteCodeRange = props.site.range.relativeTo(props.pattern.range.start);
-      return <CodeRangeCoords range={absoluteSiteCodeRange} />
+      return <CodeRange range={absoluteSiteCodeRange} />
     }
 
     const CodeVisualisationDetails = (props: {
@@ -53,10 +70,10 @@ export default class CodeEditorPanel extends React.PureComponent {
                 provider.codeVisualisations.map(visualisation => (
                   <li>
                     {/* Range of the visualisation */}
-                    <CodeRangeCoords range={visualisation.range} />
+                    <CodeRange range={visualisation.range} />
 
                     {/* Details about each site */}
-                    <strong>Sites:</strong>
+                    {/* <strong>Sites:</strong>
                     <ul>
                       {visualisation.sites.map(site => (
                         <AbsoluteSiteRangeCoords
@@ -64,7 +81,7 @@ export default class CodeEditorPanel extends React.PureComponent {
                           site={site}
                         />
                       ))}
-                    </ul>
+                    </ul> */}
 
                     {/* Output of the input mapping function */}
                     {/* <strong>Input mapping:</strong>
@@ -90,7 +107,7 @@ export default class CodeEditorPanel extends React.PureComponent {
           <div style={{
             display: "grid",
             gridTemplateRows: "auto",
-            gridTemplateColumns: "50% 50%",
+            gridTemplateColumns: "40% 30% 30%",
             gap: "1em",
             height: "100%"
           }}>
@@ -101,16 +118,23 @@ export default class CodeEditorPanel extends React.PureComponent {
               }}
             >
               <div className="code-editor-menu-bar">
-                <LanguageSelector onLanguageChange={context.updateCodeEditorLanguage}/>
+                <LanguageSelector
+                  currentLanguage={context.codeEditorLanguage}
+                  onLanguageChange={l => {console.log("changed", l); context.updateCodeEditorLanguage(l)}}
+                />
               </div>
               <CodeEditor
-                language={context.codeEditorLanguage.key}
+                language={context.codeEditorLanguage}
                 initialContent={context.document.content}
                 onContentChange={context.updateDocumentContent}
                 rangesToHighlight={
                   createCodeRangesToHighlightForCodeVisualisations(context.codeVisualisations)
                 }
               />
+            </div>
+            <div>
+              <h3>AST</h3>
+              <Ast language={context.codeEditorLanguage} document={context.document} />
             </div>
             <div>
               <h3>Visualisations ({context.codeVisualisations.length}):</h3>

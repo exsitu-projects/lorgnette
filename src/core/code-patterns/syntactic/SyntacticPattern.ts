@@ -1,4 +1,4 @@
-import { AstNode } from "../../ast/Ast";
+import { AstNode } from "../../languages/AstNode";
 import { Range } from "../../documents/Range";
 import { AbstractPatern } from "../AbstractPattern";
 

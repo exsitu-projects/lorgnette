@@ -23,7 +23,7 @@ export class Position {
     }
 
     isEqualTo(otherPosition: Position): boolean {
-        return this.offset == otherPosition.offset;
+        return this.offset === otherPosition.offset;
     }
 
     isAfter(otherPosition: Position): boolean {

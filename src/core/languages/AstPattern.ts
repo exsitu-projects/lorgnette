@@ -1,4 +1,6 @@
-import { Ast, AstNode, AstVisitor } from "./Ast";
+import { Ast } from "./Ast";
+import { AstVisitor } from "./AstVisitor";
+import { AstNode } from "./AstNode";
 
 export class AstPattern implements AstVisitor<AstNode[]> {
     private test: (node: AstNode) => boolean;

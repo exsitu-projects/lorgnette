@@ -42,5 +42,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/nearley": "^2.11.2",
+    "nearley": "^2.20.1"
   }
 }

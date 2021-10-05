@@ -4,7 +4,7 @@ import { Tab, Tabs } from "@blueprintjs/core";
 import CodeEditorPanel from "./components/panels/CodeEditorPanel";
 import VisualisationProvidersConfigurationPanel from "./components/panels/VisualisationConfigurationPanel";
 import { GlobalContext, GlobalContextContent } from "./context";
-import { SUPPORTED_LANGUAGES } from "./core/Language";
+import { SUPPORTED_LANGUAGES } from "./core/languages/Language";
 import { RangeSiteProvider } from "./core/sites/textual/RangeSiteProvider";
 import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
 import { RegexPatternFinder } from "./core/code-patterns/textual/RegexPatternFinder";
@@ -13,6 +13,7 @@ import { ProgrammableMapping } from "./core/mappings/ProgrammableMapping";
 import { ColorPickerProvider } from "./core/user-interfaces/color-picker/ColorPickerProvider";
 import { Document, DocumentChangeOrigin } from "./core/documents/Document";
 import { RegexSiteProvider } from "./core/sites/textual/RegexSiteProvider";
+import { MathParser } from "./core/languages/math/MathParser";
 
 export default class App extends React.Component {
   state: GlobalContextContent;
@@ -24,7 +25,10 @@ export default class App extends React.Component {
     this.state = {
       codeEditorLanguage: defaultLanguage,
       updateCodeEditorLanguage: newLanguage => {
-        this.setState({ codeEditorLanguage: newLanguage });
+        this.setState({
+          codeEditorLanguage: newLanguage,
+          document : new Document(newLanguage.codeExample)
+        });
         this.updateAllCodeVisualisations();
       },
 
@@ -167,6 +171,14 @@ export default class App extends React.Component {
 
   componentDidMount(): void {
     this.updateAllCodeVisualisations();
+
+    // Test the parsing/AST system
+    const mathParser = new MathParser();
+    const exampleInput = "1 + e^(sin(pi) + cos(pi)) * 123.456"
+    const ast = mathParser.parse(exampleInput);
+
+    console.warn("=== Parsing math test result ===");
+    console.log(ast);
   }
 
   render() {

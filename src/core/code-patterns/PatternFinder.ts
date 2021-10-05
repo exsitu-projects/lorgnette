@@ -1,4 +1,4 @@
-import { Ast } from "../ast/Ast";
+import { Ast } from "../languages/Ast";
 import { CodeVisualisationType } from "../visualisations/CodeVisualisationType";
 import { Pattern } from "./Pattern";
 import { SyntacticPattern } from "./syntactic/SyntacticPattern";

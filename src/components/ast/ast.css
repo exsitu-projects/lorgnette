@@ -1,0 +1,56 @@
+.ast {
+    font-size: 0.8em;
+}
+
+.ast .ast-node {
+    padding: 0.25ex 0 0.25ex 1em;
+    background-color: rgba(0, 0, 0, 0.015);
+    border-width: 1px 0 1px 2px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.05);
+}
+
+.ast .ast-node + .ast-node {
+    margin: 0.5ex 0 0 0;
+}
+
+.ast .ast-node .ast-node-data {
+    display: flex;
+}
+
+.ast .ast-node .type {
+    flex-grow: 1;
+    font-family: monospace;
+}
+
+.ast .ast-node .range {
+    flex-grow: 0;
+    font-family: monospace;
+}
+
+.ast .ast-node .range * {
+    color: #666;
+}
+
+.ast-message {
+    padding: 1ex;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.ast-message.no-parser {
+    background-color: #ffdc18;
+    color: #646430;
+}
+
+.ast-message.parsing-error {
+    background-color: #f6baa9;
+    color: #5f2e1f;
+}
+
+.ast-message.parsing-error .parsing-error-message {
+    max-width: 100%;
+    font-size: 0.8rem;
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}

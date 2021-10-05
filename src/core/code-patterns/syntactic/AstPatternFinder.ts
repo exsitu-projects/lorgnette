@@ -1,5 +1,5 @@
-import { Ast } from "../../ast/Ast";
-import { AstPattern } from "../../ast/AstPattern";
+import { Ast } from "../../languages/Ast";
+import { AstPattern } from "../../languages/AstPattern";
 import { Range } from "../../documents/Range";
 import { CodeVisualisationType } from "../../visualisations/CodeVisualisationType";
 import { PatternFinder } from "../PatternFinder";

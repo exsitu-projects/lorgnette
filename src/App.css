@@ -3,10 +3,14 @@
 @import "~@blueprintjs/core/lib/css/blueprint.css";
 @import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
 
+body {
+    background-color: #FAFAFA;
+    font-family: "Roboto", sans-serif;
+}
+
 #MonocleApp {
     width: 100vw;
     height: 100vh;
-    background-color: #EEE;
 }
 
 .monocle-main-panel-tabs {
@@ -18,14 +22,33 @@
 .monocle-main-panel-tabs .bp3-tab-list {
     height: 60px;
     padding: 1ex 2ex;
-    background-color: #FAFAFA;
-    box-shadow: 0 0 10px #00000040;
+    background-color: #4f7cc1;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
 .monocle-main-panel-tabs .bp3-tab-panel {
     width: 100%;
     height: calc(100% - 60px);
     margin: 0;
+}
+
+.monocle-main-panel-tabs .bp3-tab {
+    color: #FFF;
+    font-weight: 400;
+    font-size: 1.2em;
+}
+
+.monocle-main-panel-tabs .bp3-tab:hover {
+    color: #bad1f3;
+}
+
+.monocle-main-panel-tabs .bp3-tab::selection {
+    background-color: #FFF;
+    color: #bad1f3;
+}
+
+.monocle-main-panel-tabs .bp3-tab-indicator {
+    background-color: #90bcff;
 }
 
 .select-item {
