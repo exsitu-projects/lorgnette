@@ -1,3 +1,4 @@
+import { Position } from "../../documents/Position";
 import { Range } from "../../documents/Range";
 import { AstNode } from "../AstNode";
 import { MathParserContext } from "./MathParser";
@@ -18,12 +19,24 @@ export abstract class MathAstNode extends AstNode {
     }
 
     protected static computeRangeFromParserNode(parserNode: any, parserContext: MathParserContext): Range {
-        const firstChildNode = parserNode.data[0];
-        const lastChildNode = parserNode.data[parserNode.data.length - 1];
+        const nonNullChildNodes = parserNode.data.filter((childParserNode: any) => childParserNode !== null)
+        const firstChildNode = nonNullChildNodes[0];
+        const lastChildNode = nonNullChildNodes[nonNullChildNodes.length - 1];
 
-        return new Range(
-            parserContext.offsetToPositionConverter(firstChildNode.location),
-            parserContext.offsetToPositionConverter(lastChildNode.location)
+        // if (!firstChildNode || !lastChildNode) debugger
+
+        const r = new Range(
+            // new Position(firstChildNode.line - 1, firstChildNode.col - 1, firstChildNode.offset),
+            // new Position(
+            //     lastChildNode.line - 1 + lastChildNode.linebreaks,
+            //     lastChildNode.col - 1,
+            //     lastChildNode.offset +
+            // ),
+            parserContext.offsetToPositionConverter(firstChildNode.offset),
+            parserContext.offsetToPositionConverter(lastChildNode.offset + lastChildNode.text.length)
         );
+        
+        if (Number.isNaN(r.end.column)) debugger
+        return r
     }
 }

@@ -29,7 +29,7 @@ export class FunctionNode extends MathAstNode {
     static fromNearlyParserResultNode(node: any, parserContext: MathParserContext): MathAstNode {
         return new FunctionNode(
             node.name,
-            [convertParserNode(node.data[2], parserContext)],
+            [convertParserNode(node.data[1], parserContext)],
             node,
             FunctionNode.computeRangeFromParserNode(node, parserContext)
         );

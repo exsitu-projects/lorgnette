@@ -11,6 +11,7 @@ import { MultiplicationNode } from "./nodes/MultiplicationNode";
 import { NumberNode } from "./nodes/NumberNode";
 import { ParenthesesNode } from "./nodes/ParanthesesNode";
 import { SubstractionNode } from "./nodes/SubstractionNode";
+import { WhitespaceNode } from "./nodes/WhitespaceNode";
 
 export function convertParserNode(
     parserNode: any,
@@ -26,7 +27,8 @@ export function convertParserNode(
         SubstractionNode,
         FunctionNode,
         ConstantNode,
-        NumberNode
+        NumberNode,
+        WhitespaceNode
     ];
 
     if (!parserNode || !parserNode.type) debugger

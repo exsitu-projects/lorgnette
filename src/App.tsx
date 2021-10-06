@@ -171,14 +171,6 @@ export default class App extends React.Component {
 
   componentDidMount(): void {
     this.updateAllCodeVisualisations();
-
-    // Test the parsing/AST system
-    const mathParser = new MathParser();
-    const exampleInput = "1 + e^(sin(pi) + cos(pi)) * 123.456"
-    const ast = mathParser.parse(exampleInput);
-
-    console.warn("=== Parsing math test result ===");
-    console.log(ast);
   }
 
   render() {

@@ -28,7 +28,7 @@ export class ExponentNode extends MathAstNode {
     static fromNearlyParserResultNode(node: any, parserContext: MathParserContext): MathAstNode {
         return new ExponentNode(
             convertParserNode(node.data[0], parserContext),
-            convertParserNode(node.data[4], parserContext),
+            convertParserNode(node.data[2], parserContext),
             node,
             ExponentNode.computeRangeFromParserNode(node, parserContext)
         );
