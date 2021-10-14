@@ -1,6 +1,5 @@
 import { Ast } from "../../languages/Ast";
 import { AstPattern } from "../../languages/AstPattern";
-import { Range } from "../../documents/Range";
 import { CodeVisualisationType } from "../../visualisations/CodeVisualisationType";
 import { PatternFinder } from "../PatternFinder";
 import { SyntacticPattern } from "./SyntacticPattern";
@@ -13,18 +12,14 @@ export class AstPatternFinder implements PatternFinder<CodeVisualisationType.Syn
         this.searchPattern = searchPattern;
     }
 
-    get ranges(): Range[] {
-        // TODO
-        return [];
-    }
-
     apply(input: Ast): SyntacticPattern[] {
-        // TODO
-        return []
+        return this.searchPattern
+            .apply(input)
+            .map(node => new SyntacticPattern(node));
     }
 
     updatePattern(pattern: SyntacticPattern, input: Ast): SyntacticPattern {
-        // TODO
-        throw new Error("Not implemented");
+        // TODO: actually do something here...? Or assume the AST is updated in place?
+        return pattern;
     }
 }

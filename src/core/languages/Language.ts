@@ -1,4 +1,3 @@
-import { ClassOf } from "../../utilities/types";
 import { MATHEMATICS_LANGUAGE } from "./math/language";
 import { Parser } from "./Parser";
 import { TYPESCRIPT_LANGUAGE } from "./typescript/language";
@@ -12,8 +11,8 @@ export interface Language {
 };
 
 export const SUPPORTED_LANGUAGES = [
+  TYPESCRIPT_LANGUAGE,
   MATHEMATICS_LANGUAGE,
-  TYPESCRIPT_LANGUAGE
 ] as const;
 
 export type SupportedLanguages = typeof SUPPORTED_LANGUAGES[number];

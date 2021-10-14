@@ -3,14 +3,14 @@ import { AstVisitor } from "./AstVisitor";
 import { AstNode } from "./AstNode";
 
 export class AstPattern implements AstVisitor<AstNode[]> {
-    private test: (node: AstNode) => boolean;
+    private match: (node: AstNode) => boolean;
 
-    constructor(test: (node: AstNode) => boolean) {
-        this.test = test;
+    constructor(match: (node: AstNode) => boolean) {
+        this.match = match;
     }
 
     visitNode(node: AstNode, matchingNodes: AstNode[]) {
-        if (this.test(node)) {
+        if (this.match(node)) {
             matchingNodes.push(node);
         }
     }
@@ -18,7 +18,7 @@ export class AstPattern implements AstVisitor<AstNode[]> {
     apply(ast: Ast): AstNode[] {
         const matchingNodes: AstNode[] = [];
         ast.visitWith(this, matchingNodes);
-        
+
         return matchingNodes;
     }
 }

@@ -19,8 +19,6 @@ export class TextualCodeVisualisation extends AbstractCodeVisualisation<
         pattern: TextualPattern,
         sites: Site<CodeVisualisationType.Textual>[]
     };
-    // readonly pattern: TextualPattern;
-    // readonly sites: Site<CodeVisualisationType.Textual>[];
     readonly inputMapping: InputMapping<CodeVisualisationType.Textual>;
     readonly outputMapping: OutputMapping<CodeVisualisationType.Textual> | null;
     readonly userInterface: UserInterface;
@@ -36,8 +34,6 @@ export class TextualCodeVisualisation extends AbstractCodeVisualisation<
     ) {
         super(provider);
 
-        // this.pattern = pattern;
-        // this.sites = sites;
         this.currentCodeBinding = {
             document: document,
             pattern: pattern,
@@ -67,11 +63,7 @@ export class TextualCodeVisualisation extends AbstractCodeVisualisation<
         return this.pattern.range;
     }
 
-    // updateCodeBinding(updatedDocument: Document): void {
     updateCodeBinding(): void {
-        // Update the document.
-        // this.document = this.document;
-
         console.log("document", this.document)
 
         // Update the pattern.
@@ -85,7 +77,6 @@ export class TextualCodeVisualisation extends AbstractCodeVisualisation<
 
         console.log("new pattern", this.pattern);
         console.log("old sites", this.sites);
-
 
         // Update the pattern.
         const newSites = this.provider.provideSitesForPattern(newPattern);

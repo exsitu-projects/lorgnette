@@ -12,9 +12,11 @@ import { Document } from "../../documents/Document";
 import { UserInterfaceProvider } from "../../user-interfaces/UserInterfaceProvider";
 
 export class SyntacticCodeVisualisation extends AbstractCodeVisualisation<CodeVisualisationType.Syntactic> {
-    readonly document: Document;
-    readonly pattern: SyntacticPattern;
-    readonly sites: Site<CodeVisualisationType.Syntactic>[];
+    private currentCodeBinding: {
+        document: Document,
+        pattern: SyntacticPattern,
+        sites: Site<CodeVisualisationType.Syntactic>[]
+    };
     readonly inputMapping: InputMapping<CodeVisualisationType.Syntactic>;
     readonly outputMapping: OutputMapping<CodeVisualisationType.Syntactic> | null;
     readonly userInterface: UserInterface;
@@ -30,9 +32,11 @@ export class SyntacticCodeVisualisation extends AbstractCodeVisualisation<CodeVi
     ) {
         super(provider);
 
-        this.document = document;
-        this.pattern = pattern;
-        this.sites = sites;
+        this.currentCodeBinding = {
+            document: document,
+            pattern: pattern,
+            sites: sites
+        };
         this.inputMapping = inputMapping;
         this.outputMapping = outputMapping;
         this.userInterface = userInterfaceProvider.provide(this);
@@ -40,12 +44,42 @@ export class SyntacticCodeVisualisation extends AbstractCodeVisualisation<CodeVi
         this.initialise();
     }
 
+
+    get document(): Document {
+        return this.currentCodeBinding.document;
+    }
+
+    get pattern(): SyntacticPattern {
+        return this.currentCodeBinding.pattern;
+    }
+
+    get sites(): Site<CodeVisualisationType.Syntactic>[] {
+        return this.currentCodeBinding.sites;
+    }
+
     get range(): Range {
-        // TODO
-        throw new Error("Not implemented.");
+        return this.pattern.range;
     }
 
     updateCodeBinding(): void {
+        // Update the pattern.
+        console.log("old pattern", this.pattern);
+
+        const newPattern = this.provider.patternFinder.updatePattern(
+            this.pattern,
+            this.document.ast
+        );
+        this.currentCodeBinding.pattern = newPattern;
+
+        console.log("new pattern", this.pattern);
+
+        console.log("old sites", this.sites);
+
+        // Update the sites.
+        const newSites = this.provider.provideSitesForPattern(newPattern);
+        this.currentCodeBinding.sites = newSites;
+
+        console.log("new sites", this.sites);
         
     }
 }

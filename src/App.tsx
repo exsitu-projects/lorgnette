@@ -1,6 +1,5 @@
 import React from "react";
 import "./App.css";
-import { Tab, Tabs } from "@blueprintjs/core";
 import CodeEditorPanel from "./components/panels/CodeEditorPanel";
 import VisualisationProvidersConfigurationPanel from "./components/panels/VisualisationConfigurationPanel";
 import { GlobalContext, GlobalContextContent } from "./context";
@@ -13,7 +12,12 @@ import { ProgrammableMapping } from "./core/mappings/ProgrammableMapping";
 import { ColorPickerProvider } from "./core/user-interfaces/color-picker/ColorPickerProvider";
 import { Document, DocumentChangeOrigin } from "./core/documents/Document";
 import { RegexSiteProvider } from "./core/sites/textual/RegexSiteProvider";
-import { MathParser } from "./core/languages/math/MathParser";
+import { SyntacticCodeVisualisationProvider } from "./core/visualisations/syntactic/SyntacticCodeVisualisationProvider";
+import { AstPatternFinder } from "./core/code-patterns/syntactic/AstPatternFinder";
+import { AstPattern } from "./core/languages/AstPattern";
+import { FunctionNode } from "./core/languages/math/nodes/FunctionNode";
+import { InputPrinterProvider } from "./core/user-interfaces/input-printer/InputPrinterProvider";
+import { Tabs, Tab } from "@blueprintjs/core";
 
 export default class App extends React.Component {
   state: GlobalContextContent;
@@ -74,19 +78,69 @@ export default class App extends React.Component {
           `),
           new ColorPickerProvider()
         ),
-        new TextualCodeVisualisationProvider(
-          "Hexadecimal color code",
-          new RegexPatternFinder("#([a-fA-F0-9]{6})"),
-          [
-            new RangeSiteProvider(1, 2),
-            new RangeSiteProvider(3, 4),
-            new RangeSiteProvider(5, 6),
-          ],
+
+        // new TextualCodeVisualisationProvider(
+        //   "Hexadecimal color code",
+        //   new RegexPatternFinder("#([a-fA-F0-9]{6})"),
+        //   [
+        //     new RangeSiteProvider(1, 2),
+        //     new RangeSiteProvider(3, 4),
+        //     new RangeSiteProvider(5, 6),
+        //   ],
+        //   new ProgrammableMapping(`
+        //     return {
+        //       r: parseInt(args.sites[0].text, 16),
+        //       g: parseInt(args.sites[1].text, 16),
+        //       b: parseInt(args.sites[2].text, 16)
+        //     };
+        //   `),
+        //   new ProgrammableMapping(`
+        //     console.log('Output mapping: ', args);
+
+        //     const data = args.output.data;
+        //     const documentEditor = args.documentEditor;
+        //     const pattern = args.pattern;
+        //     const sites = args.sites;
+
+        //     const adaptSiteRange = range => range.relativeTo(pattern.range.start);
+        //     const hexOfRgbValue = n => n.toString(16);
+
+        //     documentEditor.replace(adaptSiteRange(sites[0].range), hexOfRgbValue(data.r));
+        //     documentEditor.replace(adaptSiteRange(sites[1].range), hexOfRgbValue(data.g));
+        //     documentEditor.replace(adaptSiteRange(sites[2].range), hexOfRgbValue(data.b));
+            
+        //     documentEditor.applyEdits();
+        //   `),
+        //   new ColorPickerProvider()
+        // ),
+
+        // new SyntacticCodeVisualisationProvider(
+        //   "Math. function calls",
+        //   new AstPatternFinder(new AstPattern(n => n.type === FunctionNode.type)),
+        //   [],
+        //   new ProgrammableMapping(`return args;`),
+        //   null,
+        //   new InputPrinterProvider()
+        // ),
+
+        new SyntacticCodeVisualisationProvider(
+          "RGB Color constructor — Syntactic",
+          new AstPatternFinder(new AstPattern(n => 
+               n.type === "NewExpression"
+            && n.childNodes[1].parserNode.escapedText === "Color"
+            && n.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken").length === 3
+          )),
+          [],
           new ProgrammableMapping(`
+            const node = args.pattern.node;
+            const numericArguments = node.childNodes[3].childNodes.filter(
+              c => c.type === "FirstLiteralToken"
+            );
+
             return {
-              r: parseInt(args.sites[0].text, 16),
-              g: parseInt(args.sites[1].text, 16),
-              b: parseInt(args.sites[2].text, 16)
+              r: parseInt(numericArguments[0].parserNode.text),
+              g: parseInt(numericArguments[1].parserNode.text),
+              b: parseInt(numericArguments[2].parserNode.text)
             };
           `),
           new ProgrammableMapping(`
@@ -94,20 +148,19 @@ export default class App extends React.Component {
 
             const data = args.output.data;
             const documentEditor = args.documentEditor;
-            const pattern = args.pattern;
-            const sites = args.sites;
+            const node = args.pattern.node;
+            const numericArguments = node.childNodes[3].childNodes.filter(
+              c => c.type === "FirstLiteralToken"
+            );
 
-            const adaptSiteRange = range => range.relativeTo(pattern.range.start);
-            const hexOfRgbValue = n => n.toString(16);
-
-            documentEditor.replace(adaptSiteRange(sites[0].range), hexOfRgbValue(data.r));
-            documentEditor.replace(adaptSiteRange(sites[1].range), hexOfRgbValue(data.g));
-            documentEditor.replace(adaptSiteRange(sites[2].range), hexOfRgbValue(data.b));
+            documentEditor.replace(numericArguments[0].range, data.r.toString());
+            documentEditor.replace(numericArguments[1].range ,data.g.toString());
+            documentEditor.replace(numericArguments[2].range, data.b.toString());
             
             documentEditor.applyEdits();
           `),
           new ColorPickerProvider()
-        ),
+        )
       ],
       codeVisualisations: [],
 

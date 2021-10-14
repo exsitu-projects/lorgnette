@@ -1,9 +1,10 @@
 import { Range } from "../documents/Range";
 import { AstVisitor } from "./AstVisitor";
 
-export abstract class AstNode {
+export abstract class AstNode<T = any> {
     abstract readonly type: string;
     abstract readonly range: Range;
+    abstract readonly parserNode: T;
     
     abstract get childNodes(): AstNode[];
 

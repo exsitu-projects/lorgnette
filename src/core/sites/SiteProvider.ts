@@ -1,11 +1,11 @@
-import { Ast } from "../languages/Ast";
+import { AstNode } from "../languages/AstNode";
 import { CodeVisualisationType } from "../visualisations/CodeVisualisationType";
 import { SyntacticSite } from "./syntactic/SyntacticSite";
 import { TextualSite } from "./textual/TextualSite";
 
 type SiteProviderInput<T extends CodeVisualisationType> =
     T extends CodeVisualisationType.Textual ? string :
-    T extends CodeVisualisationType.Syntactic ? Ast :
+    T extends CodeVisualisationType.Syntactic ? AstNode :
     never;
 
 type SiteProviderOutput<T extends CodeVisualisationType> =

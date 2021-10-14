@@ -1,30 +1,56 @@
 import { Parser } from "../Parser";
-import { Project, ts } from "ts-morph";
+import { Project, Node, ts } from "ts-morph";
+import { Position } from "../../documents/Position";
+import { TypescriptAst } from "./TypescriptAst";
+import { TypescriptAstNode } from "./TypescriptAstNode";
+import { Range } from "../../documents/Range";
 
-// export class TypescriptParser implements Parser {
-//     private project: Project;
+export interface TypescriptParserContext {
+    text: string;
+    offsetToPositionConverter: (offset: number) => Position;
+};
 
-//     constructor() {
-//         this.project = new Project({
-//             useInMemoryFileSystem: true
-//         });
-//     }
+export class TypescriptParser implements Parser {
+    private project: Project;
 
-//     parse(text: string): ts.SourceFile {
-//         const sourceFile = this.project.createSourceFile(
-//             "code-in-editor.ts",
-//             text,
-//             {
-//                 overwrite: true
-//             }
-//         );
+    constructor() {
+        this.project = new Project({
+            useInMemoryFileSystem: true
+        });
+    }
 
-//         const d = sourceFile.getDescendants();
-//         const sf = sourceFile.compilerNode;
+    parse(text: string): TypescriptAst {
+        const sourceFile = this.project.createSourceFile(
+            "code-in-editor.ts",
+            text,
+            {
+                overwrite: true
+            }
+        );
 
-//         console.log("d", d);
-//         console.log("sf", sf);
+        const parserContext: TypescriptParserContext = {
+            text: text,
+            offsetToPositionConverter: Position.getOffsetToPositionConverterForText(text)
+        };
 
-//         return sf;
-//     }
-// }
+        const childNodes = sourceFile.compilerNode.getChildren();
+        // const root = new TypescriptAstNode(
+        //     "SYNTHETIC_ROOT",
+        //     new Range(
+        //         parserContext.offsetToPositionConverter(childNodes[0].getStart()),
+        //         parserContext.offsetToPositionConverter(childNodes[childNodes.length - 1].getEnd()),
+        //     ),
+        //     childNodes.map(n => TypescriptAstNode.fromTsMorphNode(n as any, parserContext)),
+        //     sourceFile as any
+        // );
+
+        const root = TypescriptAstNode.fromTsMorphNode(
+            childNodes[0],
+            parserContext
+        );
+
+        const ast = new TypescriptAst(root);
+
+        return ast;
+    }
+}

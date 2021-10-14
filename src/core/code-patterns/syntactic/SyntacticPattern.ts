@@ -5,14 +5,13 @@ import { AbstractPatern } from "../AbstractPattern";
 export class SyntacticPattern extends AbstractPatern {
     readonly node: AstNode;
 
-    constructor(text: AstNode) {
+    constructor(node: AstNode) {
         super();
-        this.node = text;
+        this.node = node;
     }
 
     get range(): Range {
-        // TODO
-        throw new Error("Not implemented");
+        return this.node.range;
     }
 
     get text(): string {

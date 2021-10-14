@@ -1,8 +1,15 @@
+import { TypescriptParser } from "./TypescriptParser";
+
 const codeExample = 
-`
-const color = new Color(100, 150, 200);
+`const color = new Color(100, 150, 200);
+const color2 = new Color(
+  255, // some comment ruining the regex
+  50,
+  25
+);
+
 const style = {
-  color: #fedcba;
+  color: "#fedcba"
 };
 `;
 
@@ -11,5 +18,5 @@ export const TYPESCRIPT_LANGUAGE = {
     key: "typescript",
     codeEditorLanguageId: "typescript",
     codeExample: codeExample.trim(),
-    parser: null
+    parser: new TypescriptParser()
 };
