@@ -4,7 +4,7 @@ import { Tab, Tabs } from "@blueprintjs/core";
 import CodeEditorPanel from "./components/panels/CodeEditorPanel";
 import VisualisationProvidersConfigurationPanel from "./components/panels/VisualisationConfigurationPanel";
 import { GlobalContext, GlobalContextContent } from "./context";
-import { SUPPORTED_LANGUAGES } from "./core/languages/Language";
+import { Language, SUPPORTED_LANGUAGES } from "./core/languages/Language";
 import { RangeSiteProvider } from "./core/sites/textual/RangeSiteProvider";
 import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
 import { RegexPatternFinder } from "./core/code-patterns/textual/RegexPatternFinder";
@@ -27,12 +27,12 @@ export default class App extends React.Component {
       updateCodeEditorLanguage: newLanguage => {
         this.setState({
           codeEditorLanguage: newLanguage,
-          document : new Document(newLanguage.codeExample)
+          document : new Document(newLanguage, newLanguage.codeExample)
         });
         this.updateAllCodeVisualisations();
       },
 
-      document: this.createDocument(defaultLanguage.codeExample),
+      document: this.createDocument(defaultLanguage, defaultLanguage.codeExample),
       updateDocumentContent: newContent => {
         this.updateDocumentContent(newContent);
         this.updateAllCodeVisualisations();
@@ -116,9 +116,9 @@ export default class App extends React.Component {
       }
     };
   }
-
-  private createDocument(content: string): Document {
-    const document = new Document(content);
+  
+  private createDocument(language: Language, content: string): Document {
+    const document = new Document(language, content);
     document.addChangeObserver({
       processChange: event => {
         this.updateDocumentContent(event.document.content);
@@ -149,7 +149,7 @@ export default class App extends React.Component {
   }
 
   private updateDocumentContent(newContent: string): void {
-    const newDocument = this.createDocument(newContent);
+    const newDocument = this.createDocument(this.state.document.language, newContent);
     this.setState({ document: newDocument });
   }
 

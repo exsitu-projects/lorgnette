@@ -4,11 +4,13 @@ import { Language, SUPPORTED_LANGUAGES } from "./core/languages/Language";
 import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
 import { CodeVisualisationProvider } from "./core/visualisations/CodeVisualisationProvider";
 
+const defaultLanguage = SUPPORTED_LANGUAGES[0];
+
 export const defaultGlobalContext = {
-  codeEditorLanguage: SUPPORTED_LANGUAGES[0],
+  codeEditorLanguage: defaultLanguage,
   updateCodeEditorLanguage: (newlanguage: Language) => {},
   
-  document: new Document(),
+  document: new Document(defaultLanguage, defaultLanguage.codeExample),
   updateDocumentContent: (newContent: string) => {},
   
   codeVisualisationProviders: [] as CodeVisualisationProvider[],
