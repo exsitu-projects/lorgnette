@@ -1,3 +1,4 @@
+import { Document } from "./Document";
 import { Position } from "./Position";
 import { Range } from "./Range";
 
@@ -20,6 +21,21 @@ export class DocumentEdit {
         this.kind = kind;
         this.range = range;
         this.newContent = newContent;
+    }
+
+    getContentSizeDifferenceInDocument(document: Document): number {
+        const getSizeOfContentToEdit = () => document.getContentInRange(this.range).length;
+
+        switch (this.kind) {
+            case DocumentEditKind.Insertion:
+                return this.newContent.length;
+
+            case DocumentEditKind.Replacement:
+                return this.newContent.length - getSizeOfContentToEdit();
+        
+            case DocumentEditKind.Deletetion:
+                return -getSizeOfContentToEdit();
+        }
     }
 
     static createInsertion(position: Position, newContent: string): DocumentEdit {

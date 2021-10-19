@@ -1,4 +1,5 @@
 import { RegexMatcher } from "../../../utilities/RegexMatcher";
+import { Document } from "../../documents/Document";
 import { CodeVisualisationType } from "../../visualisations/CodeVisualisationType";
 import { PatternFinder } from "../PatternFinder";
 import { TextualPattern } from "./TextualPattern";
@@ -19,21 +20,21 @@ export class RegexPatternFinder implements PatternFinder<CodeVisualisationType.T
         this.regexMatcher.pattern = newPattern;
     }
 
-    apply(input: string): TextualPattern[] {
-        // if the input is empty, there is nothing to do.
-        if (input.length === 0) {
+    applyInDocument(document: Document): TextualPattern[] {
+        // If the document is empty, there is nothing to do.
+        if (document.isEmpty) {
             return [];
         }
 
         return this.regexMatcher
-            .matchAll(input)
-            .map(match => TextualPattern.fromRegexMatch(match));
+            .matchAll(document.content)
+            .map(match => TextualPattern.fromRegexMatch(match, document));
     }
 
-    updatePattern(pattern: TextualPattern, input: string): TextualPattern {
-        const inputFromPatternStart = input.slice(pattern.range.start.offset);
+    updatePattern(pattern: TextualPattern, document: Document): TextualPattern {
+        const inputFromPatternStart = document.content.slice(pattern.range.start.offset);
         const match = this.regexMatcher.match(inputFromPatternStart);
 
-        return TextualPattern.fromRegexMatch(match!, pattern.range.start);
+        return TextualPattern.fromRegexMatch(match!, document,  pattern.range.start);
     }
 }

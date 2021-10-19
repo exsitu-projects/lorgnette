@@ -34,7 +34,7 @@ export class TextualCodeVisualisationProvider extends AbstractCodeVisualisationP
     provideSitesForPattern(pattern: TextualPattern): TextualSite[] {
         const sites = [];
         for (let siteProvider of this.siteProviders) {
-            const siteOrNothing = siteProvider.provideForPattern(pattern.text);
+            const siteOrNothing = siteProvider.provideForPattern(pattern);
             if (siteOrNothing) {
                 sites.push(siteOrNothing);
             }
@@ -45,8 +45,7 @@ export class TextualCodeVisualisationProvider extends AbstractCodeVisualisationP
 
     updateFromDocument(document: Document): void {
         // Search for code patterns
-        const documentContent = document.content;
-        const patternFinderResults = this.patternFinder.apply(documentContent);
+        const patternFinderResults = this.patternFinder.applyInDocument(document);
 
         this.cachedCodeVisualisations = patternFinderResults
             .map(pattern => {

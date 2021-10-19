@@ -1,4 +1,5 @@
-import { Range } from "../../documents/Range";
+import { TextualPattern } from "../../code-patterns/textual/TextualPattern";
+import { DocumentRange } from "../../documents/DocumentRange";
 import { CodeVisualisationType } from "../../visualisations/CodeVisualisationType";
 import { SiteProvider } from "../SiteProvider";
 import { TextualSite } from "./TextualSite";
@@ -23,26 +24,28 @@ export class RangeSiteProvider implements SiteProvider<CodeVisualisationType.Tex
             && (noStartIndex || noEndIndex || this.startIndex! <= this.endIndex!);
     }
 
-    provideForPattern(pattern: string): TextualSite {
+    provideForPattern(pattern: TextualPattern): TextualSite {
+        const text = pattern.text;
         const effectiveStartIndex = this.startIndex
             ? Math.max(0, this.startIndex)
             : 0;
         const effectiveEndIndex = this.endIndex
-            ? Math.min(pattern.length, this.endIndex + 1)
-            : pattern.length;
+            ? Math.min(text.length, this.endIndex + 1)
+            : text.length;
 
-        const slicedPattern = pattern.slice(
+        const slicedPattern = text.slice(
             effectiveStartIndex,
             effectiveEndIndex
         );
         
         return new TextualSite(
             slicedPattern,
-            Range.fromOffsetsInText(
-                pattern,
+            DocumentRange.fromOffsetsInDocument(
+                pattern.document,
                 effectiveStartIndex,
                 effectiveEndIndex
-            )
+            ),
+            pattern
         )
     }
 }

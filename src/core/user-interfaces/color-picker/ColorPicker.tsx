@@ -13,13 +13,13 @@ export interface Output extends UserInterfaceOutput {
 
 export class ColorPicker extends UserInterface<Input, Output> {
     private color: RgbColor;
-    private isCurrentlyUsed: boolean;
+    // private isCurrentlyUsed: boolean;
 
     constructor(visualisation: CodeVisualisation, color: RgbColor = BLACK_COLOR) {
         super(visualisation);
 
         this.color = color;
-        this.isCurrentlyUsed = false;
+        // this.isCurrentlyUsed = false;
     }
 
     protected get minDelayBetweenModelChangeNotifications(): number {
@@ -40,12 +40,12 @@ export class ColorPicker extends UserInterface<Input, Output> {
             color={this.color}
             onChange={onChange}
             onDragStart={() => {
-                console.log("drag start");
-                this.isCurrentlyUsed = true;
+                // this.isCurrentlyUsed = true;
+                this.startTransientEdit();
             }}
             onDragEnd={() => {
-                console.log("drag end");
-                this.isCurrentlyUsed = false;
+                // this.isCurrentlyUsed = false;
+                this.stopTransientEdit();
                 this.declareModelChange(true);
             }}
         />;
@@ -53,11 +53,8 @@ export class ColorPicker extends UserInterface<Input, Output> {
 
     protected get modelOutput(): Output {
         return {
-            data: this.color,
-            context: {
-                visualisation: this.visualisation,
-                isTransientState: this.isCurrentlyUsed
-            }
+            ...this.getPartialModelOutput(),
+            data: this.color
         };
     }
 

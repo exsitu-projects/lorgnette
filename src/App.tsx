@@ -8,7 +8,6 @@ import { RangeSiteProvider } from "./core/sites/textual/RangeSiteProvider";
 import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
 import { RegexPatternFinder } from "./core/code-patterns/textual/RegexPatternFinder";
 import { TextualCodeVisualisationProvider } from "./core/visualisations/textual/TextualCodeVisualisationProvider";
-import { ProgrammableMapping } from "./core/mappings/ProgrammableMapping";
 import { ColorPickerProvider } from "./core/user-interfaces/color-picker/ColorPickerProvider";
 import { Document, DocumentChangeOrigin } from "./core/documents/Document";
 import { RegexSiteProvider } from "./core/sites/textual/RegexSiteProvider";
@@ -18,6 +17,10 @@ import { AstPattern } from "./core/languages/AstPattern";
 import { FunctionNode } from "./core/languages/math/nodes/FunctionNode";
 import { InputPrinterProvider } from "./core/user-interfaces/input-printer/InputPrinterProvider";
 import { Tabs, Tab } from "@blueprintjs/core";
+import { ProgrammableSiteProvider } from "./core/sites/syntactic/ProgrammableSiteProvider";
+import { ProgrammableInputMapping } from "./core/mappings/ProgrammableInputMapping";
+import { ProgrammableOutputMapping } from "./core/mappings/ProgrammableOutputMapping";
+import { Range } from "./core/documents/Range";
 
 export default class App extends React.Component {
   state: GlobalContextContent;
@@ -52,30 +55,32 @@ export default class App extends React.Component {
             new RegexSiteProvider("(?<=Color\\([^,]+,\\s*)(\\d+)"),
             new RegexSiteProvider("(?<=Color\\([^,]+,[^,]+,\\s*)(\\d+)"),
           ],
-          new ProgrammableMapping(`
+          new ProgrammableInputMapping(arg => {
             return {
-              r: parseInt(args.sites[0].text),
-              g: parseInt(args.sites[1].text),
-              b: parseInt(args.sites[2].text)
+              r: parseInt(arg.sites[0].text),
+              g: parseInt(arg.sites[1].text),
+              b: parseInt(arg.sites[2].text)
             };
-          `),
-          new ProgrammableMapping(`
-            console.log('Output mapping: ', args);
+          }),
+          new ProgrammableOutputMapping(arg => {
+            console.log('Output mapping: ', arg);
 
-            const data = args.output.data;
-            const documentEditor = args.documentEditor;
-            const pattern = args.pattern;
-            const sites = args.sites;
+            const data = arg.output.data;
+            const documentEditor = arg.output.editor;
+            const pattern = arg.pattern;
+            const sites = arg.sites;
 
-            const adaptSiteRange = range => range.relativeTo(pattern.range.start);
-            const padRgbValue = n => n.toString().padStart(3, "0");
+            console.info(documentEditor)
+
+            const adaptSiteRange = (range: Range) => range.relativeTo(pattern.range.start);
+            // const padRgbValue = n => n.toString().padStart(3, "0");
 
             documentEditor.replace(adaptSiteRange(sites[0].range), data.r.toString());
             documentEditor.replace(adaptSiteRange(sites[1].range) ,data.g.toString());
             documentEditor.replace(adaptSiteRange(sites[2].range), data.b.toString());
             
             documentEditor.applyEdits();
-          `),
+          }),
           new ColorPickerProvider()
         ),
 
@@ -89,18 +94,18 @@ export default class App extends React.Component {
         //   ],
         //   new ProgrammableMapping(`
         //     return {
-        //       r: parseInt(args.sites[0].text, 16),
-        //       g: parseInt(args.sites[1].text, 16),
-        //       b: parseInt(args.sites[2].text, 16)
+        //       r: parseInt(arg.sites[0].text, 16),
+        //       g: parseInt(arg.sites[1].text, 16),
+        //       b: parseInt(arg.sites[2].text, 16)
         //     };
         //   `),
         //   new ProgrammableMapping(`
-        //     console.log('Output mapping: ', args);
+        //     console.log('Output mapping: ', arg);
 
-        //     const data = args.output.data;
-        //     const documentEditor = args.documentEditor;
-        //     const pattern = args.pattern;
-        //     const sites = args.sites;
+        //     const data = arg.output.data;
+        //     const documentEditor = arg.documentEditor;
+        //     const pattern = arg.pattern;
+        //     const sites = arg.sites;
 
         //     const adaptSiteRange = range => range.relativeTo(pattern.range.start);
         //     const hexOfRgbValue = n => n.toString(16);
@@ -118,7 +123,7 @@ export default class App extends React.Component {
         //   "Math. function calls",
         //   new AstPatternFinder(new AstPattern(n => n.type === FunctionNode.type)),
         //   [],
-        //   new ProgrammableMapping(`return args;`),
+        //   new ProgrammableMapping(`return arg;`),
         //   null,
         //   new InputPrinterProvider()
         // ),
@@ -130,35 +135,33 @@ export default class App extends React.Component {
             && n.childNodes[1].parserNode.escapedText === "Color"
             && n.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken").length === 3
           )),
-          [],
-          new ProgrammableMapping(`
-            const node = args.pattern.node;
-            const numericArguments = node.childNodes[3].childNodes.filter(
-              c => c.type === "FirstLiteralToken"
-            );
+          [
+            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[0]),
+            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[1]),
+            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[2])
+          ],
+          new ProgrammableInputMapping(arg => {
+            const sites = arg.sites;
 
             return {
-              r: parseInt(numericArguments[0].parserNode.text),
-              g: parseInt(numericArguments[1].parserNode.text),
-              b: parseInt(numericArguments[2].parserNode.text)
+              r: parseInt(sites[0].text),
+              g: parseInt(sites[1].text),
+              b: parseInt(sites[2].text)
             };
-          `),
-          new ProgrammableMapping(`
-            console.log('Output mapping: ', args);
+          }),
+          new ProgrammableOutputMapping(arg => {
+            console.log('Output mapping: ', arg);
 
-            const data = args.output.data;
-            const documentEditor = args.documentEditor;
-            const node = args.pattern.node;
-            const numericArguments = node.childNodes[3].childNodes.filter(
-              c => c.type === "FirstLiteralToken"
-            );
+            const data = arg.output.data;
+            const documentEditor = arg.output.editor;
+            const sites = arg.sites;
 
-            documentEditor.replace(numericArguments[0].range, data.r.toString());
-            documentEditor.replace(numericArguments[1].range ,data.g.toString());
-            documentEditor.replace(numericArguments[2].range, data.b.toString());
+            documentEditor.replace(sites[0].range, data.r.toString());
+            documentEditor.replace(sites[1].range ,data.g.toString());
+            documentEditor.replace(sites[2].range, data.b.toString());
             
             documentEditor.applyEdits();
-          `),
+          }),
           new ColorPickerProvider()
         )
       ],
@@ -188,14 +191,20 @@ export default class App extends React.Component {
         else if (event.changeContext.origin === DocumentChangeOrigin.CodeVisualisationEdit) {
           if (event.changeContext.isTransientChange) {
             console.info("** TRANSIENT change **");
-            event.changeContext.visualisation.updateCodeBinding();
+            // event.changeContext.visualisation.updateCodeBinding();
           }
           else {
             console.warn("** NON-TRANSIENT change **");
             this.updateAllCodeVisualisations();
           }
         }
+
+        // Case 3: no action for "internal" operations that result in changes in the document?
+        else if (event.changeContext.origin === DocumentChangeOrigin.InternalOperation) {
+          // Nothing to do?
+        }
       }
+
     })
 
     return document;

@@ -14,6 +14,11 @@ export class Position {
         this.offset = offset;
     }
 
+    // Cannot define this method because of circular dependencies not handled by Webpack?
+    // inDocument(document: Document): DocumentPosition {
+    //     return new DocumentPosition(document, this.row, this.column, this.offset);
+    // }
+
     isStrictlyBefore(otherPosition: Position): boolean {
         return this.offset < otherPosition.offset;
     }

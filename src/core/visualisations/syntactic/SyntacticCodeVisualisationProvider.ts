@@ -34,7 +34,7 @@ export class SyntacticCodeVisualisationProvider extends AbstractCodeVisualisatio
     provideSitesForPattern(pattern: SyntacticPattern): SyntacticSite[] {
         const sites = [];
         for (let siteProvider of this.siteProviders) {
-            const siteOrNothing = siteProvider.provideForPattern(pattern.node);
+            const siteOrNothing = siteProvider.provideForPattern(pattern);
             if (siteOrNothing) {
                 sites.push(siteOrNothing);
             }
@@ -56,8 +56,7 @@ export class SyntacticCodeVisualisationProvider extends AbstractCodeVisualisatio
         }
 
         // Otherwise, search for code patterns and create one visualisation per pattern.
-        const ast = document.ast;
-        const patternFinderResults = this.patternFinder.apply(ast);
+        const patternFinderResults = this.patternFinder.applyInDocument(document);
 
         this.cachedCodeVisualisations = patternFinderResults
             .map(pattern => {

@@ -27,11 +27,8 @@ export class InputPrinter extends UserInterface<Input, Output> {
 
     protected get modelOutput(): Output {
         return {
-            data: {},
-            context: {
-                visualisation: this.visualisation,
-                isTransientState: false
-            }
+            ...this.getPartialModelOutput(),
+            data: {}
         };
     }
 

@@ -1,5 +1,8 @@
 import { Observer } from "../../utilities/Observer";
 import { Throttler } from "../../utilities/Throttler";
+import { DocumentChangeOrigin } from "../documents/Document";
+import { DocumentEditor } from "../documents/DocumentEditor";
+import { TransientDocumentEditor } from "../documents/TransientDocumentEditor";
 import { CodeVisualisation } from "../visualisations/CodeVisualisation";
 
 export interface UserInterfaceInput {}
@@ -8,8 +11,12 @@ export interface UserInterfaceOutput {
     context: {
         visualisation: CodeVisualisation;
         isTransientState: boolean;
-    }
+    },
+    editor: DocumentEditor
 }
+
+export type PartialUserInterfaceOutput =
+    Omit<UserInterfaceOutput, "data">;
 
 type View = JSX.Element;
 
@@ -22,6 +29,8 @@ export abstract class UserInterface<
     private modelChangeObservers: Set<Observer<O>>;
     private modelChangeNotificationThrottler: Throttler;
 
+    protected transientEditor: TransientDocumentEditor | null;
+
     constructor(visualisation: CodeVisualisation) {
         this.visualisation = visualisation;
 
@@ -30,11 +39,56 @@ export abstract class UserInterface<
             () => this.notifyModelChangeObservers(),
             this.minDelayBetweenModelChangeNotifications
         )
+
+        this.transientEditor = null;
     }
 
     protected abstract get modelOutput(): O;
     abstract createView(): View;
     abstract updateModel(input: I): void;
+
+    protected startTransientEdit(): void {
+        this.transientEditor = new TransientDocumentEditor(
+            this.visualisation.document,
+            {
+                origin: DocumentChangeOrigin.CodeVisualisationEdit,
+                visualisation: this.visualisation,
+                isTransientChange: true
+            }
+        )
+    }
+
+    protected stopTransientEdit(): void {
+        this.transientEditor = null;
+    }
+
+    protected getAppropriateDocumentEditor(): DocumentEditor {
+        return this.transientEditor ?? new DocumentEditor(
+            this.visualisation.document,
+            {
+                origin: DocumentChangeOrigin.CodeVisualisationEdit,
+                visualisation: this.visualisation,
+                isTransientChange: false
+            }
+        );
+    }
+
+    protected isInTransientState(): boolean {
+        return this.transientEditor !== null;
+    }
+
+    protected getPartialModelOutput(): PartialUserInterfaceOutput {
+        const editor = this.getAppropriateDocumentEditor();
+        editor.reset();
+
+        return {
+            context: {
+                visualisation: this.visualisation,
+                isTransientState: this.isInTransientState()
+            },
+            editor: editor
+        };
+    }
 
     protected get minDelayBetweenModelChangeNotifications(): number {
         return 200; // ms

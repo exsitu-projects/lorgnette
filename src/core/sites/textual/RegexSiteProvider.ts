@@ -1,4 +1,5 @@
 import { RegexMatcher } from "../../../utilities/RegexMatcher";
+import { TextualPattern } from "../../code-patterns/textual/TextualPattern";
 import { CodeVisualisationType } from "../../visualisations/CodeVisualisationType";
 import { SiteProvider } from "../SiteProvider";
 import { TextualSite } from "./TextualSite";
@@ -12,11 +13,11 @@ export class RegexSiteProvider implements SiteProvider<CodeVisualisationType.Tex
         this.regexMatcher = new RegexMatcher(pattern);
     }
 
-    provideForPattern(pattern: string): TextualSite | null {
-        const match = this.regexMatcher.match(pattern);
+    provideForPattern(pattern: TextualPattern): TextualSite | null {
+        const match = this.regexMatcher.match(pattern.text);
 
         return match
-            ? TextualSite.fromRegexMatch(match)
+            ? TextualSite.fromRegexMatch(match, pattern)
             : null;
     }
 }

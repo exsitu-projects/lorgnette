@@ -9,6 +9,11 @@ export class Range {
         this.end = end;
     }
 
+    // Cannot define this method because of circular dependencies not handled by Webpack?
+    // inDocument(document: Document): DocumentRange {
+    //     return new DocumentRange(document, this.start, this.end);
+    // }
+
     relativeTo(origin: Position): Range {
         return new Range(
             this.start.relativeTo(origin),

@@ -67,7 +67,7 @@ export class SyntacticCodeVisualisation extends AbstractCodeVisualisation<CodeVi
 
         const newPattern = this.provider.patternFinder.updatePattern(
             this.pattern,
-            this.document.ast
+            this.document
         );
         this.currentCodeBinding.pattern = newPattern;
 

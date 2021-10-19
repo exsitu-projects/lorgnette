@@ -71,7 +71,7 @@ export class TextualCodeVisualisation extends AbstractCodeVisualisation<
 
         const newPattern = this.provider.patternFinder.updatePattern(
             this.pattern,
-            this.document.content
+            this.document
         );
         this.currentCodeBinding.pattern = newPattern;
 

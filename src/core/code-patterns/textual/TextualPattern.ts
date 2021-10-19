@@ -1,22 +1,27 @@
 import { RegexMatch } from "../../../utilities/RegexMatcher";
+import { Document } from "../../documents/Document";
+import { DocumentRange } from "../../documents/DocumentRange";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "../../documents/Position";
-import { Range } from "../../documents/Range";
 import { AbstractPatern } from "../AbstractPattern";
 
 export class TextualPattern extends AbstractPatern {
     readonly text: string;
-    readonly range: Range;
+    readonly range: DocumentRange;
 
-    constructor(text: string, range: Range) {
+    constructor(text: string, range: DocumentRange) {
         super();
         this.text = text;
         this.range = range;
     }
 
-    static fromRegexMatch(match: RegexMatch, originPosition: Position = ABSOLUTE_ORIGIN_POSITION): TextualPattern {
+    get document(): Document {
+        return this.range.document;
+    }
+
+    static fromRegexMatch(match: RegexMatch, document: Document, originPosition: Position = ABSOLUTE_ORIGIN_POSITION): TextualPattern {
         return new TextualPattern(
             match.value,
-            match.range.relativeTo(originPosition)
+            DocumentRange.fromRange(match.range.relativeTo(originPosition), document)
         );
     }
 }

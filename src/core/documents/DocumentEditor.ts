@@ -4,14 +4,14 @@ import { Document, DocumentChangeContext } from "./Document";
 import { DocumentEdit, DocumentEditKind } from "./DocumentEdit";
 
 export class DocumentEditor {
-    readonly document: Document;
-    readonly edits: DocumentEdit[];
-    readonly changeContext: DocumentChangeContext;
+    protected readonly document: Document;
+    protected readonly changeContext: DocumentChangeContext;
+    protected edits: DocumentEdit[];
 
     constructor(document: Document, changeContext: DocumentChangeContext) {
         this.document = document;
-        this.edits = [];
         this.changeContext = changeContext;
+        this.edits = [];
     }
 
     insert(position: Position, content: string): void {
@@ -26,8 +26,12 @@ export class DocumentEditor {
         this.edits.push(DocumentEdit.createDeletion(range));
     }
 
+    reset(): void {
+        this.edits = [];
+    }
+
     // TODO: add tests about ranges/positions
-    private applyEdit(edit: DocumentEdit, documentContent: string): string {
+    protected applyEdit(edit: DocumentEdit, documentContent: string): string {
         const start = edit.range.start;
         const end = edit.range.end;
 
@@ -52,9 +56,13 @@ export class DocumentEditor {
         }
     }
 
+    protected getContentToEdit(): string {
+        return this.document.content;
+    }
+
     // TODO: improve how edits are sorted/applied
     applyEdits(): void {
-        let content = this.document.content;
+        let content = this.getContentToEdit();
         const sortedEdits = this.edits.sort((edit1, edit2) => {
             // TODO: sort better and better handle overlaps
             return edit1.range.start.offset - edit2.range.end.offset;

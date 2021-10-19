@@ -1,14 +1,22 @@
-import { Range } from "../../documents/Range";
+import { SyntacticPattern } from "../../code-patterns/syntactic/SyntacticPattern";
+import { DocumentRange } from "../../documents/DocumentRange";
+import { AstNode } from "../../languages/AstNode";
 import { AbstractSite } from "../AbstractSite";
 
 export class SyntacticSite extends AbstractSite {
-    get range(): Range {
-        // TODO
-        throw new Error("Not implemented")
+    readonly pattern: SyntacticPattern;
+    readonly node: AstNode;
+    readonly range: DocumentRange;
+
+    constructor(node: AstNode, pattern: SyntacticPattern) {
+        super();
+
+        this.pattern = pattern;
+        this.node = node;
+        this.range = DocumentRange.fromRange(node.range, pattern.document);
     }
 
     get text(): string {
-        // TODO
-        throw new Error("Not implemented")
+        return this.document.getContentInRange(this.range);
     }
 }

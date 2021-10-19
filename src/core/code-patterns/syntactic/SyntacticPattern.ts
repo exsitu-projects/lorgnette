@@ -1,21 +1,23 @@
 import { AstNode } from "../../languages/AstNode";
-import { Range } from "../../documents/Range";
 import { AbstractPatern } from "../AbstractPattern";
+import { DocumentRange } from "../../documents/DocumentRange";
+import { Document } from "../../documents/Document";
 
 export class SyntacticPattern extends AbstractPatern {
     readonly node: AstNode;
+    readonly document: Document;
 
-    constructor(node: AstNode) {
+    constructor(node: AstNode, document: Document) {
         super();
         this.node = node;
+        this.document = document;
     }
 
-    get range(): Range {
-        return this.node.range;
+    get range(): DocumentRange {
+        return DocumentRange.fromRange(this.node.range, this.document);
     }
 
     get text(): string {
-        // TODO
-        throw new Error("Not implemented");
+        return this.document.getContentInRange(this.range);
     }
 }

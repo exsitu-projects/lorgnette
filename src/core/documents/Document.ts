@@ -3,6 +3,9 @@ import { Ast } from "../languages/Ast";
 import { Language } from "../languages/Language";
 import { CodeVisualisation } from "../visualisations/CodeVisualisation";
 import { DocumentEditor } from "./DocumentEditor";
+import { DocumentRange } from "./DocumentRange";
+import { Position } from "./Position";
+import { Range } from "./Range";
 
 function splitTextByLine(text: string): string[] {
     return text.split("\n");
@@ -56,6 +59,23 @@ export class Document {
         return [...this.textSplitByLine];
     }
 
+    get range(): DocumentRange {
+        const startLine = 0;
+        const endLine = this.textSplitByLine.length - 1;
+
+        const startColumn = 0;
+        const endColumn = this.textSplitByLine[this.textSplitByLine.length - 1].length - 1;
+
+        const startOffset = 0;
+        const endOffset = this.textSplitByLine.reduce((sum, line) => sum + line.length, 0);
+
+        return new DocumentRange(
+            this,
+            new Position(startLine, startColumn, startOffset),
+            new Position(endLine, endColumn, endOffset)
+        );
+    }
+
     get canBeParsed(): boolean {
         return this.language.parser !== null;
     }
@@ -77,6 +97,33 @@ export class Document {
 
         // If no AST can be computed, throw an error.
         throw new Error(`There is no parser for the language (${this.language.name}) of this document.`);
+    }
+
+    get isEmpty(): boolean {
+        return this.textSplitByLine.length === 0
+            || this.content.trim().length === 0;
+    }
+
+    getContentInRange(range: Range): string {
+        // console.log("get content in range", range)
+
+        // Clamp line/column values to ensure they fit in the range of the document.
+        const startLineIndex = Math.max(0, range.start.row);
+        const endLineIndex = Math.min(this.textSplitByLine.length - 1, range.end.row);
+
+        const startColumnIndex = Math.max(0, range.start.column);
+        const endColumnIndex = Math.min(this.textSplitByLine[endLineIndex].length - 1, range.end.column);
+
+        // Get the requested lines, and remove the unnecessary parts in the first and the last lines.
+        const lines = this.contentSplitByLine.slice(
+            startLineIndex,
+            endLineIndex + 1
+        );
+
+        lines[0] = lines[0].slice(startColumnIndex);
+        lines[lines.length - 1] = lines[lines.length - 1].slice(0, endColumnIndex);
+
+        return lines.join("\n");
     }
 
     setContent(

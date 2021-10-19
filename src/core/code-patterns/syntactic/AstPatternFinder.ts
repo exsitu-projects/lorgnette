@@ -1,3 +1,4 @@
+import { Document } from "../../documents/Document";
 import { Ast } from "../../languages/Ast";
 import { AstPattern } from "../../languages/AstPattern";
 import { CodeVisualisationType } from "../../visualisations/CodeVisualisationType";
@@ -12,13 +13,13 @@ export class AstPatternFinder implements PatternFinder<CodeVisualisationType.Syn
         this.searchPattern = searchPattern;
     }
 
-    apply(input: Ast): SyntacticPattern[] {
+    applyInDocument(document: Document): SyntacticPattern[] {
         return this.searchPattern
-            .apply(input)
-            .map(node => new SyntacticPattern(node));
+            .apply(document.ast)
+            .map(node => new SyntacticPattern(node, document));
     }
 
-    updatePattern(pattern: SyntacticPattern, input: Ast): SyntacticPattern {
+    updatePattern(pattern: SyntacticPattern, document: Document): SyntacticPattern {
         // TODO: actually do something here...? Or assume the AST is updated in place?
         return pattern;
     }
