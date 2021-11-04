@@ -14,11 +14,19 @@ export class Range {
     //     return new DocumentRange(document, this.start, this.end);
     // }
 
+    isEmpty(): boolean {
+        return this.start.isEqualTo(this.end);
+    }
+
     relativeTo(origin: Position): Range {
         return new Range(
             this.start.relativeTo(origin),
             this.end.relativeTo(origin)
         );
+    }
+
+    toString(): string {
+        return `${this.start}–${this.end}`;
     }
 
     static fromSinglePosition(position: Position): Range {

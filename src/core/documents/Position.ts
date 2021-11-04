@@ -46,6 +46,10 @@ export class Position {
             origin.offset + this.offset,
         );
     }
+
+    toString(): string {
+        return `${this.row};${this.column}`;
+    }
     
     static getOffsetToPositionConverterForText(text: string): (offset: number) => Position {
         // Pre-compute the offsets at the beginning/end of each line of the input.

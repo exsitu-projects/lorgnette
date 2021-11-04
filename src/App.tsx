@@ -21,6 +21,10 @@ import { ProgrammableSiteProvider } from "./core/sites/syntactic/ProgrammableSit
 import { ProgrammableInputMapping } from "./core/mappings/ProgrammableInputMapping";
 import { ProgrammableOutputMapping } from "./core/mappings/ProgrammableOutputMapping";
 import { Range } from "./core/documents/Range";
+import { TreeProvider } from "./core/user-interfaces/tree/TreeProvider";
+import { SyntacticPattern } from "./core/code-patterns/syntactic/SyntacticPattern";
+import { AstNode } from "./core/languages/AstNode";
+import { TreeNode } from "./core/user-interfaces/tree/TreeComponent";
 
 export default class App extends React.Component {
   state: GlobalContextContent;
@@ -128,41 +132,137 @@ export default class App extends React.Component {
         //   new InputPrinterProvider()
         // ),
 
-        new SyntacticCodeVisualisationProvider(
-          "RGB Color constructor — Syntactic",
-          new AstPatternFinder(new AstPattern(n => 
-               n.type === "NewExpression"
-            && n.childNodes[1].parserNode.escapedText === "Color"
-            && n.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken").length === 3
-          )),
-          [
-            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[0]),
-            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[1]),
-            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[2])
-          ],
-          new ProgrammableInputMapping(arg => {
-            const sites = arg.sites;
+        // new SyntacticCodeVisualisationProvider(
+        //   "RGB Color constructor — Syntactic",
+        //   new AstPatternFinder(new AstPattern(n => 
+        //        n.type === "NewExpression"
+        //     && n.childNodes[1].parserNode.escapedText === "Color"
+        //     && n.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken").length === 3
+        //   )),
+        //   [
+        //     new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[0]),
+        //     new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[1]),
+        //     new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[2])
+        //   ],
+        //   new ProgrammableInputMapping(arg => {
+        //     const sites = arg.sites;
 
-            return {
-              r: parseInt(sites[0].text),
-              g: parseInt(sites[1].text),
-              b: parseInt(sites[2].text)
+        //     return {
+        //       r: parseInt(sites[0].text),
+        //       g: parseInt(sites[1].text),
+        //       b: parseInt(sites[2].text)
+        //     };
+        //   }),
+        //   new ProgrammableOutputMapping(arg => {
+        //     console.log('Output mapping: ', arg);
+
+        //     const data = arg.output.data;
+        //     const documentEditor = arg.output.editor;
+        //     const sites = arg.sites;
+
+        //     documentEditor.replace(sites[0].range, data.r.toString());
+        //     documentEditor.replace(sites[1].range ,data.g.toString());
+        //     documentEditor.replace(sites[2].range, data.b.toString());
+            
+        //     documentEditor.applyEdits();
+        //   }),
+        //   new ColorPickerProvider()
+        // )
+
+        new SyntacticCodeVisualisationProvider(
+          "TSX elements",
+          new AstPatternFinder(new AstPattern(
+            n => n.type === "JsxElement",
+            n => n.type === "JsxElement",
+          )),
+          [],
+          new ProgrammableInputMapping(arg => {
+            const pattern = arg.pattern as SyntacticPattern;
+
+            const getJsxElementNameFromNode = (node: AstNode, defaultName: string): string => {
+              const regex = /<\s*(\w+).*/;
+              const regexMatch = regex.exec(node.parserNode.getFullText() as string);
+
+              return regexMatch ? regexMatch[1] : defaultName;
             };
+
+            const abbreviateJsxElementContent = (node: AstNode): string => {
+              const content = node.parserNode.getFullText() as string;
+
+              return content.length < 12
+                ? content
+                : `${content.slice(0, 12)}…`;
+            };
+
+            const findTsxTreeItems = (node: AstNode): TreeNode | null => {
+              let jsxElementName = "";
+              let abbreviatedContent = "";
+
+              switch (node.type) {
+                case "JsxElement":
+                  jsxElementName = getJsxElementNameFromNode(node, "<JSX element>");
+                  const syntaxListNode = node.childNodes.find(n => n.type === "SyntaxList");
+
+                  return {
+                    title: `${jsxElementName} (${node.range.toString()})`,
+                    canMove: true,
+                    children: syntaxListNode
+                      ? syntaxListNode.childNodes
+                          .map(n => findTsxTreeItems(n))
+                          .filter(n => n !== null) as TreeNode[]
+                      : []
+                  };
+
+                case "JsxSelfClosingElement":
+                  jsxElementName = getJsxElementNameFromNode(node, "<Self-closing JSX element>");
+
+                  return {
+                    title: `${jsxElementName} (${node.range.toString()})`,
+                    canMove: true,
+                  };
+
+                case "JsxText":
+                  if (node.isEmpty()) {
+                    return null;
+                  }
+
+                  abbreviatedContent = abbreviateJsxElementContent(node);
+
+                  return {
+                    title: `Text: ${abbreviatedContent} (${node.range.toString()})`,
+                    canMove: true,
+                  };
+
+                case "JsxExpression":
+                  abbreviatedContent = abbreviateJsxElementContent(node);
+
+                  return {
+                    title: `Expression: ${abbreviatedContent} (${node.range.toString()})`,
+                    canMove: true,
+                  };
+
+                default:
+                  const childNodes: (TreeNode | null)[] = [];
+                  for (let childNode of node.childNodes) {
+                    childNodes.push(findTsxTreeItems(childNode));
+                  }
+
+                  const nonNullChildNodes = childNodes.filter(n => n !== null) as TreeNode[];
+
+                  return {
+                    title: `Other node (${node.range.toString()})`,
+                    canMove: true,
+                    children: nonNullChildNodes
+                  };
+              }
+            }
+
+            return findTsxTreeItems(pattern.node) as TreeNode;
           }),
           new ProgrammableOutputMapping(arg => {
-            console.log('Output mapping: ', arg);
-
-            const data = arg.output.data;
-            const documentEditor = arg.output.editor;
-            const sites = arg.sites;
-
-            documentEditor.replace(sites[0].range, data.r.toString());
-            documentEditor.replace(sites[1].range ,data.g.toString());
-            documentEditor.replace(sites[2].range, data.b.toString());
-            
-            documentEditor.applyEdits();
+            console.log("Change in tree:", arg);
           }),
-          new ColorPickerProvider()
+          new TreeProvider()
         )
       ],
       codeVisualisations: [],
@@ -197,11 +297,6 @@ export default class App extends React.Component {
             console.warn("** NON-TRANSIENT change **");
             this.updateAllCodeVisualisations();
           }
-        }
-
-        // Case 3: no action for "internal" operations that result in changes in the document?
-        else if (event.changeContext.origin === DocumentChangeOrigin.InternalOperation) {
-          // Nothing to do?
         }
       }
 

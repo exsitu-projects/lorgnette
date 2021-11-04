@@ -61,11 +61,27 @@ export default class CodeEditorPanel extends React.PureComponent {
       // visualisations: CodeVisualisation[];
     }) => {
       const { providers } = props;
-      return <ul>
+      return <ul style={{
+        margin: "0 1em",
+        padding: 0,
+        listStyleType: "none"
+      }}>
         {providers.map(provider => (
-          <li>
-            <h5>{provider.name} ({provider.codeVisualisations.length} match(es))</h5>
-            <ul>
+          <li style={{
+            
+          }}>
+            <h5 style={{
+              padding: "1ex",
+              backgroundColor: "rgba(0, 0, 0, 0.05)",
+              borderRadius: "2px",
+              fontSize: "0.8rem"
+            }}>
+              {provider.name} ({provider.codeVisualisations.length} match(es))
+            </h5>
+            <ul style={{
+              padding: 0,
+              listStyleType: "none"
+            }}>
               {
                 provider.codeVisualisations.map(visualisation => (
                   <li>
@@ -132,7 +148,7 @@ export default class CodeEditorPanel extends React.PureComponent {
                 }
               />
             </div>
-            <div>
+            <div style={{ overflowY: "auto" }}>
               <h3>AST</h3>
               <Ast language={context.codeEditorLanguage} document={context.document} />
             </div>

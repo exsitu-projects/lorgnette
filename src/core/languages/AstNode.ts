@@ -9,10 +9,17 @@ export abstract class AstNode<T = any> {
     abstract get childNodes(): AstNode[];
 
     visitWith<T>(visitor: AstVisitor<T>, extraData: T) {
-        visitor.visitNode(this, extraData);
+        const skipDescendants = visitor.visitNode(this, extraData);
+        if (skipDescendants) {
+            return;
+        }
 
         for (let node of this.childNodes) {
             node.visitWith(visitor, extraData);
         }
+    }
+
+    isEmpty(): boolean {
+        return this.range.isEmpty();
     }
 }
