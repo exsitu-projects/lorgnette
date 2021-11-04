@@ -11,6 +11,25 @@ const color2 = new Color(
 const style = {
   color: "#fedcba"
 };
+
+const tsx = (
+  <ComponentOne
+    propFoo={foo}
+    propBar={bar}
+  >
+    Begin with some text.
+    <ComponentTwo />
+    <ComponentThree />
+    Some text in between...
+    <ComponentFour style{{ color: "red" }}>
+      <ul>
+        <li id="elOne">Element 1</li>
+        <li id="elTwo">Element 2</li>
+        <li id="elThree">Element 3</li>
+      </ul>
+    </ComponentFour>
+  </ComponentOne>
+);
 `;
 
 export const TYPESCRIPT_LANGUAGE = {

@@ -21,7 +21,7 @@ export class TypescriptParser implements Parser {
 
     parse(text: string): TypescriptAst {
         const sourceFile = this.project.createSourceFile(
-            "code-in-editor.ts",
+            "code-in-editor.tsx",
             text,
             {
                 overwrite: true
