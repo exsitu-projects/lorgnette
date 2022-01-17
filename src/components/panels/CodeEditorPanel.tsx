@@ -123,7 +123,7 @@ export default class CodeEditorPanel extends React.PureComponent {
           <div style={{
             display: "grid",
             gridTemplateRows: "auto",
-            gridTemplateColumns: "40% 30% 30%",
+            gridTemplateColumns: "4fr 3fr 3fr",
             gap: "1em",
             height: "100%"
           }}>
