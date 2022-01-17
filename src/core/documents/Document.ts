@@ -105,8 +105,6 @@ export class Document {
     }
 
     getContentInRange(range: Range): string {
-        // console.log("get content in range", range)
-
         // Clamp line/column values to ensure they fit in the range of the document.
         const startLineIndex = Math.max(0, range.start.row);
         const endLineIndex = Math.min(this.textSplitByLine.length - 1, range.end.row);
@@ -120,8 +118,13 @@ export class Document {
             endLineIndex + 1
         );
 
-        lines[0] = lines[0].slice(startColumnIndex);
-        lines[lines.length - 1] = lines[lines.length - 1].slice(0, endColumnIndex);
+        if (startLineIndex === endLineIndex) {
+            lines[0] = lines[0].slice(startColumnIndex, endColumnIndex);
+        }
+        else {
+            lines[0] = lines[0].slice(startColumnIndex);
+            lines[lines.length - 1] = lines[lines.length - 1].slice(0, endColumnIndex);
+        }
 
         return lines.join("\n");
     }
