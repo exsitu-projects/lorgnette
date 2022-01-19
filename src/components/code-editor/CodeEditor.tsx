@@ -9,6 +9,8 @@ import { CodeVisualisation } from "../../core/visualisations/CodeVisualisation";
 import "ace-builds/src-min-noconflict/mode-typescript";
 import "ace-builds/src-noconflict/theme-tomorrow";
 import { Language } from "../../core/languages/Language";
+import { CodeEditorRanges } from "../../context";
+import { Range } from "../../core/documents/Range";
 
 /* `start` and `end` use 0-based row and column indices. */
 export interface RangeToHighlight {
@@ -17,38 +19,52 @@ export interface RangeToHighlight {
   className: string
 }
 
-export function createCodeRangesToHighlightForCodeVisualisations(visualisations: CodeVisualisation[]): RangeToHighlight[] {
-{
+export function createRangeTohighlight(range: Range, className: string): RangeToHighlight {
+  return {
+    start: range.start,
+    end: range.end,
+    className: className
+  };
+}
+
+function createRangeToHiglightForPattern(pattern: Pattern): RangeToHighlight {
+  return createRangeTohighlight(pattern.range, "highlight pattern");
+}
+
+function createRangeToHiglightForSite(site: Site, pattern: Pattern): RangeToHighlight {
+  const absoluteSiteRange = site.range.relativeTo(pattern.range.start);
+  return createRangeTohighlight(absoluteSiteRange, "highlight site");
+}
+
+export function createRangesToHighlightForCodeVisualisations(visualisations: CodeVisualisation[]): RangeToHighlight[] {
   const rangesToHiglight: RangeToHighlight[] = [];
 
   for (let visualisation of visualisations) {
     const pattern = visualisation.pattern;
 
-    rangesToHiglight.push(createRangesToHiglightForPattern(pattern));
+    rangesToHiglight.push(createRangeToHiglightForPattern(pattern));
     for (let site of visualisation.sites) {
-      rangesToHiglight.push(createRangesToHiglightForSite(site, pattern))
+      rangesToHiglight.push(createRangeToHiglightForSite(site, pattern));
     }
   }
 
   return rangesToHiglight;
 }
 
-function createRangesToHiglightForPattern(pattern: Pattern): RangeToHighlight {
-  return {
-    start: pattern.range.start,
-    end: pattern.range.end,
-    className: "highlight pattern"
-  };
-}
+export function createRangesToHighlightFromGlobalCodeEditorRanges(ranges: CodeEditorRanges): RangeToHighlight[] {
+  const rangesToHiglight: RangeToHighlight[] = [];
 
-function createRangesToHiglightForSite(site: Site, pattern: Pattern): RangeToHighlight {
-  const absoluteSiteCodeRange = site.range.relativeTo(pattern.range.start);
-  return {
-        start: absoluteSiteCodeRange.start,
-        end: absoluteSiteCodeRange.end,
-        className: "highlight site"
-      };
-    };
+  // Ranges to highlight on mouse hover
+  for (let range of ranges.hovered) {
+    rangesToHiglight.push(createRangeTohighlight(range, "highlight hovered"));
+  }
+
+  // Ranges to highlight on selection
+  for (let range of ranges.selected) {
+    rangesToHiglight.push(createRangeTohighlight(range, "highlight selected"));
+  }
+
+  return rangesToHiglight;
 }
 
 type Props = {
@@ -58,7 +74,7 @@ type Props = {
   rangesToHighlight?: RangeToHighlight[];
 };
 
-export default class CodeEditor extends React.Component<Props> {
+export class CodeEditor extends React.Component<Props> {
   state: {
     theme: string;
   };

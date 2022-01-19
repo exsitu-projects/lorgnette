@@ -8,12 +8,18 @@
 }
 
 .code-editor .highlight.pattern {
-    position: absolute;
     background-color: rgba(255, 255, 0, 0.25);
 }
 
 .code-editor .highlight.site {
-    position: absolute;
     border: 1px solid rgba(0, 0, 0, 0.4);
     /* background-color: rgba(255, 0, 0, 0.2); */
+}
+
+.code-editor .highlight.hovered {
+    background-color: rgba(0, 255, 0, 0.25);
+}
+
+.code-editor .highlight.selected {
+    background-color: rgba(0, 0, 255, 0.20);
 }

@@ -3,10 +3,12 @@ import "./ast.css";
 import { Document } from "../../core/documents/Document";
 import { Language } from "../../core/languages/Language";
 import { GenericAst } from "./GenericAst";
+import { GenericAstNodeEventHandlers } from "./GenericAstNode";
 
 type Props = {
     document: Document,
-    language: Language
+    language: Language,
+    eventHandlers: Partial<GenericAstNodeEventHandlers>
 };
 
 export class Ast extends React.PureComponent<Props> {
@@ -21,7 +23,10 @@ export class Ast extends React.PureComponent<Props> {
         try {
             const documentContent = this.props.document.content;
             const ast = parser.parse(documentContent);
-            return <GenericAst ast={ast} />;
+            return <GenericAst
+                ast={ast}
+                eventHandlers={this.props.eventHandlers}
+            />;
         }
         catch (error: any) {
             return (

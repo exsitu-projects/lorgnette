@@ -1,14 +1,28 @@
 import React from "react";
 import { Document } from "./core/documents/Document";
+import { Range } from "./core/documents/Range";
 import { Language, SUPPORTED_LANGUAGES } from "./core/languages/Language";
 import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
 import { CodeVisualisationProvider } from "./core/visualisations/CodeVisualisationProvider";
 
 const defaultLanguage = SUPPORTED_LANGUAGES[0];
 
+export interface CodeEditorRanges {
+  hovered: Range[],
+  selected: Range[]
+}
+
+export const defaultCodeEditorRanges = {
+  hovered: [],
+  selected: []
+};
+
 export const defaultGlobalContext = {
   codeEditorLanguage: defaultLanguage,
   updateCodeEditorLanguage: (newlanguage: Language) => {},
+
+  codeEditorRanges: defaultCodeEditorRanges,
+  updateCodeEditorRanges: (ranges: Partial<CodeEditorRanges>) => {},
   
   document: new Document(defaultLanguage, defaultLanguage.codeExample),
   updateDocumentContent: (newContent: string) => {},

@@ -2,7 +2,7 @@ import React from "react";
 import "./App.css";
 import CodeEditorPanel from "./components/panels/CodeEditorPanel";
 import VisualisationProvidersConfigurationPanel from "./components/panels/VisualisationConfigurationPanel";
-import { GlobalContext, GlobalContextContent } from "./context";
+import { defaultCodeEditorRanges, GlobalContext, GlobalContextContent } from "./context";
 import { Language, SUPPORTED_LANGUAGES } from "./core/languages/Language";
 import { RangeSiteProvider } from "./core/sites/textual/RangeSiteProvider";
 import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
@@ -41,6 +41,16 @@ export default class App extends React.Component {
           document : new Document(newLanguage, newLanguage.codeExample)
         });
         this.updateAllCodeVisualisations();
+      },
+
+      codeEditorRanges: defaultCodeEditorRanges,
+      updateCodeEditorRanges: ranges => {
+        this.setState({
+          codeEditorRanges: {
+            ...this.state.codeEditorRanges,
+            ...ranges
+          }
+        })
       },
 
       document: this.createDocument(defaultLanguage, defaultLanguage.codeExample),

@@ -1,7 +1,7 @@
 import React from "react";
 import TabPanel from "./TabPanel";
 import { ItemRenderer, Select } from "@blueprintjs/select";
-import CodeEditor, { createCodeRangesToHighlightForCodeVisualisations } from "../code-editor/CodeEditor";
+import { CodeEditor, createRangesToHighlightForCodeVisualisations, createRangesToHighlightFromGlobalCodeEditorRanges } from "../code-editor/CodeEditor";
 import { Button, MenuItem } from "@blueprintjs/core";
 import { GlobalContext } from "../../context";
 import { Language, SUPPORTED_LANGUAGES } from "../../core/languages/Language";
@@ -61,15 +61,14 @@ export default class CodeEditorPanel extends React.PureComponent {
       // visualisations: CodeVisualisation[];
     }) => {
       const { providers } = props;
+
       return <ul style={{
-        margin: "0 1em",
+        // margin: "0 1em",
         padding: 0,
         listStyleType: "none"
       }}>
         {providers.map(provider => (
-          <li style={{
-            
-          }}>
+          <li>
             <h5 style={{
               padding: "1ex",
               backgroundColor: "rgba(0, 0, 0, 0.05)",
@@ -143,14 +142,22 @@ export default class CodeEditorPanel extends React.PureComponent {
                 language={context.codeEditorLanguage}
                 initialContent={context.document.content}
                 onContentChange={context.updateDocumentContent}
-                rangesToHighlight={
-                  createCodeRangesToHighlightForCodeVisualisations(context.codeVisualisations)
-                }
+                rangesToHighlight={[
+                  ...createRangesToHighlightForCodeVisualisations(context.codeVisualisations),
+                  ...createRangesToHighlightFromGlobalCodeEditorRanges(context.codeEditorRanges)
+                ]}
               />
             </div>
             <div style={{ overflowY: "auto" }}>
               <h3>AST</h3>
-              <Ast language={context.codeEditorLanguage} document={context.document} />
+              <Ast
+                language={context.codeEditorLanguage}
+                document={context.document}
+                eventHandlers={{
+                  onMouseEnterNode: (node) => { context.updateCodeEditorRanges({ hovered: [node.range] }); },
+                  onMouseLeaveNode: (node) => { context.updateCodeEditorRanges({ hovered: [] }); }
+                }}
+              />
             </div>
             <div>
               <h3>Visualisations ({context.codeVisualisations.length}):</h3>
