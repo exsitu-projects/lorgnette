@@ -1,7 +1,20 @@
 import React from "react";
+import { Range } from "../../documents/Range";
 import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
-import { NodeMoveData, TreeComponent, TreeNode } from "./TreeComponent";
+import { NodeMoveData, TreeComponent } from "./TreeComponent";
+
+
+export interface TreeNode<T = any> {
+    title: string;
+    preTitle?: string;
+    postTitle?: string;
+    data: T;
+    children?: TreeNode<T>[];
+    canMove?: boolean;
+};
+
+export type TreeNodeWithRange<T = { data: Range; }> = TreeNode<T>;
 
 export type Input<T> = TreeNode<T>;
 export interface Output<T> extends UserInterfaceOutput {
@@ -29,14 +42,9 @@ export class Tree<T = any> extends UserInterface<Input<T>, Output<T>> {
     createView(): JSX.Element {
         return <TreeComponent
             rootNode={this.rootNode}
-            // onTreeDataChange={topLevelNodes => {
-            //     console.log("change tree data", topLevelNodes);
-            //     this.topLevelNodes = topLevelNodes;
-            // }}
-            onNodesMove={moveData => {
+            onNodesMove={(moveData: NodeMoveData<T>) => {
                 console.log("tree node move data", moveData);
 
-                // this.treeData = moveData.treeData;
                 this.lastNodeMoveData = moveData;
                 this.declareModelChange();
             }}
@@ -44,13 +52,13 @@ export class Tree<T = any> extends UserInterface<Input<T>, Output<T>> {
     }
 
     protected get modelOutput(): Output<T> {
-        console.log("model output", {
-            ...this.getPartialModelOutput(),
-            data: {
-                rootNode: this.rootNode,
-                lastNodeMoveData: this.lastNodeMoveData
-            }
-        })
+        // console.log("model output", {
+        //     ...this.getPartialModelOutput(),
+        //     data: {
+        //         rootNode: this.rootNode,
+        //         lastNodeMoveData: this.lastNodeMoveData
+        //     }
+        // })
 
         return {
             ...this.getPartialModelOutput(),

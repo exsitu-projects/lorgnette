@@ -2,26 +2,15 @@ import React from "react";
 import "./tree-component.css";
 import "react-complex-tree/lib/style.css";
 
-import { Tree, TreeItem, TreeItemIndex, DraggingPosition, TreeItemRenderContext, TreeInformation, TreeEnvironmentRef, ControlledTreeEnvironment, TreeViewState } from "react-complex-tree";
+import { Tree, TreeItem, TreeItemIndex, DraggingPosition, TreeItemRenderContext, TreeInformation, ControlledTreeEnvironment, TreeViewState } from "react-complex-tree";
 import { GlobalContext, GlobalContextContent } from "../../../context";
-import { Range } from "../../documents/Range";
-
-export interface TreeNode<T = any> {
-    title: string;
-    preTitle?: string;
-    postTitle?: string;
-    data: T;
-    range?: Range;
-    children?: TreeNode<T>[];
-    canMove?: boolean;
-};
+import { TreeNode } from "./Tree";
 
 export type TreeData = TreeItem[];
 export type TreeItemData<T> = {
     title: string,
     preTitle?: string;
     postTitle?: string;
-    range?: Range,
     data: T
 };
 
@@ -35,67 +24,69 @@ type Props<T> = {
     onNodesMove: (moveData: NodeMoveData<T>) => void,
 };
 
-type State<T> = {
+type State = {
     treeId: string,
-    treeEnvironementRef: React.Ref<TreeEnvironmentRef<T>>,
     treeViewState: TreeViewState
 }
 
-export class TreeComponent<T> extends React.Component<Props<T>, State<T>> {
+export class TreeComponent<T> extends React.Component<Props<T>, State> {
     private static nextUnusedTreeId: number = 1;
 
     constructor(props: Props<T>) {
         super(props);
-
-        this.state ={
+        this.state = {
             treeId: TreeComponent.getUniqueTreeId(),
-            treeEnvironementRef: React.createRef(),
             treeViewState: {}
         };
     }
 
-    private flattenTreeData(node: TreeNode<T>): Record<TreeItemIndex, TreeItem<TreeItemData<T>>> {
-        const virtualRootId = 0;
-        let nextId = 1;
-        const nodesToTreeItems = new Map<TreeNode<T>, TreeItem<TreeItemData<T>>>();
+    private createTreeItems(root: TreeNode<T>): Record<TreeItemIndex, TreeItem<TreeItemData<T>>> {
+        const nodesToTreeItems = new Map<TreeItemIndex, TreeItem<TreeItemData<T>>>();
+        
+        const virtualRootItemId = 0;
+        let nextItemId = 1;
 
-        const createTreeItems = (node: TreeNode<T>): void => {
-            const id = nextId;
-            nextId += 1;
+        const mapSubtreeRootedIn = (node: TreeNode<T>) => {
+            const itemId = nextItemId;
+            nextItemId += 1;
+
             const childNodes = node.children ?? [];
+            const childNodeIndices: TreeItemIndex[] = [];
 
             for (let childNode of childNodes) {
-                createTreeItems(childNode);
+                const childNodeId = mapSubtreeRootedIn(childNode);
+                childNodeIndices.push(childNodeId);
             }
+    
+            nodesToTreeItems.set(
+                itemId,
+                {
+                    index: itemId,
+                    data: {
+                        title: node.title,
+                        preTitle: node.preTitle,
+                        postTitle: node.postTitle,
+                        data: node.data
+                    },
+                    canMove: node.canMove,
+                    children: childNodeIndices,
+                    hasChildren: childNodeIndices.length > 0
+                }
+            );
 
-            const children = childNodes.map(childNode => nodesToTreeItems.get(childNode)!.index);
-            const treeItem: TreeItem<TreeItemData<T>> = {
-                index: id,
-                data: {
-                    title: node.title,
-                    preTitle: node.preTitle,
-                    postTitle: node.postTitle,
-                    range: node.range,
-                    data: node.data
-                },
-                canMove: node.canMove,
-                children: children,
-                hasChildren: children.length > 0
-            };
-
-            nodesToTreeItems.set(node, treeItem);
+            return itemId;
         };
 
-        createTreeItems(node);
-        
+        // Transform each tree node rooted in the given node to a tree item.
+        mapSubtreeRootedIn(root);
+
+        // Add a "virtual" root item in order to display the root node in the tree
+        // (react-complex-tree seems to not display the root node, but only its children).
         if (nodesToTreeItems.size > 0) {
             nodesToTreeItems.set(
+                virtualRootItemId,
                 {
-                    title: "(virtual root)",
-                    data: null as any
-                },
-                {
-                    index: virtualRootId,
+                    index: virtualRootItemId,
                     data: null as any,
                     canMove: false,
                     canRename: false,
@@ -109,7 +100,7 @@ export class TreeComponent<T> extends React.Component<Props<T>, State<T>> {
             [...nodesToTreeItems.values()]
                 .map(treeItem => [treeItem.index, treeItem])
         );
-    }
+    };
 
     render() {
         if (!this.props.rootNode) {
@@ -117,11 +108,11 @@ export class TreeComponent<T> extends React.Component<Props<T>, State<T>> {
         }
 
         const treeId = this.state.treeId;
-        const flattenedTreeData = this.flattenTreeData(this.props.rootNode);
+        const treeItems = this.createTreeItems(this.props.rootNode);
         const treeViewState = {
             [treeId]: {
                 // Expand all the items with children by default.
-                expandedItems: Object.values(flattenedTreeData)
+                expandedItems: Object.values(treeItems)
                     .filter(n => n.hasChildren)
                     .map(n => n.index)
             }
@@ -130,7 +121,7 @@ export class TreeComponent<T> extends React.Component<Props<T>, State<T>> {
         return <div className="ui tree">
             <GlobalContext.Consumer>{ context => (
                 <ControlledTreeEnvironment
-                    items={flattenedTreeData}
+                    items={treeItems}
                     getItemTitle={item => item.data.title}
                     canReorderItems={true}
                     canDragAndDrop={true}
@@ -141,12 +132,11 @@ export class TreeComponent<T> extends React.Component<Props<T>, State<T>> {
                     })}
                     viewState={treeViewState}
                 >
-                        <Tree
-                            treeId={treeId}
-                            rootItem="0"
-                            renderItemTitle={props => TreeComponent.renderTreeItemTitle<T>(props, context)}
-
-                        />
+                    <Tree
+                        treeId={treeId}
+                        rootItem="0"
+                        renderItemTitle={props => TreeComponent.renderTreeItemTitle<T>(props, context)}
+                    />
                 </ControlledTreeEnvironment>
             )}</GlobalContext.Consumer>
         </div>;
@@ -168,8 +158,9 @@ export class TreeComponent<T> extends React.Component<Props<T>, State<T>> {
         },
         context: GlobalContextContent
     ) {
-        const itemRange = props.item.data.range;
-        const hasItemRange = !!itemRange;
+        // TODO; do this another way
+        const hasItemRange = props.item.data.data && (props.item.data.data as any)["range"];
+        const itemRange = (props.item.data.data as any)["range"];
 
         return <div
             className="tree-item"

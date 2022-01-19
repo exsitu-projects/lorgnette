@@ -24,8 +24,8 @@ import { Range } from "./core/documents/Range";
 import { TreeProvider } from "./core/user-interfaces/tree/TreeProvider";
 import { SyntacticPattern } from "./core/code-patterns/syntactic/SyntacticPattern";
 import { AstNode } from "./core/languages/AstNode";
-import { TreeNode } from "./core/user-interfaces/tree/TreeComponent";
-import { Output } from "./core/user-interfaces/tree/Tree";
+import { Output, TreeNode } from "./core/user-interfaces/tree/Tree";
+import { NodeMoveProcesser } from "./core/user-interfaces/tree/utilities/NodeMoveProcesser";
 
 export default class App extends React.Component {
   state: GlobalContextContent;
@@ -203,21 +203,25 @@ export default class App extends React.Component {
 
             const findTsxTreeItems = (node: AstNode): TreeNode<AstNode> | null => {
               let jsxElementName = "";
-              let abbreviatedContent = "";
+
+              const createNode = (title: string, preTitle: string) => {
+                return {
+                  title: title,
+                  preTitle: preTitle,
+                  data: node,
+                  canMove: true
+                };
+              };
 
               switch (node.type) {
                 case "JsxElement":
                   jsxElementName = getJsxElementNameFromNode(node, "<JSX element>");
-                  const syntaxListNode = node.childNodes.find(n => n.type === "SyntaxList");
+                  const syntaxListNodes = node.childNodes.find(n => n.type === "SyntaxList");
 
                   return {
-                    title: `${jsxElementName}`,
-                    preTitle: "</>",
-                    data: node,
-                    range: node.range,
-                    canMove: true,
-                    children: syntaxListNode
-                      ? syntaxListNode.childNodes
+                    ...createNode(jsxElementName, "</>"),
+                    children: syntaxListNodes
+                      ? syntaxListNodes.childNodes
                           .map(n => findTsxTreeItems(n))
                           .filter(n => n !== null) as TreeNode[]
                       : []
@@ -225,57 +229,18 @@ export default class App extends React.Component {
 
                 case "JsxSelfClosingElement":
                   jsxElementName = getJsxElementNameFromNode(node, "<Self-closing JSX element>");
-
-                  return {
-                    title: `${jsxElementName}`,
-                    preTitle: "</>",
-                    data: node,
-                    range: node.range,
-                    canMove: true
-                  };
+                  return createNode(jsxElementName, "</>");
 
                 case "JsxText":
-                  if (node.isEmpty()) {
-                    return null;
-                  }
-
-                  abbreviatedContent = abbreviateJsxElementContent(node);
-
-                  return {
-                    title: `${abbreviatedContent}`,
-                    preTitle: "Abc",
-                    data: node,
-                    range: node.range,
-                    canMove: true
-                  };
+                  return node.isEmpty()
+                    ? null
+                    : createNode(abbreviateJsxElementContent(node), "Abc");
 
                 case "JsxExpression":
-                  abbreviatedContent = abbreviateJsxElementContent(node);
-
-                  return {
-                    title: `${abbreviatedContent}`,
-                    preTitle: "{…}",
-                    data: node,
-                    range: node.range,
-                    canMove: true,
-                  };
+                  return createNode(abbreviateJsxElementContent(node), "{…}");
 
                 default:
-                  const childNodes: (TreeNode | null)[] = [];
-                  for (let childNode of node.childNodes) {
-                    childNodes.push(findTsxTreeItems(childNode));
-                  }
-
-                  const nonNullChildNodes = childNodes.filter(n => n !== null) as TreeNode[];
-
-                  return {
-                    title: `Other node`,
-                    preTitle: "?",
-                    data: node,
-                    range: node.range,
-                    canMove: true,
-                    children: nonNullChildNodes,
-                  };
+                  return null;
               }
             }
 
@@ -283,55 +248,7 @@ export default class App extends React.Component {
           }),
           new ProgrammableOutputMapping(arg => {
             const output = arg.output as Output<AstNode>;
-            const editor = arg.output.editor;
-            const document = arg.document;
-
-            const rootNode = output.data.rootNode;
-            const moveData = output.data.lastNodeMoveData;
-
-            if (!rootNode || !moveData) {
-              console.log("No root node or move data: there is nothing to do in the output mapping of this tree.")
-              return;
-            }
-
-            const findTreeNodeWithFlatIndex = (flatIndex: number): TreeNode<AstNode> | null => {
-              const flatten = (node: TreeNode<AstNode>): TreeNode<AstNode>[] => {
-                if (!node.children) {
-                  return [node];
-                }
-
-                return [
-                  node,
-                  ...node.children.map(flatten).flat()
-                ];
-              }
-
-              const flattenedTree = flatten(rootNode);
-              return flatIndex < flattenedTree.length
-                ? flattenedTree[flatIndex]
-                : null;
-            }
-
-            if (moveData.targetPosition.targetType === "between-items") {
-              const movedNode = moveData.movedItem.data.data;
-
-              const targetParentItemIndex = parseInt(moveData.targetPosition.parentItem.toString()) - 1;
-              const childNodeAfterTargetIndex = moveData.targetPosition.childIndex;
-
-              const targetParentNode = findTreeNodeWithFlatIndex(targetParentItemIndex)!;
-              const insertPosition = childNodeAfterTargetIndex === 1
-                ? targetParentNode.data.range.start
-                : targetParentNode.children![childNodeAfterTargetIndex].data.range.start;
-              
-              let movedNodeContent = document.getContentInRange(movedNode.range);
-              if (!movedNodeContent.endsWith("\n")) {
-                movedNodeContent = `${movedNodeContent}\n`;
-              }
-
-              editor.delete(movedNode.range);
-              editor.insert(insertPosition, movedNodeContent);
-              editor.applyEdits();
-            }
+            NodeMoveProcesser.processTreeOutput(output, arg.document);
           }),
           new TreeProvider<AstNode>()
         )
