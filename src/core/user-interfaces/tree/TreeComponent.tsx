@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import "./tree-component.css";
 import "react-complex-tree/lib/style.css";
 
@@ -32,7 +32,6 @@ export type NodeMoveData<T> = {
 
 type Props<T> = {
     rootNode: TreeNode<T> | null,
-    // onTreeDataChange: (newTreeData: TreeData) => void,
     onNodesMove: (moveData: NodeMoveData<T>) => void,
 };
 
@@ -112,58 +111,12 @@ export class TreeComponent<T> extends React.Component<Props<T>, State<T>> {
         );
     }
 
-    // componentDidUpdate() {
-    //     // For an unknown reason, the type of the React ref does not seem
-    //     // to include a 'current' property. We cast it to make it appear.
-    //     const ref = this.state.treeEnvironementRef as { current: TreeEnvironmentRef };
-    //     if (ref.current) {
-    //         const itemIds = Object.keys(ref.current.items);
-    //         for (let itemId of itemIds) {
-    //             ref.current.expandItem(itemId, this.state.treeId);
-    //         }
-    //     }
-    // }
-
     render() {
-        const renderTreeItemTitle = (
-            props: {
-                title: string;
-                item: TreeItem<TreeNode<T>>,
-                context: TreeItemRenderContext,
-                info: TreeInformation,
-            },
-            context: GlobalContextContent
-        ) => {
-            const itemRange = props.item.data.range;
-            const hasItemRange = !!itemRange;
-
-            return <div
-                className="tree-item"
-                draggable={props.context.canDrag}
-                onMouseEnter={ event => hasItemRange ? context.updateCodeEditorRanges({ hovered: [itemRange!] }) : {} }
-                onMouseLeave={ event => hasItemRange ? context.updateCodeEditorRanges({ hovered: [] }) : {} }
-                data-rct-item-interactive={true}
-                data-rct-item-id={props.item.index}
-                onLoad={event => props.context.expandItem()}
-            >
-                <div className="title">
-                    <span className="pre-title">{props.item.data.preTitle}</span>
-                    {props.title}
-                    <span className="post-title">{props.item.data.postTitle}</span>
-                </div>
-                <div className="range">
-                    {hasItemRange ? itemRange.toString() : ""}
-                </div>
-            </div>
-        };
-
         if (!this.props.rootNode) {
             return <div className="ui tree" />;
         }
 
         const treeId = this.state.treeId;
-        // const treeEnvironementRef = this.state.treeEnvironementRef;
-
         const flattenedTreeData = this.flattenTreeData(this.props.rootNode);
         const treeViewState = {
             [treeId]: {
@@ -187,12 +140,11 @@ export class TreeComponent<T> extends React.Component<Props<T>, State<T>> {
                         targetPosition: targetPosition
                     })}
                     viewState={treeViewState}
-                    // ref={treeEnvironementRef}
                 >
                         <Tree
                             treeId={treeId}
                             rootItem="0"
-                            renderItemTitle={props => renderTreeItemTitle(props, context)}
+                            renderItemTitle={props => TreeComponent.renderTreeItemTitle<T>(props, context)}
 
                         />
                 </ControlledTreeEnvironment>
@@ -206,4 +158,36 @@ export class TreeComponent<T> extends React.Component<Props<T>, State<T>> {
 
         return `tree-${id}`;
     }
+
+    private static renderTreeItemTitle<T>(
+        props: {
+            title: string;
+            item: TreeItem<TreeNode<T>>,
+            context: TreeItemRenderContext,
+            info: TreeInformation,
+        },
+        context: GlobalContextContent
+    ) {
+        const itemRange = props.item.data.range;
+        const hasItemRange = !!itemRange;
+
+        return <div
+            className="tree-item"
+            draggable={props.context.canDrag}
+            onMouseEnter={ event => hasItemRange ? context.updateCodeEditorRanges({ hovered: [itemRange!] }) : {} }
+            onMouseLeave={ event => hasItemRange ? context.updateCodeEditorRanges({ hovered: [] }) : {} }
+            data-rct-item-interactive={true}
+            data-rct-item-id={props.item.index}
+            onLoad={event => props.context.expandItem()}
+        >
+            <div className="title">
+                <span className="pre-title">{props.item.data.preTitle}</span>
+                {props.title}
+                <span className="post-title">{props.item.data.postTitle}</span>
+            </div>
+            <div className="range">
+                {hasItemRange ? itemRange.toString() : ""}
+            </div>
+        </div>
+    };
 }

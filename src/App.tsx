@@ -322,8 +322,6 @@ export default class App extends React.Component {
               const insertPosition = childNodeAfterTargetIndex === 1
                 ? targetParentNode.data.range.start
                 : targetParentNode.children![childNodeAfterTargetIndex].data.range.start;
-
-              // debugger
               
               let movedNodeContent = document.getContentInRange(movedNode.range);
               if (!movedNodeContent.endsWith("\n")) {
