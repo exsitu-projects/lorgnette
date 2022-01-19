@@ -3,9 +3,9 @@ import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../UserI
 import { UserInterfaceProvider } from "../UserInterfaceProvider";
 import { Tree } from "./Tree";
 
-export class TreeProvider implements UserInterfaceProvider {
+export class TreeProvider<T = any> implements UserInterfaceProvider {
     provide(visualisation: CodeVisualisation): UserInterface<UserInterfaceInput, UserInterfaceOutput> {
-        return new Tree(visualisation);
+        return new Tree<T>(visualisation);
     }
 
 }

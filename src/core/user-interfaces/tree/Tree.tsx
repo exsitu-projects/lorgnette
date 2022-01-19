@@ -3,17 +3,17 @@ import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
 import { NodeMoveData, TreeComponent, TreeNode } from "./TreeComponent";
 
-export type Input = TreeNode;
-export interface Output extends UserInterfaceOutput {
+export type Input<T> = TreeNode<T>;
+export interface Output<T> extends UserInterfaceOutput {
     data: {
-        rootNode: TreeNode | null;
-        lastNodeMove: NodeMoveData | null;
+        rootNode: TreeNode<T> | null;
+        lastNodeMoveData: NodeMoveData<T> | null;
     }
 };
 
-export class Tree extends UserInterface<Input, Output> {
-    private rootNode: TreeNode | null;
-    private lastNodeMoveData: NodeMoveData | null;
+export class Tree<T = any> extends UserInterface<Input<T>, Output<T>> {
+    private rootNode: TreeNode<T> | null;
+    private lastNodeMoveData: NodeMoveData<T> | null;
 
     constructor(visualisation: CodeVisualisation) {
         super(visualisation);
@@ -22,7 +22,7 @@ export class Tree extends UserInterface<Input, Output> {
         this.lastNodeMoveData = null;
     }
 
-    setTopLevelNodes(topLevelNodes: TreeNode): void {
+    setTopLevelNodes(topLevelNodes: TreeNode<T>): void {
         this.rootNode = topLevelNodes;
     }
 
@@ -33,27 +33,35 @@ export class Tree extends UserInterface<Input, Output> {
             //     console.log("change tree data", topLevelNodes);
             //     this.topLevelNodes = topLevelNodes;
             // }}
-            onNodesMove={(movedNodes, targetPosition) => {
-                console.log("tree node move", movedNodes, targetPosition);
+            onNodesMove={moveData => {
+                console.log("tree node move data", moveData);
 
                 // this.treeData = moveData.treeData;
-                // this.lastNodeMoveData = moveData;
+                this.lastNodeMoveData = moveData;
                 this.declareModelChange();
             }}
         />;
     }
 
-    protected get modelOutput(): Output {
+    protected get modelOutput(): Output<T> {
+        console.log("model output", {
+            ...this.getPartialModelOutput(),
+            data: {
+                rootNode: this.rootNode,
+                lastNodeMoveData: this.lastNodeMoveData
+            }
+        })
+
         return {
             ...this.getPartialModelOutput(),
             data: {
                 rootNode: this.rootNode,
-                lastNodeMove: this.lastNodeMoveData
+                lastNodeMoveData: this.lastNodeMoveData
             }
         };
     }
 
-    updateModel(input: TreeNode): void {
+    updateModel(input: TreeNode<T>): void {
         // TODO: check input
         this.setTopLevelNodes(input);
     }
