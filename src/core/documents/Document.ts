@@ -67,7 +67,9 @@ export class Document {
         const endColumn = this.textSplitByLine[this.textSplitByLine.length - 1].length - 1;
 
         const startOffset = 0;
-        const endOffset = this.textSplitByLine.reduce((sum, line) => sum + line.length, 0);
+        const endOffset =
+            this.textSplitByLine.reduce((sum, line) => sum + line.length, 0) + // Nb. chars in each line
+            this.textSplitByLine.length - 1; // Nb. newline characters
 
         return new DocumentRange(
             this,
@@ -110,7 +112,7 @@ export class Document {
         const endLineIndex = Math.min(this.textSplitByLine.length - 1, range.end.row);
 
         const startColumnIndex = Math.max(0, range.start.column);
-        const endColumnIndex = Math.min(this.textSplitByLine[endLineIndex].length - 1, range.end.column);
+        const endColumnIndex = Math.min(this.textSplitByLine[endLineIndex].length, range.end.column);
 
         // Get the requested lines, and remove the unnecessary parts in the first and the last lines.
         const lines = this.contentSplitByLine.slice(
