@@ -59,6 +59,11 @@ export abstract class UserInterface<
     }
 
     protected stopTransientEdit(): void {
+        if (this.transientEditor) {
+            this.transientEditor.reset();
+            this.transientEditor.restoreInitialContent();
+        }
+
         this.transientEditor = null;
     }
 
