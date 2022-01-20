@@ -78,17 +78,12 @@ export default class App extends React.Component {
             };
           }),
           new ProgrammableOutputMapping(arg => {
-            console.log('Output mapping: ', arg);
-
             const data = arg.output.data;
             const documentEditor = arg.output.editor;
             const pattern = arg.pattern;
             const sites = arg.sites;
 
-            console.info(documentEditor)
-
             const adaptSiteRange = (range: Range) => range.relativeTo(pattern.range.start);
-            // const padRgbValue = n => n.toString().padStart(3, "0");
 
             documentEditor.replace(adaptSiteRange(sites[0].range), data.r.toString());
             documentEditor.replace(adaptSiteRange(sites[1].range) ,data.g.toString());
@@ -107,78 +102,65 @@ export default class App extends React.Component {
         //     new RangeSiteProvider(3, 4),
         //     new RangeSiteProvider(5, 6),
         //   ],
-        //   new ProgrammableMapping(`
+        //   new ProgrammableInputMapping(arg => {
         //     return {
         //       r: parseInt(arg.sites[0].text, 16),
         //       g: parseInt(arg.sites[1].text, 16),
         //       b: parseInt(arg.sites[2].text, 16)
         //     };
-        //   `),
-        //   new ProgrammableMapping(`
-        //     console.log('Output mapping: ', arg);
-
+        //   }),
+        //   new ProgrammableOutputMapping(arg => {
         //     const data = arg.output.data;
-        //     const documentEditor = arg.documentEditor;
+        //     const editor = arg.output.editor;
         //     const pattern = arg.pattern;
         //     const sites = arg.sites;
 
-        //     const adaptSiteRange = range => range.relativeTo(pattern.range.start);
-        //     const hexOfRgbValue = n => n.toString(16);
+        //     const adaptSiteRange = (range: Range) => range.relativeTo(pattern.range.start);
+        //     const hexOfRgbValue = (n: number) => n.toString(16);
 
-        //     documentEditor.replace(adaptSiteRange(sites[0].range), hexOfRgbValue(data.r));
-        //     documentEditor.replace(adaptSiteRange(sites[1].range), hexOfRgbValue(data.g));
-        //     documentEditor.replace(adaptSiteRange(sites[2].range), hexOfRgbValue(data.b));
+        //     editor.replace(adaptSiteRange(sites[0].range), hexOfRgbValue(data.r));
+        //     editor.replace(adaptSiteRange(sites[1].range), hexOfRgbValue(data.g));
+        //     editor.replace(adaptSiteRange(sites[2].range), hexOfRgbValue(data.b));
             
-        //     documentEditor.applyEdits();
-        //   `),
+        //     editor.applyEdits();
+        //   }),
         //   new ColorPickerProvider()
         // ),
 
-        // new SyntacticCodeVisualisationProvider(
-        //   "Math. function calls",
-        //   new AstPatternFinder(new AstPattern(n => n.type === FunctionNode.type)),
-        //   [],
-        //   new ProgrammableMapping(`return arg;`),
-        //   null,
-        //   new InputPrinterProvider()
-        // ),
+        new SyntacticCodeVisualisationProvider(
+          "RGB Color constructor — Syntactic",
+          new AstPatternFinder(new AstPattern(n => 
+               n.type === "NewExpression"
+            && n.childNodes[1].parserNode.escapedText === "Color"
+            && n.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken").length === 3
+          )),
+          [
+            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[0]),
+            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[1]),
+            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[2])
+          ],
+          new ProgrammableInputMapping(arg => {
+            const sites = arg.sites;
 
-        // new SyntacticCodeVisualisationProvider(
-        //   "RGB Color constructor — Syntactic",
-        //   new AstPatternFinder(new AstPattern(n => 
-        //        n.type === "NewExpression"
-        //     && n.childNodes[1].parserNode.escapedText === "Color"
-        //     && n.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken").length === 3
-        //   )),
-        //   [
-        //     new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[0]),
-        //     new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[1]),
-        //     new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[2])
-        //   ],
-        //   new ProgrammableInputMapping(arg => {
-        //     const sites = arg.sites;
+            return {
+              r: parseInt(sites[0].text),
+              g: parseInt(sites[1].text),
+              b: parseInt(sites[2].text)
+            };
+          }),
+          new ProgrammableOutputMapping(arg => {
+            const data = arg.output.data;
+            const documentEditor = arg.output.editor;
+            const sites = arg.sites;
 
-        //     return {
-        //       r: parseInt(sites[0].text),
-        //       g: parseInt(sites[1].text),
-        //       b: parseInt(sites[2].text)
-        //     };
-        //   }),
-        //   new ProgrammableOutputMapping(arg => {
-        //     console.log('Output mapping: ', arg);
-
-        //     const data = arg.output.data;
-        //     const documentEditor = arg.output.editor;
-        //     const sites = arg.sites;
-
-        //     documentEditor.replace(sites[0].range, data.r.toString());
-        //     documentEditor.replace(sites[1].range ,data.g.toString());
-        //     documentEditor.replace(sites[2].range, data.b.toString());
+            documentEditor.replace(sites[0].range, data.r.toString());
+            documentEditor.replace(sites[1].range ,data.g.toString());
+            documentEditor.replace(sites[2].range, data.b.toString());
             
-        //     documentEditor.applyEdits();
-        //   }),
-        //   new ColorPickerProvider()
-        // )
+            documentEditor.applyEdits();
+          }),
+          new ColorPickerProvider()
+        ),
 
         new SyntacticCodeVisualisationProvider(
           "TSX elements",
