@@ -8,5 +8,4 @@ export interface PatternFinder<
 > {
     type: string;
     applyInDocument(document: Document): P[];
-    updatePattern(pattern: P, document: Document): P;
 }

@@ -7,24 +7,21 @@ import { GenericAstNodeEventHandlers } from "./GenericAstNode";
 
 type Props = {
     document: Document,
-    language: Language,
     eventHandlers: Partial<GenericAstNodeEventHandlers>
 };
 
 export class Ast extends React.PureComponent<Props> {
     render() {
-        const parser = this.props.language.parser;
-        if (!parser) {
+        const language = this.props.document.language;
+        if (!language.parser) {
         return <div className="ast-message no-parser">
-            There is no parser for the <em>{this.props.language.name}</em> language.
+            There is no parser for the <em>{language.name}</em> language.
         </div>
         }
 
         try {
-            const documentContent = this.props.document.content;
-            const ast = parser.parse(documentContent);
             return <GenericAst
-                ast={ast}
+                ast={this.props.document.ast}
                 eventHandlers={this.props.eventHandlers}
             />;
         }

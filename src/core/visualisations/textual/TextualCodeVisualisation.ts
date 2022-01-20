@@ -62,26 +62,4 @@ export class TextualCodeVisualisation extends AbstractCodeVisualisation<
     get range(): Range {
         return this.pattern.range;
     }
-
-    updateCodeBinding(): void {
-        console.log("document", this.document)
-
-        // Update the pattern.
-        console.log("old pattern", this.pattern);
-
-        const newPattern = this.provider.patternFinder.updatePattern(
-            this.pattern,
-            this.document
-        );
-        this.currentCodeBinding.pattern = newPattern;
-
-        console.log("new pattern", this.pattern);
-        console.log("old sites", this.sites);
-
-        // Update the pattern.
-        const newSites = this.provider.provideSitesForPattern(newPattern);
-        this.currentCodeBinding.sites = newSites;
-
-        console.log("new sites", this.sites);
-    }
 }

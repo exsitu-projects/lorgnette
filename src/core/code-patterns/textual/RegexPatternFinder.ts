@@ -30,11 +30,4 @@ export class RegexPatternFinder implements PatternFinder<CodeVisualisationType.T
             .matchAll(document.content)
             .map(match => TextualPattern.fromRegexMatch(match, document));
     }
-
-    updatePattern(pattern: TextualPattern, document: Document): TextualPattern {
-        const inputFromPatternStart = document.content.slice(pattern.range.start.offset);
-        const match = this.regexMatcher.match(inputFromPatternStart);
-
-        return TextualPattern.fromRegexMatch(match!, document,  pattern.range.start);
-    }
 }

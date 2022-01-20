@@ -14,13 +14,14 @@ export class AstPatternFinder implements PatternFinder<CodeVisualisationType.Syn
     }
 
     applyInDocument(document: Document): SyntacticPattern[] {
-        return this.searchPattern
+        try {
+            return this.searchPattern
             .apply(document.ast)
             .map(node => new SyntacticPattern(node, document));
-    }
-
-    updatePattern(pattern: SyntacticPattern, document: Document): SyntacticPattern {
-        // TODO: actually do something here...? Or assume the AST is updated in place?
-        return pattern;
+        }
+        catch (error: any) {
+            // In case an error happens (e.g., during parsing), return to pattern.
+            return [];
+        }
     }
 }

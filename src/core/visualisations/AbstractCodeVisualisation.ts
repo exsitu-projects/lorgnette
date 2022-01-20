@@ -44,11 +44,6 @@ export abstract class AbstractCodeVisualisation<
         this.userInterface.updateModel(userInterfaceInput);
     }
 
-    // protected abstract getUpdatedPattern(): Pattern<T>;
-    // protected abstract getUpdatedSites(): Site<T>[];
-
-    abstract updateCodeBinding(): void;
-
     applyInputMapping(): UserInterfaceInput {
         return this.inputMapping.mapToInput(this.pattern, this.sites);
     }

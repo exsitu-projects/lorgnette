@@ -152,7 +152,6 @@ export default class CodeEditorPanel extends React.PureComponent {
             <div style={{ overflowY: "auto" }}>
               <h3>AST</h3>
               <Ast
-                language={context.codeEditorLanguage}
                 document={context.document}
                 eventHandlers={{
                   onMouseEnterNode: (node) => { context.updateCodeEditorRanges({ hovered: [node.range] }); },
