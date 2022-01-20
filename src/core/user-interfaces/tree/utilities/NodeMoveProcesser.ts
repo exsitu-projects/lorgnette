@@ -1,5 +1,6 @@
 import { Document } from "../../../documents/Document";
 import { DocumentEditor } from "../../../documents/DocumentEditor";
+import { Position } from "../../../documents/Position";
 import { Range } from "../../../documents/Range";
 import { Output, TreeNodeWithRange } from "../Tree";
 import { NodeMoveData } from "../TreeComponent";
@@ -13,18 +14,15 @@ export class NodeMoveProcesser<T extends HasRange> {
     private readonly editor: DocumentEditor;
     private readonly treeRoot: TreeNodeWithRange<T>;
     private readonly flattenedTree: TreeNodeWithRange<T>[];
-    // private readonly moveData: NodeMoveData<AstNode<any>>;
     
     constructor(
         document: Document, 
         editor: DocumentEditor, 
         treeRoot: TreeNodeWithRange<T>, 
-        // moveData: NodeMoveData<AstNode<any>>
     ) {
         this.document = document;
         this.editor = editor;
         this.treeRoot = treeRoot;
-        // this.moveData = moveData;
         this.flattenedTree = this.flattenTree();
     }
 
@@ -52,29 +50,33 @@ export class NodeMoveProcesser<T extends HasRange> {
     }
         
     processNodeMove(moveData: NodeMoveData<T>): void {
-        console.log(">>>>>>>> TARGET TYPE = ", moveData.targetPosition.targetType);
-        console.log(moveData)
-
         if (moveData.targetPosition.targetType === "between-items") {
             const movedNode = moveData.movedItem.data.data;
-    
-            const targetParentItemIndex = parseInt(moveData.targetPosition.parentItem.toString()) - 1;
-            const childNodeAfterTargetIndex = moveData.targetPosition.childIndex;
-    
-            const targetParentNode = this.findTreeNodeWithFlatIndex(targetParentItemIndex);
-            if (!targetParentNode) {
+            const targetSiblingNode = this.findTreeNodeWithFlatIndex(moveData.targetPosition.linearIndex - 1);
+            if (!targetSiblingNode) {
                 return;
             }
 
-            const insertPosition = childNodeAfterTargetIndex === 1
-                ? targetParentNode.data.range.start
-                : targetParentNode.children![childNodeAfterTargetIndex].data.range.start;
+            const insertPosition = moveData.targetPosition.linePosition === "top"
+                ? targetSiblingNode.data.range.start
+                : targetSiblingNode.data.range.end;
     
+            // Some heuristics to make the changes look better (not very clever...).
+            // TODO: improve whitespace management when reordering nodes in the tree.
             let movedNodeContent = this.document.getContentInRange(movedNode.range);
-            if (!movedNodeContent.endsWith("\n")) {
-                movedNodeContent = `${movedNodeContent}\n`;
-            }
-    
+            const insertPositionLine = this.document.getContentInRange(new Range(
+                new Position(insertPosition.row, 0, insertPosition.offset - insertPosition.column),
+                insertPosition
+            ));
+
+            const insertPositionLineLeadingWhitespaceLength =
+                insertPositionLine.length - insertPositionLine.trimLeft().length;
+            let leadingWhitespace = " ".repeat(insertPositionLineLeadingWhitespaceLength);
+
+            movedNodeContent = moveData.targetPosition.linePosition === "top"
+                ? `${movedNodeContent.trim()}\n${leadingWhitespace}`
+                : `\n${leadingWhitespace}${movedNodeContent.trim()}`;
+
             this.editor.delete(movedNode.range);
             this.editor.insert(insertPosition, movedNodeContent);
             this.editor.applyEdits();
