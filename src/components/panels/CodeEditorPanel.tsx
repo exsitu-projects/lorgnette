@@ -141,7 +141,8 @@ export default class CodeEditorPanel extends React.PureComponent {
               <CodeEditor
                 language={context.codeEditorLanguage}
                 initialContent={context.document.content}
-                onContentChange={context.updateDocumentContent}
+                onContentChange={newContent => context.updateDocumentContent(newContent)}
+                onSelectionChange={() => context.updateCodeEditorRanges({ selected: [] })}
                 rangesToHighlight={[
                   ...createRangesToHighlightForCodeVisualisations(context.codeVisualisations),
                   ...createRangesToHighlightFromGlobalCodeEditorRanges(context.codeEditorRanges)

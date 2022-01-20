@@ -165,8 +165,9 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
         return <div
             className="tree-item"
             draggable={props.context.canDrag}
-            onMouseEnter={ event => hasItemRange ? context.updateCodeEditorRanges({ hovered: [itemRange!] }) : {} }
-            onMouseLeave={ event => hasItemRange ? context.updateCodeEditorRanges({ hovered: [] }) : {} }
+            onMouseEnter={event => hasItemRange ? context.updateCodeEditorRanges({ hovered: [itemRange] }) : {}}
+            onMouseLeave={event => hasItemRange ? context.updateCodeEditorRanges({ hovered: [] }) : {}}
+            onClick={event => hasItemRange ? context.updateCodeEditorRanges({ selected: [itemRange] }) : {}}
             data-rct-item-interactive={true}
             data-rct-item-id={props.item.index}
             onLoad={event => props.context.expandItem()}

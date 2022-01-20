@@ -11,6 +11,7 @@ import "ace-builds/src-noconflict/theme-tomorrow";
 import { Language } from "../../core/languages/Language";
 import { CodeEditorRanges } from "../../context";
 import { Range } from "../../core/documents/Range";
+import { Document } from "../../core/documents/Document";
 
 /* `start` and `end` use 0-based row and column indices. */
 export interface RangeToHighlight {
@@ -67,10 +68,24 @@ export function createRangesToHighlightFromGlobalCodeEditorRanges(ranges: CodeEd
   return rangesToHiglight;
 }
 
+export function createSelectionRange(aceEditor: any, document: Document): Range {
+  const anchorLine = aceEditor.anchor.row - 1;
+  const anchorColumn = aceEditor.anchor.column - 1;
+  const anchorPosition = document.getPositionAtLineAndColumn(anchorLine, anchorColumn);
+
+  const cursorLine = aceEditor.cursor.row - 1;
+  const cursorColumn = aceEditor.cursor.column - 1;
+  const cursorPosition = document.getPositionAtLineAndColumn(cursorLine, cursorColumn);
+
+  return new Range(anchorPosition, cursorPosition);
+  
+}
+
 type Props = {
   language: Language;
   initialContent?: string;
   onContentChange: (newContent: string) => void;
+  onSelectionChange: (aceEditor: any) => void;
   rangesToHighlight?: RangeToHighlight[];
 };
 
@@ -109,9 +124,10 @@ export class CodeEditor extends React.Component<Props> {
         mode={this.props.language.codeEditorLanguageId}
         theme={this.state.theme}
         onChange={newContent => {this.props.onContentChange(newContent)}}
+        onSelectionChange={aceEditor => {this.props.onSelectionChange(aceEditor)}}
         editorProps={{ $blockScrolling: true }}
         placeholder="Write your code here!"
-        enableLiveAutocompletion={true}
+        
         style={{
           width: "100%",
           height: "100%"

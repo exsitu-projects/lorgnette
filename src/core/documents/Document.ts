@@ -3,6 +3,7 @@ import { Ast } from "../languages/Ast";
 import { Language } from "../languages/Language";
 import { CodeVisualisation } from "../visualisations/CodeVisualisation";
 import { DocumentEditor } from "./DocumentEditor";
+import { DocumentPosition } from "./DocumentPosition";
 import { DocumentRange } from "./DocumentRange";
 import { Position } from "./Position";
 import { Range } from "./Range";
@@ -104,6 +105,23 @@ export class Document {
     get isEmpty(): boolean {
         return this.textSplitByLine.length === 0
             || this.content.trim().length === 0;
+    }
+
+    getPositionAtLineAndColumn(line: number, column: number): DocumentPosition {
+        const lines = this.contentSplitByLine.slice(0, line + 1);
+        const lastLine = lines.pop();
+        const previousLines = lines;
+
+        if (!lastLine) {
+            throw new Error(`There is no line at the given line index: ${line}`);
+        }
+
+        const offset =
+            previousLines.reduce((sum, line) => sum + line.length, 0) + // Content of the lines before
+            previousLines.length + // Nb. of newline characters
+            lastLine.slice(0, column).length // Nb. of characters on the last line
+
+        return new DocumentPosition(this, line, column, offset);
     }
 
     getContentInRange(range: Range): string {
