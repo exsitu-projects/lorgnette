@@ -8,6 +8,9 @@ const color2 = new Color(
   25
 );
 
+const re1 = new RegExp("Color\\((\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\)");
+const re2 = /^([0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\\w]*[0-9a-zA-Z]\\.)+[a-zA-Z]{2,9})$/;
+
 const style = {
   color: "#fedcba"
 };

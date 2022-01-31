@@ -26,6 +26,7 @@ import { SyntacticPattern } from "./core/code-patterns/syntactic/SyntacticPatter
 import { AstNode } from "./core/languages/AstNode";
 import { Output, TreeNode } from "./core/user-interfaces/tree/Tree";
 import { NodeMoveProcesser } from "./core/user-interfaces/tree/utilities/NodeMoveProcesser";
+import { RegexEditorProvider } from "./core/user-interfaces/regex-editor/RegexEditorProvider";
 
 export default class App extends React.Component {
   state: GlobalContextContent;
@@ -61,38 +62,38 @@ export default class App extends React.Component {
       },
 
       codeVisualisationProviders: [
-        new TextualCodeVisualisationProvider(
-          "RGB Color constructor",
-          new RegexPatternFinder("Color\\((\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\)"),
-          [
-            // (?<=) is a non-capturing lookbehind; (?=) is a non-capturing lookahead.
-            new RegexSiteProvider("(?<=Color\\()(\\d+)"),
-            new RegexSiteProvider("(?<=Color\\([^,]+,\\s*)(\\d+)"),
-            new RegexSiteProvider("(?<=Color\\([^,]+,[^,]+,\\s*)(\\d+)"),
-          ],
-          new ProgrammableInputMapping(arg => {
-            return {
-              r: parseInt(arg.sites[0].text),
-              g: parseInt(arg.sites[1].text),
-              b: parseInt(arg.sites[2].text)
-            };
-          }),
-          new ProgrammableOutputMapping(arg => {
-            const data = arg.output.data;
-            const documentEditor = arg.output.editor;
-            const pattern = arg.pattern;
-            const sites = arg.sites;
+        // new TextualCodeVisualisationProvider(
+        //   "RGB Color constructor",
+        //   new RegexPatternFinder("Color\\((\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\)"),
+        //   [
+        //     // (?<=) is a non-capturing lookbehind; (?=) is a non-capturing lookahead.
+        //     new RegexSiteProvider("(?<=Color\\()(\\d+)"),
+        //     new RegexSiteProvider("(?<=Color\\([^,]+,\\s*)(\\d+)"),
+        //     new RegexSiteProvider("(?<=Color\\([^,]+,[^,]+,\\s*)(\\d+)"),
+        //   ],
+        //   new ProgrammableInputMapping(arg => {
+        //     return {
+        //       r: parseInt(arg.sites[0].text),
+        //       g: parseInt(arg.sites[1].text),
+        //       b: parseInt(arg.sites[2].text)
+        //     };
+        //   }),
+        //   new ProgrammableOutputMapping(arg => {
+        //     const data = arg.output.data;
+        //     const documentEditor = arg.output.editor;
+        //     const pattern = arg.pattern;
+        //     const sites = arg.sites;
 
-            const adaptSiteRange = (range: Range) => range.relativeTo(pattern.range.start);
+        //     const adaptSiteRange = (range: Range) => range.relativeTo(pattern.range.start);
 
-            documentEditor.replace(adaptSiteRange(sites[0].range), data.r.toString());
-            documentEditor.replace(adaptSiteRange(sites[1].range) ,data.g.toString());
-            documentEditor.replace(adaptSiteRange(sites[2].range), data.b.toString());
+        //     documentEditor.replace(adaptSiteRange(sites[0].range), data.r.toString());
+        //     documentEditor.replace(adaptSiteRange(sites[1].range) ,data.g.toString());
+        //     documentEditor.replace(adaptSiteRange(sites[2].range), data.b.toString());
             
-            documentEditor.applyEdits();
-          }),
-          new ColorPickerProvider()
-        ),
+        //     documentEditor.applyEdits();
+        //   }),
+        //   new ColorPickerProvider()
+        // ),
 
         // new TextualCodeVisualisationProvider(
         //   "Hexadecimal color code",
@@ -127,40 +128,40 @@ export default class App extends React.Component {
         //   new ColorPickerProvider()
         // ),
 
-        new SyntacticCodeVisualisationProvider(
-          "RGB Color constructor — Syntactic",
-          new AstPatternFinder(new AstPattern(n => 
-               n.type === "NewExpression"
-            && n.childNodes[1].parserNode.escapedText === "Color"
-            && n.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken").length === 3
-          )),
-          [
-            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[0]),
-            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[1]),
-            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[2])
-          ],
-          new ProgrammableInputMapping(arg => {
-            const sites = arg.sites;
+        // new SyntacticCodeVisualisationProvider(
+        //   "RGB Color constructor — Syntactic",
+        //   new AstPatternFinder(new AstPattern(n => 
+        //        n.type === "NewExpression"
+        //     && n.childNodes[1].parserNode.escapedText === "Color"
+        //     && n.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken").length === 3
+        //   )),
+        //   [
+        //     new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[0]),
+        //     new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[1]),
+        //     new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[2])
+        //   ],
+        //   new ProgrammableInputMapping(arg => {
+        //     const sites = arg.sites;
 
-            return {
-              r: parseInt(sites[0].text),
-              g: parseInt(sites[1].text),
-              b: parseInt(sites[2].text)
-            };
-          }),
-          new ProgrammableOutputMapping(arg => {
-            const data = arg.output.data;
-            const documentEditor = arg.output.editor;
-            const sites = arg.sites;
+        //     return {
+        //       r: parseInt(sites[0].text),
+        //       g: parseInt(sites[1].text),
+        //       b: parseInt(sites[2].text)
+        //     };
+        //   }),
+        //   new ProgrammableOutputMapping(arg => {
+        //     const data = arg.output.data;
+        //     const documentEditor = arg.output.editor;
+        //     const sites = arg.sites;
 
-            documentEditor.replace(sites[0].range, data.r.toString());
-            documentEditor.replace(sites[1].range ,data.g.toString());
-            documentEditor.replace(sites[2].range, data.b.toString());
+        //     documentEditor.replace(sites[0].range, data.r.toString());
+        //     documentEditor.replace(sites[1].range ,data.g.toString());
+        //     documentEditor.replace(sites[2].range, data.b.toString());
             
-            documentEditor.applyEdits();
-          }),
-          new ColorPickerProvider()
-        ),
+        //     documentEditor.applyEdits();
+        //   }),
+        //   new ColorPickerProvider()
+        // ),
 
         new SyntacticCodeVisualisationProvider(
           "TSX elements",
@@ -233,7 +234,97 @@ export default class App extends React.Component {
             NodeMoveProcesser.processTreeOutput(output, arg.document);
           }),
           new TreeProvider<AstNode>()
-        )
+        ),
+
+        new SyntacticCodeVisualisationProvider(
+          "Regulax expressions (constructor)",
+          new AstPatternFinder(new AstPattern(n => 
+               n.type === "NewExpression"
+            && n.childNodes[1].parserNode.escapedText === "RegExp"
+            && n.childNodes[3].childNodes[0].type === "StringLiteral"
+          )),
+          [],
+          new ProgrammableInputMapping(arg => {
+            const document = arg.document;
+            const pattern = arg.pattern as SyntacticPattern;
+
+            const regexBodyRange = pattern.node.childNodes[3].childNodes[0].range;
+            const hasLiteralRegexFlags = pattern.node.childNodes[3].childNodes[2]?.type === "StringLiteral";
+            const regexFlagsRange = hasLiteralRegexFlags
+              ? pattern.node.childNodes[3].childNodes[2].range
+              : undefined;
+
+            const regexBodyWithQuotes = document.getContentInRange(regexBodyRange);
+            const regexFlagsWithQuotes = regexFlagsRange
+              ? document.getContentInRange(regexFlagsRange)
+              : "";
+
+            const regexBody = regexBodyWithQuotes.slice(1, regexBodyWithQuotes.length - 1);
+            const regexFlags = regexFlagsWithQuotes.slice(1, regexFlagsWithQuotes.length - 1);
+
+            try {
+              return { regex: new RegExp(regexBody, regexFlags) };
+            }
+            catch (error) {
+              console.error("Error while constructing a regex:", error);
+              return { regex: new RegExp("") };
+            }
+          }),
+          new ProgrammableOutputMapping(arg => {
+            const regex = arg.output.data.regex;
+            const editor = arg.output.editor;
+            const pattern = arg.pattern as SyntacticPattern;
+
+            // Extract the body and the flags of the regex
+            const regexAsString = regex.toString() as string;
+            const lastRegexSlashIndex = regexAsString.lastIndexOf("/");
+
+            const regexBody = regexAsString.slice(1, lastRegexSlashIndex);
+            const regexFlags = regexAsString.slice(lastRegexSlashIndex + 1);
+            const hasRegexFlags = regexFlags.length > 0;
+
+            // Replace the arguments with the new body and flags (if any)
+            const regexArgumentsRange = pattern.node.childNodes[3].range;
+            const newRegexArguments = hasRegexFlags
+              ? `"${regexBody}", "${regexFlags}"`
+              : `"${regexBody}"`;
+            
+            editor.replace(regexArgumentsRange, newRegexArguments);
+            editor.applyEdits();
+          }),
+          new RegexEditorProvider()
+        ),
+
+        new SyntacticCodeVisualisationProvider(
+          "Regulax expressions (literal)",
+          new AstPatternFinder(new AstPattern(n => n.type === "RegularExpressionLiteral")),
+          [],
+          new ProgrammableInputMapping(arg => {
+            const regexAsString = arg.pattern.text;
+            const lastRegexLiteralSlashIndex = regexAsString.lastIndexOf("/");
+
+            const regexBody = regexAsString.slice(1, lastRegexLiteralSlashIndex);
+            const regexFlags = regexAsString.slice(lastRegexLiteralSlashIndex + 1);
+
+            try {
+              return { regex: new RegExp(regexBody, regexFlags) };
+            }
+            catch (error) {
+              console.error("Error while constructing a regex:", error);
+              return { regex: new RegExp("") };
+            }
+          }),
+          new ProgrammableOutputMapping(arg => {
+            const regex = arg.output.data.regex;
+            const editor = arg.output.editor;
+            const pattern = arg.pattern as SyntacticPattern;
+
+            const regexRange = pattern.node.range;
+            editor.replace(regexRange, regex.toString());
+            editor.applyEdits();
+          }),
+          new RegexEditorProvider()
+        ),
       ],
       codeVisualisations: [],
 
