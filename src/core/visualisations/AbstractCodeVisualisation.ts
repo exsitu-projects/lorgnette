@@ -45,7 +45,7 @@ export abstract class AbstractCodeVisualisation<
     }
 
     applyInputMapping(): UserInterfaceInput {
-        return this.inputMapping.mapToInput(this.pattern, this.sites);
+        return this.inputMapping.mapToInput(this.document, this.pattern, this.sites);
     }
 
     applyOutputMapping(output: UserInterfaceOutput): void {
