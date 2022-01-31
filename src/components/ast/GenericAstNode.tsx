@@ -25,7 +25,7 @@ export class GenericAstNode extends React.PureComponent<Props> {
         const eventHandlerProps = {
             onMouseEnter: makeEventHandlerProp(this.props.eventHandlers.onMouseEnterNode),
             onMouseLeave: makeEventHandlerProp(this.props.eventHandlers.onMouseLeaveNode),
-            onMouseClick: makeEventHandlerProp(this.props.eventHandlers.onMouseClickNode),
+            onClick: makeEventHandlerProp(this.props.eventHandlers.onMouseClickNode),
         };
 
         return (
