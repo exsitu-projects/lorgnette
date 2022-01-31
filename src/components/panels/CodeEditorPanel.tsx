@@ -159,7 +159,7 @@ export default class CodeEditorPanel extends React.PureComponent {
                 }}
               />
             </div>
-            <div>
+            <div style={{ overflowY: "auto" }}>
               <h3>Visualisations ({context.codeVisualisations.length}):</h3>
               <CodeVisualisationDetails providers={context.codeVisualisationProviders} />
             </div>
