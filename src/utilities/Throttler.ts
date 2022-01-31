@@ -23,12 +23,17 @@ export class Throttler {
         return this.timeoutHandle !== null;
     }
 
+    private get taskIsRunnableNow(): boolean {
+        // A task is runnable if the last task ended more than 'minDelay' ms ago.
+        return this.minTimestampForRunningTheTask < Date.now();
+    }
+
     runTaskImmediately(): void {
         this.task();
         this.lastTaskEndTimestamp = Date.now();
     }
 
-    scheduleTask(): void {
+    private scheduleTask(): void {
         const currentTimestamp = Date.now();
 
         this.timeoutHandle = setTimeout(
@@ -48,16 +53,12 @@ export class Throttler {
     }
 
     runOrScheduleTask(): void {
-        const currentTimestamp = Date.now();
-        const minTimestampForRunningTheTask = this.minTimestampForRunningTheTask;
-
-        // Case 1: enough time passed since the last time the task was executed,
-        // so it can be ran again now.
-        if (minTimestampForRunningTheTask < currentTimestamp) {
+        // Case 1: the task can be ran immediately.
+        if (this.taskIsRunnableNow) {
             this.runTaskImmediately();
         }
-        // Case 2: the task must wait longer before being ran again.
-        // If a task is already scheduled, there is nothing to do.
+        // Case 2: the task must be scheduled to be ran in the future.
+        // If it is already scheduled, there is nothing to do.
         else {
             if (!this.taskIsScheduled) {
                 this.scheduleTask();
