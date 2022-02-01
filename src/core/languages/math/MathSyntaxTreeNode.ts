@@ -1,9 +1,9 @@
 import { Position } from "../../documents/Position";
 import { Range } from "../../documents/Range";
-import { AstNode } from "../AstNode";
+import { SyntaxTreeNode } from "../SyntaxTreeNode";
 import { MathParserContext } from "./MathParser";
 
-export abstract class MathAstNode extends AstNode {
+export abstract class MathSyntaxTreeNode extends SyntaxTreeNode {
     readonly range: Range;
     readonly parserNode: any;
 

@@ -1,14 +1,14 @@
 import { SyntacticPattern } from "../../code-patterns/syntactic/SyntacticPattern";
 import { DocumentRange } from "../../documents/DocumentRange";
-import { AstNode } from "../../languages/AstNode";
+import { SyntaxTreeNode } from "../../languages/SyntaxTreeNode";
 import { AbstractSite } from "../AbstractSite";
 
 export class SyntacticSite extends AbstractSite {
     readonly pattern: SyntacticPattern;
-    readonly node: AstNode;
+    readonly node: SyntaxTreeNode;
     readonly range: DocumentRange;
 
-    constructor(node: AstNode, pattern: SyntacticPattern) {
+    constructor(node: SyntaxTreeNode, pattern: SyntacticPattern) {
         super();
 
         this.pattern = pattern;

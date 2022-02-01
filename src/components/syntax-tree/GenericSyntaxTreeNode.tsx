@@ -1,22 +1,22 @@
 import React, { SyntheticEvent } from "react";
-import "./ast.css";
-import { AstNode } from "../../core/languages/AstNode";
+import "./syntax-tree.css";
+import { SyntaxTreeNode } from "../../core/languages/SyntaxTreeNode";
 import { CodeRange } from "../utilities/CodeRange";
 
-export type GenericAstNodeEventHandlers = {
-    onMouseEnterNode: (astNode: AstNode, event: SyntheticEvent) => void,
-    onMouseLeaveNode: (astNode: AstNode, event: SyntheticEvent) => void,
-    onMouseClickNode: (astNode: AstNode, event: SyntheticEvent) => void
+export type GenericSyntaxTreeNodeEventHandlers = {
+    onMouseEnterNode: (syntaxTree: SyntaxTreeNode, event: SyntheticEvent) => void,
+    onMouseLeaveNode: (syntaxTree: SyntaxTreeNode, event: SyntheticEvent) => void,
+    onMouseClickNode: (syntaxTree: SyntaxTreeNode, event: SyntheticEvent) => void
 };
 
 type Props = {
-    node: AstNode;
-    eventHandlers: Partial<GenericAstNodeEventHandlers>
+    node: SyntaxTreeNode;
+    eventHandlers: Partial<GenericSyntaxTreeNodeEventHandlers>
 };
 
-export class GenericAstNode extends React.PureComponent<Props> {
+export class GenericSyntaxTreeNode extends React.PureComponent<Props> {
     render() {
-        const makeEventHandlerProp = (eventHandler?: (astNode: AstNode, event: SyntheticEvent) => void) => {
+        const makeEventHandlerProp = (eventHandler?: (syntaxTree: SyntaxTreeNode, event: SyntheticEvent) => void) => {
             return eventHandler
                 ? (event: SyntheticEvent) => eventHandler(this.props.node, event)
                 : () => {};
@@ -30,18 +30,18 @@ export class GenericAstNode extends React.PureComponent<Props> {
 
         return (
             <div
-                className="ast-node"
+                className="syntax-tree-node"
                 {...eventHandlerProps}
             >
-                <div className="ast-node-data">
+                <div className="syntax-tree-node-data">
                     <span className="type">{this.props.node.type}</span>
                     <span className="range">
                         <CodeRange range={this.props.node.range} />
                     </span>
                 </div>
-                <div className="ast-node-children">
+                <div className="syntax-tree-node-children">
                 {
-                    this.props.node.childNodes.map(node => <GenericAstNode node={node} eventHandlers={this.props.eventHandlers}/>)
+                    this.props.node.childNodes.map(node => <GenericSyntaxTreeNode node={node} eventHandlers={this.props.eventHandlers}/>)
                 }
                 </div>
             </div>

@@ -1,8 +1,8 @@
 import { Range } from "../../../documents/Range";
-import { MathAstNode } from "../MathAstNode";
+import { MathSyntaxTreeNode } from "../MathSyntaxTreeNode";
 import { MathParserContext } from "../MathParser";
 
-export class ConstantNode extends MathAstNode {
+export class ConstantNode extends MathSyntaxTreeNode {
     static readonly type = "Constant";
     readonly type = ConstantNode.type;
 
@@ -13,11 +13,11 @@ export class ConstantNode extends MathAstNode {
         this.name = parserNode.name;
     }
 
-    get childNodes(): MathAstNode[] {
+    get childNodes(): MathSyntaxTreeNode[] {
         return [];
     }
 
-    static fromNearlyParserResultNode(node: any, parserContext: MathParserContext): MathAstNode {
+    static fromNearlyParserResultNode(node: any, parserContext: MathParserContext): MathSyntaxTreeNode {
         return new ConstantNode(
             node,
             ConstantNode.computeRangeFromParserNode(node, parserContext)

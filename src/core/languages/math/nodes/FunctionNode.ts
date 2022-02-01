@@ -1,18 +1,18 @@
 import { Range } from "../../../documents/Range";
-import { convertParserNode } from "../MathAst";
-import { MathAstNode } from "../MathAstNode";
+import { convertParserNode } from "../MathSyntaxTree";
+import { MathSyntaxTreeNode } from "../MathSyntaxTreeNode";
 import { MathParserContext } from "../MathParser";
 
-export class FunctionNode extends MathAstNode {
+export class FunctionNode extends MathSyntaxTreeNode {
     static readonly type = "Function";
     readonly type = FunctionNode.type;
 
     readonly name: string;
-    readonly arguments: MathAstNode[];
+    readonly arguments: MathSyntaxTreeNode[];
 
     constructor(
         name: string,
-        args: MathAstNode[],
+        args: MathSyntaxTreeNode[],
         parserNode: any,
         range: Range
     ) {
@@ -21,12 +21,12 @@ export class FunctionNode extends MathAstNode {
         this.arguments = args;
     }
 
-    get childNodes(): MathAstNode[] {
+    get childNodes(): MathSyntaxTreeNode[] {
         return [...this.arguments];
     }
 
     // Only support functions with exactly one argument.
-    static fromNearlyParserResultNode(node: any, parserContext: MathParserContext): MathAstNode {
+    static fromNearlyParserResultNode(node: any, parserContext: MathParserContext): MathSyntaxTreeNode {
         return new FunctionNode(
             node.name,
             [convertParserNode(node.data[1], parserContext)],

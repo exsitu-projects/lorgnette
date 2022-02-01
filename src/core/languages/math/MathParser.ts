@@ -1,8 +1,8 @@
 import nearley from "nearley";
+import grammar from "./grammar/math.grammar";
 import { Position } from "../../documents/Position";
 import { Parser } from "../Parser";
-import grammar from "./grammar/math.grammar";
-import { MathAst } from "./MathAst";
+import { MathSyntaxTree } from "./MathSyntaxTree";
 
 export interface MathParserContext {
     text: string,
@@ -23,7 +23,7 @@ export class MathParser implements Parser {
         );
     }
 
-    parse(text: string): MathAst {
+    parse(text: string): MathSyntaxTree {
         const offsetToPositionConverter = Position.getOffsetToPositionConverterForText(text);
         const parsingContext = {
             text: text,
@@ -47,7 +47,7 @@ export class MathParser implements Parser {
                 console.warn("The math. parser returned more than one result; only the first one is going to be used.", results);
             }
 
-            return MathAst.fromNearlyParserResult(result, parsingContext);
+            return MathSyntaxTree.fromNearlyParserResult(result, parsingContext);
         }
     }
 }

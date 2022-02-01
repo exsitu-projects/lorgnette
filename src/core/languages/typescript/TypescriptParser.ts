@@ -1,8 +1,8 @@
 import { Parser } from "../Parser";
 import { Project, Node, ts } from "ts-morph";
 import { Position } from "../../documents/Position";
-import { TypescriptAst } from "./TypescriptAst";
-import { TypescriptAstNode } from "./TypescriptAstNode";
+import { TypescriptSyntaxTree } from "./TypescriptSyntaxTree";
+import { TypescriptSyntaxTreeNode } from "./TypescriptSyntaxTreeNode";
 import { Range } from "../../documents/Range";
 
 export interface TypescriptParserContext {
@@ -19,7 +19,7 @@ export class TypescriptParser implements Parser {
         });
     }
 
-    parse(text: string): TypescriptAst {
+    parse(text: string): TypescriptSyntaxTree {
         const sourceFile = this.project.createSourceFile(
             "code-in-editor.tsx",
             text,
@@ -34,23 +34,11 @@ export class TypescriptParser implements Parser {
         };
 
         const childNodes = sourceFile.compilerNode.getChildren();
-        // const root = new TypescriptAstNode(
-        //     "SYNTHETIC_ROOT",
-        //     new Range(
-        //         parserContext.offsetToPositionConverter(childNodes[0].getStart()),
-        //         parserContext.offsetToPositionConverter(childNodes[childNodes.length - 1].getEnd()),
-        //     ),
-        //     childNodes.map(n => TypescriptAstNode.fromTsMorphNode(n as any, parserContext)),
-        //     sourceFile as any
-        // );
-
-        const root = TypescriptAstNode.fromTsMorphNode(
+        const root = TypescriptSyntaxTreeNode.fromTsMorphNode(
             childNodes[0],
             parserContext
         );
 
-        const ast = new TypescriptAst(root);
-
-        return ast;
+        return new TypescriptSyntaxTree(root);
     }
 }

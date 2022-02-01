@@ -1,15 +1,15 @@
 import { ProgrammableFunction } from "../../../utilities/ProgrammableFunction";
 import { SyntacticPattern } from "../../code-patterns/syntactic/SyntacticPattern";
-import { AstNode } from "../../languages/AstNode";
+import { SyntaxTreeNode } from "../../languages/SyntaxTreeNode";
 import { CodeVisualisationType } from "../../visualisations/CodeVisualisationType";
 import { SiteProvider } from "../SiteProvider";
 import { SyntacticSite } from "./SyntacticSite";
 
-export type ProgrammableSiteProviderFunction = (pattern: SyntacticPattern) => AstNode | null;
+export type ProgrammableSiteProviderFunction = (pattern: SyntacticPattern) => SyntaxTreeNode | null;
 
 export class ProgrammableSiteProvider implements SiteProvider<CodeVisualisationType.Syntactic> {
     id: string;
-    private programmableFunction: ProgrammableFunction<SyntacticPattern, AstNode | null>;
+    private programmableFunction: ProgrammableFunction<SyntacticPattern, SyntaxTreeNode | null>;
 
     constructor(functionBodyOrRef: string | ProgrammableSiteProviderFunction) {
         this.id = "new-site";

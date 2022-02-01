@@ -1,18 +1,18 @@
 import { Range } from "../../../documents/Range";
-import { convertParserNode } from "../MathAst";
-import { MathAstNode } from "../MathAstNode";
+import { convertParserNode } from "../MathSyntaxTree";
+import { MathSyntaxTreeNode } from "../MathSyntaxTreeNode";
 import { MathParserContext } from "../MathParser";
 
-export class MultiplicationNode extends MathAstNode {
+export class MultiplicationNode extends MathSyntaxTreeNode {
     static readonly type = "Multiplication";
     readonly type = MultiplicationNode.type;
 
-    readonly leftOperand: MathAstNode;
-    readonly rightOperand: MathAstNode;
+    readonly leftOperand: MathSyntaxTreeNode;
+    readonly rightOperand: MathSyntaxTreeNode;
 
     constructor(
-        leftOperand: MathAstNode,
-        rightOperand: MathAstNode,
+        leftOperand: MathSyntaxTreeNode,
+        rightOperand: MathSyntaxTreeNode,
         parserNode: any,
         range: Range
     ) {
@@ -21,11 +21,11 @@ export class MultiplicationNode extends MathAstNode {
         this.rightOperand = rightOperand;
     }
 
-    get childNodes(): MathAstNode[] {
+    get childNodes(): MathSyntaxTreeNode[] {
         return [this.leftOperand, this.rightOperand];
     }
 
-    static fromNearlyParserResultNode(node: any, parserContext: MathParserContext): MathAstNode {
+    static fromNearlyParserResultNode(node: any, parserContext: MathParserContext): MathSyntaxTreeNode {
         return new MultiplicationNode(
             convertParserNode(node.data[0], parserContext),
             convertParserNode(node.data[4], parserContext),

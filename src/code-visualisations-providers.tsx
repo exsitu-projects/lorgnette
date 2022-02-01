@@ -1,8 +1,8 @@
 import React from "react";
-import { AstPatternFinder } from "./core/code-patterns/syntactic/AstPatternFinder";
+import { SyntacticPatternFinder } from "./core/code-patterns/syntactic/SyntacticPatternFinder";
 import { SyntacticPattern } from "./core/code-patterns/syntactic/SyntacticPattern";
-import { AstNode } from "./core/languages/AstNode";
-import { AstPattern } from "./core/languages/AstPattern";
+import { SyntaxTreeNode } from "./core/languages/SyntaxTreeNode";
+import { SyntaxTreePattern } from "./core/languages/SyntaxTreePattern";
 import { ProgrammableInputMapping } from "./core/mappings/ProgrammableInputMapping";
 import { ProgrammableOutputMapping } from "./core/mappings/ProgrammableOutputMapping";
 import { Output } from "./core/user-interfaces/color-picker/ColorPicker";
@@ -96,7 +96,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             
     // new SyntacticCodeVisualisationProvider(
     //     "RGB Color constructor — Syntactic",
-    //     new AstPatternFinder(new AstPattern(n => 
+    //     new SyntacticPatternFinder(new SyntacticPattern(n => 
     //         n.type === "NewExpression"
     //         && n.childNodes[1].parserNode.escapedText === "Color"
     //         && n.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken").length === 3
@@ -135,7 +135,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
 
     new SyntacticCodeVisualisationProvider(
         "TSX elements",
-        new AstPatternFinder(new AstPattern(
+        new SyntacticPatternFinder(new SyntaxTreePattern(
             n => ["JsxElement", "JsxSelfClosingElement"].includes(n.type),
             n => ["JsxElement", "JsxSelfClosingElement"].includes(n.type)
         )),
@@ -143,18 +143,18 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
         new ProgrammableInputMapping(arg => {
             const pattern = arg.pattern as SyntacticPattern;
             
-            const getJsxElementNameFromNode = (node: AstNode, defaultName: string): string => {
+            const getJsxElementNameFromNode = (node: SyntaxTreeNode, defaultName: string): string => {
                 const regex = /<\s*(\w+).*/;
                 const regexMatch = regex.exec(node.parserNode.getFullText() as string);
                 
                 return regexMatch ? regexMatch[1] : defaultName;
             };
             
-            const abbreviateJsxElementContent = (node: AstNode): string => {
+            const abbreviateJsxElementContent = (node: SyntaxTreeNode): string => {
                 return node.parserNode.getFullText() as string;
             };
             
-            const findTsxTreeItems = (node: AstNode): TreeNode<AstNode> | null => {
+            const findTsxTreeItems = (node: SyntaxTreeNode): TreeNode<SyntaxTreeNode> | null => {
                 let jsxElementName = "";
                 
                 const createNode = (title: string, preTitle: string) => {
@@ -203,7 +203,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             const output = arg.output;
             NodeMoveProcesser.processTreeOutput(output, arg.document);
         }),
-        new TreeProvider<AstNode>()
+        new TreeProvider<SyntaxTreeNode>()
     ),
 
 
@@ -212,7 +212,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
 
     new SyntacticCodeVisualisationProvider(
         "Regulax expressions (constructor)",
-        new AstPatternFinder(new AstPattern(n => 
+        new SyntacticPatternFinder(new SyntaxTreePattern(n => 
             n.type === "NewExpression"
             && n.childNodes[1].parserNode.escapedText === "RegExp"
             && n.childNodes[3].childNodes[0].type === "StringLiteral"
@@ -275,7 +275,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
 
     new SyntacticCodeVisualisationProvider(
         "Regulax expressions (literal)",
-        new AstPatternFinder(new AstPattern(n => n.type === "RegularExpressionLiteral")),
+        new SyntacticPatternFinder(new SyntaxTreePattern(n => n.type === "RegularExpressionLiteral")),
         [],
         new ProgrammableInputMapping(arg => {
             const regexAsString = arg.pattern.text;

@@ -1,5 +1,5 @@
-import { Ast } from "./Ast";
+import { SyntaxTree } from "./SyntaxTree";
 
 export interface Parser {
-    parse(text: string): Ast;
+    parse(text: string): SyntaxTree;
 }

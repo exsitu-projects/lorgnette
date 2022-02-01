@@ -1,17 +1,17 @@
 import React from "react";
 import { GlobalContext } from "../../../context";
-import { AstPatternFinder } from "../../../core/code-patterns/syntactic/AstPatternFinder";
+import { SyntacticPatternFinder } from "../../../core/code-patterns/syntactic/SyntacticPatternFinder";
 
 type Props = {
-  patternFinder: AstPatternFinder
+  patternFinder: SyntacticPatternFinder
 };
 
-export default class RegexPatternFinderDetails extends React.PureComponent<Props> {
+export default class SyntacticPatternFinderDetails extends React.PureComponent<Props> {
     render() {
       return (
         <GlobalContext.Consumer>{context => 
           <div
-            className="pattern-finder-details ast"
+            className="pattern-finder-details syntactic"
           >
             TODO
           </div>

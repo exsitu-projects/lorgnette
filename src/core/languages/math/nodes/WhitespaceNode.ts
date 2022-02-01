@@ -1,17 +1,17 @@
 import { Range } from "../../../documents/Range";
-import { convertParserNode } from "../MathAst";
-import { MathAstNode } from "../MathAstNode";
+import { convertParserNode } from "../MathSyntaxTree";
+import { MathSyntaxTreeNode } from "../MathSyntaxTreeNode";
 import { MathParserContext } from "../MathParser";
 
-export class WhitespaceNode extends MathAstNode {
+export class WhitespaceNode extends MathSyntaxTreeNode {
     static readonly type = "Whitespace";
     readonly type = WhitespaceNode.type;
 
-    get childNodes(): MathAstNode[] {
+    get childNodes(): MathSyntaxTreeNode[] {
         return [];
     }
 
-    static fromNearlyParserResultNode(node: any, parserContext: MathParserContext): MathAstNode {
+    static fromNearlyParserResultNode(node: any, parserContext: MathParserContext): MathSyntaxTreeNode {
         return new WhitespaceNode(
             node,
             WhitespaceNode.computeRangeFromParserNode(node, parserContext)

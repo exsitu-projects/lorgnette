@@ -1,5 +1,5 @@
-import { Ast } from "../Ast";
-import { MathAstNode } from "./MathAstNode";
+import { SyntaxTree } from "../SyntaxTree";
+import { MathSyntaxTreeNode } from "./MathSyntaxTreeNode";
 import { MathParserContext } from "./MathParser";
 import { AdditionNode } from "./nodes/AdditionNode";
 import { ConstantNode } from "./nodes/ConstantNode";
@@ -16,7 +16,7 @@ import { WhitespaceNode } from "./nodes/WhitespaceNode";
 export function convertParserNode(
     parserNode: any,
     parserContext: MathParserContext
-): MathAstNode {
+): MathSyntaxTreeNode {
     const nodeClasses = [
         ExpressionNode,
         ParenthesesNode,
@@ -36,23 +36,23 @@ export function convertParserNode(
     const parserNodeType = parserNode.type;
     const nodeClass = nodeClasses.find(nodeClass => nodeClass.type === parserNodeType);
     if (!nodeClass) {
-        throw new Error(`Unknown math. AST node type: ${parserNodeType}`);
+        throw new Error(`Unknown math. syntax tree node type: ${parserNodeType}`);
     }
 
     return nodeClass.fromNearlyParserResultNode(parserNode, parserContext);;
 }
 
-export class MathAst extends Ast<MathAstNode> {
-    readonly root: MathAstNode;
+export class MathSyntaxTree extends SyntaxTree<MathSyntaxTreeNode> {
+    readonly root: MathSyntaxTreeNode;
 
-    constructor(root: MathAstNode) {
+    constructor(root: MathSyntaxTreeNode) {
         super();
         this.root = root;
     }
 
-    static fromNearlyParserResult(result: any, parserContext: MathParserContext): MathAst {
+    static fromNearlyParserResult(result: any, parserContext: MathParserContext): MathSyntaxTree {
         const rootNode = convertParserNode(result, parserContext);
-        return new MathAst(rootNode);
+        return new MathSyntaxTree(rootNode);
     } 
 }
 

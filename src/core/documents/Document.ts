@@ -1,5 +1,5 @@
 import { Observer } from "../../utilities/Observer";
-import { Ast } from "../languages/Ast";
+import { SyntaxTree } from "../languages/SyntaxTree";
 import { Language } from "../languages/Language";
 import { CodeVisualisation } from "../visualisations/CodeVisualisation";
 import { DocumentEditor } from "./DocumentEditor";
@@ -32,7 +32,7 @@ export interface DocumentChangeEvent {
 
 export class Document {
     readonly language: Language;
-    private cachedAst: Ast | null;
+    private cachedSyntaxTree: SyntaxTree | null;
     private textSplitByLine: string[];
     private changeObservers: Set<Observer<DocumentChangeEvent>>;
 
@@ -40,7 +40,7 @@ export class Document {
     constructor(language: Language, initialContentSplitByLine?: string[]);
     constructor(language: Language, initialContentPossiblySplitByLine?: string | string[]) {
         this.language = language;
-        this.cachedAst = null;
+        this.cachedSyntaxTree = null;
         this.changeObservers = new Set();
         
         // Setup the content of the document.
@@ -84,21 +84,21 @@ export class Document {
     }
 
     // Throw an error if there is no parser/in case of a parsing error.
-    get ast(): Ast {
-        // If there is a cached AST (up-to-date), use it.
-        if (this.cachedAst) {
-            return this.cachedAst;
+    get syntaxTree(): SyntaxTree {
+        // If there is a cached syntax tree (up-to-date), use it.
+        if (this.cachedSyntaxTree) {
+            return this.cachedSyntaxTree;
         }
 
-        // If there is no cached AST but one can be computed, create a fresh one (and cache it).
+        // If there is no cached syntax tree but one can be computed, create a fresh one (and cache it).
         if (this.canBeParsed) {
-            const ast = this.language.parser!.parse(this.content);
-            this.cachedAst = ast;
+            const syntaxTree = this.language.parser!.parse(this.content);
+            this.cachedSyntaxTree = syntaxTree;
 
-            return ast;
+            return syntaxTree;
         }
 
-        // If no AST can be computed, throw an error.
+        // If no syntax tree can be computed, throw an error.
         throw new Error(`There is no parser for the language (${this.language.name}) of this document.`);
     }
 
@@ -170,8 +170,8 @@ export class Document {
     }
 
     private declareChange(changeContext: DocumentChangeContext): void {
-        // Invalidate the cached AST.
-        this.cachedAst = null;
+        // Invalidate the cached syntax tree.
+        this.cachedSyntaxTree = null;
 
         // Notify every change observer.
         for (let observer of this.changeObservers.values()) {

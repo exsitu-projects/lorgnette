@@ -9,11 +9,11 @@ import { Pattern } from "../../core/code-patterns/Pattern";
 import { Site } from "../../core/sites/Site";
 import { Range } from "../../core/documents/Range";
 import { CodeVisualisationProvider } from "../../core/visualisations/CodeVisualisationProvider";
-import { GenericAstNode } from "../ast/GenericAstNode";
+import { GenericSyntaxTreeNode } from "../syntax-tree/GenericSyntaxTreeNode";
 import { Document } from "../../core/documents/Document";
-import { GenericAst } from "../ast/GenericAst";
+import { GenericSyntaxTree } from "../syntax-tree/GenericSyntaxTree";
 import { CodeRange } from "../utilities/CodeRange";
-import { Ast } from "../ast/Ast";
+import { SyntaxTree } from "../syntax-tree/SyntaxTree";
 
 export const LanguageSelect = Select.ofType<Language>();
 
@@ -150,8 +150,8 @@ export default class CodeEditorPanel extends React.PureComponent {
               />
             </div>
             <div style={{ overflowY: "auto" }}>
-              <h3>AST</h3>
-              <Ast
+              <h3>Syntax tree</h3>
+              <SyntaxTree
                 document={context.document}
                 eventHandlers={{
                   onMouseEnterNode: (node) => { context.updateCodeEditorRanges({ hovered: [node.range] }); },

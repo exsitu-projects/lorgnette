@@ -1,13 +1,13 @@
-import { AstNode } from "../../languages/AstNode";
+import { SyntaxTreeNode } from "../../languages/SyntaxTreeNode";
 import { AbstractPatern } from "../AbstractPattern";
 import { DocumentRange } from "../../documents/DocumentRange";
 import { Document } from "../../documents/Document";
 
 export class SyntacticPattern extends AbstractPatern {
-    readonly node: AstNode;
+    readonly node: SyntaxTreeNode;
     readonly document: Document;
 
-    constructor(node: AstNode, document: Document) {
+    constructor(node: SyntaxTreeNode, document: Document) {
         super();
         this.node = node;
         this.document = document;
