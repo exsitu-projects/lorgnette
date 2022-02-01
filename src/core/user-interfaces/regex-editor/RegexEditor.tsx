@@ -1,9 +1,14 @@
 import React from "react";
+import { Range } from "../../documents/Range";
 import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
 import { RegexEditorComponent } from "./RegexEditorComponent";
 
-export type Input = { regex: RegExp };
+export type Input = {
+    regex: RegExp;
+    range?: Range;
+};
+
 export interface Output extends UserInterfaceOutput {
     data: {
         regex: RegExp;
@@ -12,19 +17,24 @@ export interface Output extends UserInterfaceOutput {
 
 export class RegexEditor extends UserInterface<Input, Output> {
     private regex: RegExp;
+    private regexRange: Range | null;
 
     constructor(visualisation: CodeVisualisation) {
         super(visualisation);
+
         this.regex = RegExp("");
+        this.regexRange = null;
     }
 
     setInput(newInput: Input): void {
         this.regex = newInput.regex;
+        this.regexRange = newInput.range ?? null;
     }
 
     createView(): JSX.Element {
         return <RegexEditorComponent
             regex={this.regex}
+            regexRange={this.regexRange}
             onChange={(regexContent, regexFlags) => {
                 this.regex = new RegExp(regexContent, regexFlags);
                 this.declareModelChange();

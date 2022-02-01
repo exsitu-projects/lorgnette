@@ -237,7 +237,11 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             const regexFlags = regexFlagsWithQuotes.slice(1, regexFlagsWithQuotes.length - 1);
             
             try {
-                return { regex: new RegExp(regexBody, regexFlags) };
+                return {
+                    regex: new RegExp(regexBody, regexFlags),
+                    range: pattern.node.childNodes[3].range
+                
+                };
             }
             catch (error) {
                 console.error("Error while constructing a regex:", error);
@@ -285,7 +289,10 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             const regexFlags = regexAsString.slice(lastRegexLiteralSlashIndex + 1);
             
             try {
-                return { regex: new RegExp(regexBody, regexFlags) };
+                return {
+                    regex: new RegExp(regexBody, regexFlags),
+                    range: arg.pattern.range
+                };
             }
             catch (error) {
                 console.error("Error while constructing a regex:", error);
