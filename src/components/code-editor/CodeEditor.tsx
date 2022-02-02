@@ -1,17 +1,20 @@
 import React from "react";
-import "./CodeEditor.css";
 import AceEditor, { IMarker } from "react-ace";
-import { Site } from "../../core/sites/Site";
-import { Pattern } from "../../core/code-patterns/Pattern";
-import { CodeVisualisation } from "../../core/visualisations/CodeVisualisation";
+import "./CodeEditor.css";
 
 // Configuration files for the Ace editor.
 import "ace-builds/src-min-noconflict/mode-typescript";
+import "ace-builds/src-min-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-tomorrow";
+
+import { Site } from "../../core/sites/Site";
+import { Pattern } from "../../core/code-patterns/Pattern";
+import { CodeVisualisation } from "../../core/visualisations/CodeVisualisation";
 import { Language } from "../../core/languages/Language";
 import { CodeEditorRanges } from "../../context";
 import { Range } from "../../core/documents/Range";
 import { Document } from "../../core/documents/Document";
+
 
 /* `start` and `end` use 0-based row and column indices. */
 export interface RangeToHighlight {
