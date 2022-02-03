@@ -5,7 +5,7 @@ import { TYPESCRIPT_LANGUAGE } from "./typescript/language";
 
 export interface Language {
   name: string;
-  key: string;
+  id: string;
   codeEditorLanguageId: string;
   codeExample: string;
   parser: Parser | null;

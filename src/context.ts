@@ -5,7 +5,7 @@ import { Language, SUPPORTED_LANGUAGES } from "./core/languages/Language";
 import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
 import { CodeVisualisationProvider } from "./core/visualisations/CodeVisualisationProvider";
 
-const defaultLanguage = SUPPORTED_LANGUAGES[0];
+export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[2];
 
 export interface CodeEditorRanges {
   hovered: Range[],
@@ -18,13 +18,13 @@ export const defaultCodeEditorRanges = {
 };
 
 export const defaultGlobalContext = {
-  codeEditorLanguage: defaultLanguage,
+  codeEditorLanguage: DEFAULT_LANGUAGE,
   updateCodeEditorLanguage: (newlanguage: Language) => {},
 
   codeEditorRanges: defaultCodeEditorRanges,
   updateCodeEditorRanges: (ranges: Partial<CodeEditorRanges>) => {},
   
-  document: new Document(defaultLanguage, defaultLanguage.codeExample),
+  document: new Document(DEFAULT_LANGUAGE, DEFAULT_LANGUAGE.codeExample),
   updateDocumentContent: (newContent: string) => {},
   
   codeVisualisationProviders: [] as CodeVisualisationProvider[],

@@ -8,12 +8,14 @@ import { SiteProvider } from "../sites/SiteProvider";
 import { UserInterfaceProvider } from "../user-interfaces/UserInterfaceProvider";
 import { CodeVisualisation } from "./CodeVisualisation";
 import { CodeVisualisationType } from "./CodeVisualisationType";
+import { CodeVisualisationUseContext } from "./CodeVisualisationUseContext";
 
 export abstract class AbstractCodeVisualisationProvider<
     T extends CodeVisualisationType = CodeVisualisationType
 > {
     readonly abstract type: T;
     name: string;
+    useContexts: CodeVisualisationUseContext;
 
     patternFinder: PatternFinder<T>;
     siteProviders: SiteProvider<T>[];
@@ -23,6 +25,7 @@ export abstract class AbstractCodeVisualisationProvider<
 
     constructor(
         name: string,
+        useContexts: CodeVisualisationUseContext,
         patternFinder: PatternFinder<T>,
         siteProviders: SiteProvider<T>[],
         inputMapping: InputMapping<T>,
@@ -30,12 +33,23 @@ export abstract class AbstractCodeVisualisationProvider<
         userInterfaceProvider: UserInterfaceProvider
     ) {
         this.name = name;
+        this.useContexts = useContexts;
 
         this.patternFinder = patternFinder;
         this.siteProviders = siteProviders;
         this.inputMapping = inputMapping;
         this.outputMapping = outputMapping;
         this.userInterfaceProvider = userInterfaceProvider;
+    }
+
+    canBeUsedInDocument(document: Document): boolean {
+        // A code visualisation provider should only be used in documents
+        // written in a language supported by the code visualisation.
+        if (!this.useContexts.languages) {
+            return true;
+        }
+
+        return this.useContexts.languages.includes(document.language.id);
     }
 
     abstract get codeVisualisations(): CodeVisualisation<T>[];

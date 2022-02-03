@@ -1,3 +1,4 @@
+import { Language } from "../Language";
 import { JsonParser } from "./JsonParser";
 
 // From https://vega.github.io/vega-lite/examples/layer_line_rolling_mean_point_raw.html
@@ -40,9 +41,9 @@ const codeExample =
   }
 `;
 
-export const JSON_LANGUAGE = {
+export const JSON_LANGUAGE: Language = {
     name: "JSON",
-    key: "json",
+    id: "json",
     codeEditorLanguageId: "json",
     codeExample: codeExample.trim(),
     parser: new JsonParser()

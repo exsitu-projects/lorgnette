@@ -9,6 +9,7 @@ import { UserInterfaceProvider } from "../../user-interfaces/UserInterfaceProvid
 import { AbstractCodeVisualisationProvider } from "../AbstractCodeVisualisationProvider";
 import { CodeVisualisation } from "../CodeVisualisation";
 import { CodeVisualisationType } from "../CodeVisualisationType";
+import { CodeVisualisationUseContext } from "../CodeVisualisationUseContext";
 import { SyntacticCodeVisualisation } from "./SyntacticCodeVisualisation";
 
 export class SyntacticCodeVisualisationProvider extends AbstractCodeVisualisationProvider<CodeVisualisationType.Syntactic> {
@@ -17,13 +18,14 @@ export class SyntacticCodeVisualisationProvider extends AbstractCodeVisualisatio
     
     constructor(
         name: string,
+        useContexts: CodeVisualisationUseContext,
         patternFinder: PatternFinder<CodeVisualisationType.Syntactic>,
         siteProviders: SiteProvider<CodeVisualisationType.Syntactic>[],
         inputMapping: InputMapping<CodeVisualisationType.Syntactic>,
         outputMapping: OutputMapping<CodeVisualisationType.Syntactic> | null,
         userInterfaceProvider: UserInterfaceProvider
     ) {
-        super(name, patternFinder, siteProviders, inputMapping, outputMapping, userInterfaceProvider);
+        super(name, useContexts, patternFinder, siteProviders, inputMapping, outputMapping, userInterfaceProvider);
         this.cachedCodeVisualisations = [];
     }
 
@@ -43,14 +45,15 @@ export class SyntacticCodeVisualisationProvider extends AbstractCodeVisualisatio
         return sites;
     }
 
-    canUpdateFromDocument(document: Document): boolean {
-        // No visualisation can be provided if the document cannot be parsed
-        return document.canBeParsed;
+    canBeUsedInDocument(document: Document): boolean {
+        // No visualisation can be provided if the document cannot be parsed.
+        return super.canBeUsedInDocument(document)
+            && document.canBeParsed;
     }
 
     updateFromDocument(document: Document): void {
-        // If this provider cannot provide for the given document, empty the list of visualisations.
-        if (!this.canUpdateFromDocument(document)) {
+        // If this provider cannot be used for the given document, empty the list of visualisations.
+        if (!this.canBeUsedInDocument(document)) {
             this.cachedCodeVisualisations = [];
             return;
         }

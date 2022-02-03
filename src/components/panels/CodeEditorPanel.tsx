@@ -30,8 +30,8 @@ export default class CodeEditorPanel extends React.PureComponent {
       return (
           <MenuItem
               active={modifiers.active}
-              key={language.key}
-              label={language.key}
+              key={language.id}
+              label={language.id}
               onClick={handleClick}
               text={language.name}
           />
@@ -58,16 +58,20 @@ export default class CodeEditorPanel extends React.PureComponent {
 
     const CodeVisualisationDetails = (props: {
       providers: CodeVisualisationProvider[];
+      document: Document
       // visualisations: CodeVisualisation[];
     }) => {
-      const { providers } = props;
+      const { providers, document } = props;
+
+      // Only keep providers that can be used in the current document.
+      const usableProviders = providers.filter(provider => provider.canBeUsedInDocument(document));
 
       return <ul style={{
         // margin: "0 1em",
         padding: 0,
         listStyleType: "none"
       }}>
-        {providers.map(provider => (
+        {usableProviders.map(provider => (
           <li>
             <h5 style={{
               padding: "1ex",
@@ -161,7 +165,10 @@ export default class CodeEditorPanel extends React.PureComponent {
             </div>
             <div style={{ overflowY: "auto" }}>
               <h3>Visualisations ({context.codeVisualisations.length}):</h3>
-              <CodeVisualisationDetails providers={context.codeVisualisationProviders} />
+              <CodeVisualisationDetails
+                providers={context.codeVisualisationProviders}
+                document={context.document}
+              />
             </div>
           </div>
         </TabPanel>

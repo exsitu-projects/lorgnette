@@ -2,8 +2,8 @@ import React from "react";
 import "./App.css";
 import CodeEditorPanel from "./components/panels/CodeEditorPanel";
 import VisualisationProvidersConfigurationPanel from "./components/panels/VisualisationConfigurationPanel";
-import { defaultCodeEditorRanges, GlobalContext, GlobalContextContent } from "./context";
-import { Language, SUPPORTED_LANGUAGES } from "./core/languages/Language";
+import { defaultCodeEditorRanges, DEFAULT_LANGUAGE, GlobalContext, GlobalContextContent } from "./context";
+import { Language } from "./core/languages/Language";
 import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
 import { Document, DocumentChangeOrigin } from "./core/documents/Document";
 import { Tabs, Tab } from "@blueprintjs/core";
@@ -15,9 +15,8 @@ export default class App extends React.Component {
   constructor(props: any) {
     super(props);
 
-    const defaultLanguage = SUPPORTED_LANGUAGES[0];
     this.state = {
-      codeEditorLanguage: defaultLanguage,
+      codeEditorLanguage: DEFAULT_LANGUAGE,
       updateCodeEditorLanguage: newLanguage => {
         this.setState({
           codeEditorLanguage: newLanguage,
@@ -36,7 +35,7 @@ export default class App extends React.Component {
         })
       },
 
-      document: this.createDocument(defaultLanguage, defaultLanguage.codeExample),
+      document: this.createDocument(DEFAULT_LANGUAGE, DEFAULT_LANGUAGE.codeExample),
       updateDocumentContent: newContent => {
         this.updateDocumentContent(newContent);
         this.updateAllCodeVisualisations();

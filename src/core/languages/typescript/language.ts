@@ -1,3 +1,4 @@
+import { Language } from "../Language";
 import { TypescriptParser } from "./TypescriptParser";
 
 const codeExample = 
@@ -35,9 +36,9 @@ const tsx = (
 );
 `;
 
-export const TYPESCRIPT_LANGUAGE = {
+export const TYPESCRIPT_LANGUAGE: Language = {
     name: "TypeScript",
-    key: "typescript",
+    id: "typescript",
     codeEditorLanguageId: "typescript",
     codeExample: codeExample.trim(),
     parser: new TypescriptParser()

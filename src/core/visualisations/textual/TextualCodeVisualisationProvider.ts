@@ -9,6 +9,7 @@ import { UserInterfaceProvider } from "../../user-interfaces/UserInterfaceProvid
 import { AbstractCodeVisualisationProvider } from "../AbstractCodeVisualisationProvider";
 import { CodeVisualisation } from "../CodeVisualisation";
 import { CodeVisualisationType } from "../CodeVisualisationType";
+import { CodeVisualisationUseContext } from "../CodeVisualisationUseContext";
 import { TextualCodeVisualisation } from "./TextualCodeVisualisation";
 
 export class TextualCodeVisualisationProvider extends AbstractCodeVisualisationProvider<CodeVisualisationType.Textual> {
@@ -17,13 +18,14 @@ export class TextualCodeVisualisationProvider extends AbstractCodeVisualisationP
 
     constructor(
         name: string,
+        useContexts: CodeVisualisationUseContext,
         patternFinder: PatternFinder<CodeVisualisationType.Textual>,
         siteProviders: SiteProvider<CodeVisualisationType.Textual>[],
         inputMapping: InputMapping<CodeVisualisationType.Textual>,
         outputMapping: OutputMapping<CodeVisualisationType.Textual> | null,
         userInterfaceProvider: UserInterfaceProvider
     ) {
-        super(name, patternFinder, siteProviders, inputMapping, outputMapping, userInterfaceProvider);
+        super(name, useContexts, patternFinder, siteProviders, inputMapping, outputMapping, userInterfaceProvider);
         this.cachedCodeVisualisations = [];
     }
 
@@ -44,6 +46,12 @@ export class TextualCodeVisualisationProvider extends AbstractCodeVisualisationP
     }
 
     updateFromDocument(document: Document): void {
+        // If this provider cannot be used for the given document, empty the list of visualisations.
+        if (!this.canBeUsedInDocument(document)) {
+            this.cachedCodeVisualisations = [];
+            return;
+        }
+
         // Search for code patterns
         const patternFinderResults = this.patternFinder.applyInDocument(document);
 

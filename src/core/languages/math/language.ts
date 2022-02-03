@@ -1,3 +1,4 @@
+import { Language } from "../Language";
 import { MathParser } from "./MathParser";
 
 const codeExample = 
@@ -5,9 +6,9 @@ const codeExample =
 1 + e^(sin(pi) + cos(pi)) * 123.456
 `;
 
-export const MATHEMATICS_LANGUAGE = {
+export const MATHEMATICS_LANGUAGE: Language = {
     name: "Mathematics",
-    key: "mathematics",
+    id: "mathematics",
     codeEditorLanguageId: "javascript",
     codeExample: codeExample.trim(),
     parser: new MathParser()
