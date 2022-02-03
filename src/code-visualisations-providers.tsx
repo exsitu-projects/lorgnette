@@ -2,7 +2,7 @@ import React from "react";
 import { SyntacticPatternFinder } from "./core/code-patterns/syntactic/SyntacticPatternFinder";
 import { SyntacticPattern } from "./core/code-patterns/syntactic/SyntacticPattern";
 import { SyntaxTreeNode } from "./core/languages/SyntaxTreeNode";
-import { SyntaxTreePattern } from "./core/languages/SyntaxTreePattern";
+import { SKIP_MATCH_DESCENDANTS, SyntaxTreePattern } from "./core/languages/SyntaxTreePattern";
 import { ProgrammableInputMapping } from "./core/mappings/ProgrammableInputMapping";
 import { ProgrammableOutputMapping } from "./core/mappings/ProgrammableOutputMapping";
 import { Output } from "./core/user-interfaces/color-picker/ColorPicker";
@@ -96,10 +96,11 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             
     // new SyntacticCodeVisualisationProvider(
     //     "RGB Color constructor — Syntactic",
-    //     new SyntacticPatternFinder(new SyntacticPattern(n => 
+    //     new SyntacticPatternFinder(new SyntaxTreePattern(n => 
     //         n.type === "NewExpression"
-    //         && n.childNodes[1].parserNode.escapedText === "Color"
-    //         && n.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken").length === 3
+    //             && n.childNodes[1].parserNode.escapedText === "Color"
+    //             && n.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken").length === 3,
+    //         SKIP_MATCH_DESCENDANTS
     //     )),
     //     [
     //         new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[0]),
@@ -137,7 +138,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
         "TSX elements",
         new SyntacticPatternFinder(new SyntaxTreePattern(
             n => ["JsxElement", "JsxSelfClosingElement"].includes(n.type),
-            n => ["JsxElement", "JsxSelfClosingElement"].includes(n.type)
+            SKIP_MATCH_DESCENDANTS
         )),
         [],
         new ProgrammableInputMapping(arg => {
@@ -214,8 +215,9 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
         "Regulax expressions (constructor)",
         new SyntacticPatternFinder(new SyntaxTreePattern(n => 
             n.type === "NewExpression"
-            && n.childNodes[1].parserNode.escapedText === "RegExp"
-            && n.childNodes[3].childNodes[0].type === "StringLiteral"
+                && n.childNodes[1].parserNode.escapedText === "RegExp"
+                && n.childNodes[3].childNodes[0].type === "StringLiteral",
+            SKIP_MATCH_DESCENDANTS
         )),
         [],
         new ProgrammableInputMapping(arg => {

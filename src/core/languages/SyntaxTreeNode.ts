@@ -8,7 +8,7 @@ export abstract class SyntaxTreeNode<T = any> {
     
     abstract get childNodes(): SyntaxTreeNode[];
 
-    visitWith<T>(visitor: SyntaxTeeeVisitor<T>, extraData: T) {
+    visitWith<T>(visitor: SyntaxTeeeVisitor<T>, extraData: T): void {
         const skipDescendants = visitor.visitNode(this, extraData);
         if (skipDescendants) {
             return;
