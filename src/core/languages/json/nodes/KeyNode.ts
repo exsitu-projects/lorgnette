@@ -19,7 +19,7 @@ export class KeyNode extends JsonSyntaxTreeNode {
 
     static fromNearlyParserResultNode(node: any, parserContext: JsonParserContext): JsonSyntaxTreeNode {
         return new KeyNode(
-            node.value,
+            node.value.text.slice(1, node.value.text.length - 1),
             node,
             KeyNode.computeRangeFromParserNode(node, parserContext)
         );

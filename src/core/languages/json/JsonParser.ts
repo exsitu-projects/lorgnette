@@ -47,10 +47,7 @@ export class JsonParser implements Parser {
                 console.warn("The JSON parser returned more than one result; only the first one is going to be used.", results);
             }
 
-            const r = JsonSyntaxTree.fromNearlyParserResult(result, parsingContext);
-            console.log(r)
-
-            return r
+            return JsonSyntaxTree.fromNearlyParserResult(result, parsingContext);
         }
     }
 }

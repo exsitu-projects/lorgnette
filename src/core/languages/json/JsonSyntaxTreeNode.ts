@@ -14,7 +14,7 @@ export abstract class JsonSyntaxTreeNode extends SyntaxTreeNode {
     }
 
     protected static computeRangeFromParserNode(parserNode: any, parserContext: JsonParserContext): Range {
-        const nonNullChildNodes = parserNode.data.filter((childParserNode: any) => childParserNode !== null)
+        const nonNullChildNodes = parserNode.data.filter((childParserNode: any) => !!childParserNode)
         const firstChildNode = nonNullChildNodes[0];
         const lastChildNode = nonNullChildNodes[nonNullChildNodes.length - 1];
 

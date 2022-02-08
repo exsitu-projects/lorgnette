@@ -19,7 +19,7 @@ export class NumberNode extends JsonSyntaxTreeNode {
 
     static fromNearlyParserResultNode(node: any, parserContext: JsonParserContext): JsonSyntaxTreeNode {
         return new NumberNode(
-            node.value,
+            Number(node.value.text),
             node,
             NumberNode.computeRangeFromParserNode(node, parserContext)
         );

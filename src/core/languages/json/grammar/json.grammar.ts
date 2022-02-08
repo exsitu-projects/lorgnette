@@ -33,19 +33,30 @@ declare var space: any;
         propertiesDictOrComputer: (object | ((data: any[]) => object)) = {}
     ) => {
         return (data: any[], location: number | undefined, reject: any) => {
-            const nonNullChildNodes = data.filter((parserNode: any) => parserNode && "text" in parserNode)
-            if (nonNullChildNodes.length === 0) {
-              return null;
+            const nonEmptyChildNodes = data.filter((parserNode: any) =>
+                !!parserNode && "offset" in parserNode
+            )
+
+            if (nonEmptyChildNodes.length === 0) {
+                return null;
             }
 
-            const otherProperties = propertiesDictOrComputer instanceof Function
+            const extractTextOfNodes = (parserNodes: any[]): string => {
+                return parserNodes.reduce((text: string, node: any) => {
+                    return text.concat(Array.isArray(node)
+                        ? extractTextOfNodes(node)
+                        : node.text)
+                }, "")
+            };
+
+            const otherProperties = typeof propertiesDictOrComputer === "function"
                 ? propertiesDictOrComputer(data)
                 : propertiesDictOrComputer;
 
             return {
                 type: type,
-                text: nonNullChildNodes.reduce((acc, node) => acc.concat(node.text), ""),
-                offset: nonNullChildNodes[0].offset,
+                text: extractTextOfNodes(data),
+                offset: nonEmptyChildNodes[0].offset,
                 data: data,
                 ...otherProperties
             };
