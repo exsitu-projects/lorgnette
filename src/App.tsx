@@ -9,20 +9,24 @@ import { Document, DocumentChangeOrigin } from "./core/documents/Document";
 import { Tabs, Tab } from "@blueprintjs/core";
 import { DEFAULT_CODE_VISUALISATION_PROVIDERS } from "./code-visualisations-providers";
 
-export default class App extends React.Component {
-  state: GlobalContextContent;
+type Props = {};
+type State = GlobalContextContent;
 
-  constructor(props: any) {
+export default class App extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
       codeEditorLanguage: DEFAULT_LANGUAGE,
       updateCodeEditorLanguage: newLanguage => {
+        const newDocument = this.createDocument(newLanguage, newLanguage.codeExample);
+        const newCodeVisualisations = this.createNewCodeVisualisationsForDocument(newDocument);
+
         this.setState({
           codeEditorLanguage: newLanguage,
-          document : new Document(newLanguage, newLanguage.codeExample)
+          document: newDocument,
+          codeVisualisations: newCodeVisualisations
         });
-        this.updateAllCodeVisualisations();
       },
 
       codeEditorRanges: defaultCodeEditorRanges,
@@ -32,79 +36,103 @@ export default class App extends React.Component {
             ...this.state.codeEditorRanges,
             ...ranges
           }
-        })
+        });
       },
 
       document: this.createDocument(DEFAULT_LANGUAGE, DEFAULT_LANGUAGE.codeExample),
       updateDocumentContent: newContent => {
-        this.updateDocumentContent(newContent);
-        this.updateAllCodeVisualisations();
+        const newDocument = this.createDocument(this.state.codeEditorLanguage, newContent);
+        const newCodeVisualisations = this.createNewCodeVisualisationsForDocument(newDocument);
+
+        this.setState({
+          document: newDocument,
+          codeVisualisations: newCodeVisualisations
+        });
       },
 
       codeVisualisationProviders: DEFAULT_CODE_VISUALISATION_PROVIDERS,
       codeVisualisations: [],
 
       declareCodeVisualisationMutation: () => {
-        this.updateAllCodeVisualisations();
+        const newCodeVisualisations = this.createNewCodeVisualisationsForDocument(this.state.document);
+
+        this.setState({
+          codeVisualisations: newCodeVisualisations
+        });
       }
     };
   }
   
+  // Create a new document in the given language, with the given content,
+  // with a change observer that updates the document and the code visualisations
+  // in the state of whenever the document is modified.
   private createDocument(language: Language, content: string): Document {
     const document = new Document(language, content);
     document.addChangeObserver({
       processChange: event => {
-        this.updateDocumentContent(event.document.content);
+        console.log("change document")
+        const newDocument = this.createDocument(this.state.codeEditorLanguage, event.document.content);
 
-        // Case 1: if the change originates from a manual edit operation performed by the user,
-        // update all the code visualisations.
+        // Case 1: if the change originates from a manual edit operation
+        // performed by the user, update the code visualisations.
         if (event.changeContext.origin === DocumentChangeOrigin.UserEdit) {
-          this.updateAllCodeVisualisations();
+          const newCodeVisualisations = this.createNewCodeVisualisationsForDocument(newDocument);
+
+          this.setState({
+            document: newDocument,
+            codeVisualisations: newCodeVisualisations
+          });
         }
 
         // Case 2: if the change originates from a code visualisation,
-        // either update the binding with the code if the change is transient,
-        // or update all the code visualisations otherwise.
+        // only update the code visualisations if the change is not transient.
         else if (event.changeContext.origin === DocumentChangeOrigin.CodeVisualisationEdit) {
           if (event.changeContext.isTransientChange) {
             console.info("** TRANSIENT change **");
-            // event.changeContext.visualisation.updateCodeBinding();
+
+            this.setState({
+              document: newDocument,
+            });
           }
           else {
             console.warn("** NON-TRANSIENT change **");
-            this.updateAllCodeVisualisations();
+
+            const newCodeVisualisations = this.createNewCodeVisualisationsForDocument(newDocument);
+            this.setState({
+              document: newDocument,
+              codeVisualisations: newCodeVisualisations
+            });
           }
         }
       }
-
     })
 
     return document;
   }
 
-  private updateDocumentContent(newContent: string): void {
-    const newDocument = this.createDocument(this.state.document.language, newContent);
-    this.setState({ document: newDocument });
-  }
-
-  private updateAllCodeVisualisations(): void {
-    // Update each code visualisation provider
+  // Create new code visualisations for the given document.
+  private createNewCodeVisualisationsForDocument(document: Document): CodeVisualisation[] {
     const codeVisualisations: CodeVisualisation[] = [];
     for (let codeVisualisationProvider of this.state.codeVisualisationProviders) {
-      codeVisualisationProvider.updateFromDocument(this.state.document);
+      codeVisualisationProvider.updateFromDocument(document);
       codeVisualisations.push(...codeVisualisationProvider.codeVisualisations);
     }
 
-    // Update the state
-    this.setState({
-      codeVisualisations: codeVisualisations
-    });
+    console.log("new code visualisations:", codeVisualisations);
 
-    console.log("Updated visualisations", this.state.codeVisualisations);
+    return codeVisualisations;
+  }
+
+  // Update the code visualisations in the current document (current state).
+  private updateCodeVisualisations(): void {
+    this.setState({
+      codeVisualisations: this.createNewCodeVisualisationsForDocument(this.state.document)
+    });
   }
 
   componentDidMount(): void {
-    this.updateAllCodeVisualisations();
+    // When the main app is created, visualisations must be created for the first time.
+    this.updateCodeVisualisations();
   }
 
   render() {

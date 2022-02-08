@@ -5,14 +5,14 @@ import { Language, SUPPORTED_LANGUAGES } from "./core/languages/Language";
 import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
 import { CodeVisualisationProvider } from "./core/visualisations/CodeVisualisationProvider";
 
-export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[2];
+export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[0];
 
 export interface CodeEditorRanges {
   hovered: Range[],
   selected: Range[]
 }
 
-export const defaultCodeEditorRanges = {
+export const defaultCodeEditorRanges: CodeEditorRanges = {
   hovered: [],
   selected: []
 };

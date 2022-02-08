@@ -4,7 +4,7 @@
     width: 30vw;
 }
 
-.ui.regex-editor .regex-visualisation-thumbnail > iframe {
+.ui.regex-editor .regex-visualisation-thumbnail .iframe-container iframe {
     border: none;
     transform-origin: 0 0;
     z-index: 100;
@@ -79,7 +79,7 @@
     height: 100%;
 }
 
-.regex-visualisation-overlay-diagram > iframe {
+.regex-visualisation-overlay-diagram .iframe-container iframe {
     border: none;
     transform-origin: 0 0;
 }

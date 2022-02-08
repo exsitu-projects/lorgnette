@@ -1,8 +1,8 @@
 import { InputGroup, Label, Overlay } from "@blueprintjs/core";
 import React, { ReactElement } from "react";
 import { GlobalContext } from "../../../context";
-import { Debouncer } from "../../../utilities/Debouncer";
 import { Range } from "../../documents/Range";
+import { Iframe } from "./Iframe";
 import "./regex-editor.css";
 
 
@@ -27,42 +27,12 @@ type State = {
 };
 
 export class RegexEditorComponent extends React.Component<Props, State> {
-    private static readonly iframeUpdateDebouncerMinDelay: number = 1000; // ms
-
-    private readonly iframeUpdateDebouncer: Debouncer;
-
-    private readonly thumbnailIframeRef: React.RefObject<HTMLIFrameElement>;
-    private readonly enlargedIframeRef: React.RefObject<HTMLIFrameElement>;
-
     constructor(props: Props) {
         super(props);
-
-        this.iframeUpdateDebouncer = new Debouncer(
-            () => {
-                console.info(">>> RUN TASK!");
-                this.updateIframes()
-            },
-            RegexEditorComponent.iframeUpdateDebouncerMinDelay
-        );
-
-        this.thumbnailIframeRef = React.createRef();
-        this.enlargedIframeRef = React.createRef();
 
         this.state = {
             isOverlayOpen: false
         };
-    }
-
-    componentDidUpdate(previousProps: Props) {
-        if (previousProps.regex === this.props.regex) {
-            return
-        }
-
-        this.iframeUpdateDebouncer.runOrScheduleTask();
-    }
-
-    componentWillUnmount() {
-        this.iframeUpdateDebouncer.cancelScheduledTask();
     }
 
     private createIframes(splitRegex: SplitRegex): IframeElements {
@@ -82,33 +52,30 @@ export class RegexEditorComponent extends React.Component<Props, State> {
             regexBody,
             regexFlags,
             {
-                ref: this.thumbnailIframeRef,
-                style: {
-                    width: `${thumbnailIframeWidth}px`,
-                    height: `${thumbnailIframeHeight}px`,
-                    transform: `scale(${thumbnailIframeScale})`,
-                    marginBottom: `${thumbnailIframeMarginBottom}px`
-                },
-                onClick: () => { this.setState({ isOverlayOpen: true }); }
+                style: `
+                    width: ${thumbnailIframeWidth}px;
+                    height: ${thumbnailIframeHeight}px;
+                    transform: scale(${thumbnailIframeScale});
+                    margin-bottom: ${thumbnailIframeMarginBottom}px;
+                `,
             }
         );
 
         const enlargedIframeWidth = (regexBody.length * 50) / (1 + nbCharacterSetsInRegexBody / 5); // px
         const enlargedIframeHeight = (regexBody.length * 200) / 40; // px
         const enlargedIframeScale = overlayWidth / enlargedIframeWidth;
-        const enlargedIframeMarginBottom = -(thumbnailIframeHeight * (1 - thumbnailIframeScale)); // px (to remove useless whitespace)
+        const enlargedIframeMarginBottom = -(thumbnailIframeHeight * (1 - thumbnailIframeScale) / 4); // px (to remove useless whitespace)
 
         const enlargedIframe = RegexEditorComponent.createVisualisationIframe(
             regexBody,
             regexFlags,
             {
-                ref: this.enlargedIframeRef,
-                style: {
-                    width: `${enlargedIframeWidth}px`,
-                    height: `${enlargedIframeHeight}px`,
-                    transform: `scale(${enlargedIframeScale})`,
-                    marginBottom: `${enlargedIframeMarginBottom}px`
-                }
+                style: `
+                    width: ${enlargedIframeWidth}px;
+                    height: ${enlargedIframeHeight}px;
+                    transform: scale(${enlargedIframeScale});
+                    margin-bottom: ${enlargedIframeMarginBottom}px;
+                `
             }
         );
 
@@ -116,26 +83,6 @@ export class RegexEditorComponent extends React.Component<Props, State> {
             thumbnail: thumbnailIframe,
             enlarged: enlargedIframe
         };
-    }
-
-    private updateIframes(): void {
-        function forceRefreshIframe(iframe: HTMLIFrameElement): void {
-            const url = iframe.src;
-            iframe.src = "";
-            iframe.src = url;
-        }
-
-        const thumbnailIframe = this.thumbnailIframeRef.current;
-        if (thumbnailIframe) {
-            forceRefreshIframe(thumbnailIframe);
-            console.log("REFRESH thumbnail")
-        }
-
-        const enlargedIframe = this.enlargedIframeRef.current;
-        if (this.state.isOverlayOpen && enlargedIframe) {
-            forceRefreshIframe(enlargedIframe);
-            console.log("REFRESH enlarged")
-        }
     }
 
     private createThumbnailVisualisation(
@@ -242,18 +189,12 @@ export class RegexEditorComponent extends React.Component<Props, State> {
     private static createVisualisationIframe(
         regexBody: string,
         regexFlags: string,
-        props: React.ComponentProps<"iframe">
+        htmlAttributes: Record<string, string>
     ): ReactElement {
         const encodedRegexBody = encodeURIComponent(regexBody);
         const encodedRegexFlags = encodeURIComponent(regexFlags);
         const url = `https://jex.im/regulex/#!embed=true&flags=${encodedRegexFlags}&re=${encodedRegexBody}`;
 
-        // console.log("Creating a new iframe: ", url);
-
-        return <iframe
-            src={url}
-            sandbox="allow-scripts"
-            {...props}
-        />
+        return <Iframe src={url} htmlAttributes={htmlAttributes} />
     }
 }
