@@ -1,10 +1,10 @@
 import React from "react";
+import { BLACK, RgbColor } from "../../../utilities/RgbColor";
 import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
 import { ColorPickerComponent } from "./ColorPickerComponent";
 
-type RgbColor = {r: number, g: number, b: number};
-const BLACK_COLOR = {r: 0, g: 0, b: 0};
+
 
 export interface Input extends RgbColor {};
 export interface Output extends UserInterfaceOutput {
@@ -15,7 +15,7 @@ export class ColorPicker extends UserInterface<Input, Output> {
     private color: RgbColor;
     // private isCurrentlyUsed: boolean;
 
-    constructor(visualisation: CodeVisualisation, color: RgbColor = BLACK_COLOR) {
+    constructor(visualisation: CodeVisualisation, color: RgbColor = BLACK) {
         super(visualisation);
 
         this.color = color;

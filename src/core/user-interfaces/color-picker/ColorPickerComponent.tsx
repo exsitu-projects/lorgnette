@@ -1,11 +1,6 @@
 import React from "react";
-import { RgbColorPicker, HexColorInput } from "react-colorful";
-
-type RgbColor = {
-    r: number,
-    g: number,
-    b: number
-};
+import { RgbColorPicker } from "react-colorful";
+import { RgbColor } from "../../../utilities/RgbColor";
 
 type Props = {
     color: RgbColor,
