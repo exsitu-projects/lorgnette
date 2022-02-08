@@ -18,6 +18,14 @@ import { ColorPickerProvider } from "./core/user-interfaces/color-picker/ColorPi
 import { TextualCodeVisualisationProvider } from "./core/visualisations/textual/TextualCodeVisualisationProvider";
 import { Range } from "./core/documents/Range";
 import { TreeNode } from "./core/user-interfaces/tree/Tree";
+import { PlotStyleEditorProvider } from "./core/user-interfaces/plot-style-editor/PlotStyleEditorProvider";
+import { PropertyNode } from "./core/languages/json/nodes/PropertyNode";
+import { ObjectNode } from "./core/languages/json/nodes/ObjectNode";
+import { StringNode } from "./core/languages/json/nodes/StringNode";
+import { PlotStyle } from "./core/user-interfaces/plot-style-editor/PlotStyleEditor";
+import { convertCssColorToRgbColor, convertRgbColorToCssColor, RgbColor } from "./utilities/RgbColor";
+import { NumberNode } from "./core/languages/json/nodes/NumberNode";
+import { BooleanNode } from "./core/languages/json/nodes/BooleanNode";
 
 export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
     // new TextualCodeVisualisationProvider(
@@ -318,4 +326,132 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
         }),
         new RegexEditorProvider()
     ),
+
+
+
+
+
+    new SyntacticCodeVisualisationProvider(
+        "Vega marks",
+        { languages: ["json"] },
+        new SyntacticPatternFinder(new SyntaxTreePattern(n =>
+            n.type === "Property"
+                && (n as PropertyNode).key.value === "mark"
+                && (n as PropertyNode).value.type === "Object",
+            SKIP_MATCH_DESCENDANTS
+        )),
+        [],
+        new ProgrammableInputMapping(arg => {
+            const pattern = (arg.pattern as SyntacticPattern).node as PropertyNode;
+            const markProperties = (pattern.value as ObjectNode).properties;
+
+            const style: PlotStyle = {};
+
+            const typeProperty = markProperties.find(property => property.key.value === "type");
+            const type = typeProperty ? (typeProperty.value as StringNode).value : undefined;
+            style["type"] = type ?? "(missing type)";
+
+            const colorProperty = markProperties.find(property => property.key.value === "color");
+            style["color"] = colorProperty
+                ? convertCssColorToRgbColor((colorProperty.value as StringNode).value)!
+                : convertCssColorToRgbColor("#4682b4")!;
+
+            const opacityProperty = markProperties.find(property => property.key.value === "opacity");
+            style["opacity"] = opacityProperty
+                ? (opacityProperty.value as NumberNode).value
+                : 1;
+
+            const filledProperty = markProperties.find(property => property.key.value === "filled");
+            style["filled"] = filledProperty
+                ? (filledProperty.value as BooleanNode).value
+                : type
+                    ? ["point", "line", "rule"].includes(type) ? false : true
+                    : true;
+        
+            return {
+                style: style,
+            };
+        }),
+        new ProgrammableOutputMapping(arg => {
+            const editor = arg.output.editor;
+            const propertyNode = (arg.pattern as SyntacticPattern).node as PropertyNode;
+            const markProperties = (propertyNode.value as ObjectNode).properties;
+            const styleChange = arg.output.data.styleChange as PlotStyle;
+            const stylePropertyNamesToVegaPropertyNames: Record<keyof PlotStyle, string | null> = {
+                "type": "type",
+                "color": "color",
+                "filled": "filled",
+                "opacity": "opacity",
+                "thickness": "thickness",
+                "shape": null,
+                "horizontal": null
+            };
+
+            const changedProperties = Object.keys(styleChange) as (keyof PlotStyle)[];
+            const propertiesToInsert: {key: string, value: string}[] = [];
+
+            for (let changedPropertyName of changedProperties) {
+                const vegaPropertyName = stylePropertyNamesToVegaPropertyNames[changedPropertyName];
+                if (!vegaPropertyName) {
+                    break;
+                }
+
+                // Get the value of the modified property.
+                const newPropertyValue = styleChange[changedPropertyName]!;
+                let newJsonPropertyValue = newPropertyValue;
+
+                // Transform the value of the property if needed.
+                if (changedPropertyName === "color") {
+                    newJsonPropertyValue = convertRgbColorToCssColor(newPropertyValue as RgbColor);
+                }
+
+                if (typeof newJsonPropertyValue === "string") {
+                    newJsonPropertyValue = `"${newJsonPropertyValue}"`;
+                }
+
+                // If the property already exists in the JSON, updates its value.
+                // Otherwise, add the property to the list of properties that should be added to the 'mark' object.
+                const jsonProperty = markProperties.find(property => property.key.value === vegaPropertyName);
+                if (jsonProperty) {
+                    editor.replace(
+                        jsonProperty.value.range,
+                        newJsonPropertyValue.toString()
+                    );
+                }
+                else {
+                    propertiesToInsert.push({
+                        key: vegaPropertyName,
+                        value: newJsonPropertyValue.toString()
+                    })
+                }
+            }
+
+            // Insert all the new properties.
+            const hasPropertiesToInsert = propertiesToInsert.length > 0;
+            if (hasPropertiesToInsert) {
+                const concatenatedPropertiesToInsert = propertiesToInsert
+                    .map(property => `"${property.key}": ${property.value}`)
+                    .join(", ");
+    
+                const hasMarkProperties =  markProperties.length > 0;
+                if (hasMarkProperties) {
+                    editor.insert(
+                        markProperties[markProperties.length - 1].range.end,
+                        `, ${concatenatedPropertiesToInsert}`
+                    );
+                }
+                else {
+                    editor.replace(
+                        propertyNode.value.range,
+                        `{ ${concatenatedPropertiesToInsert} }`
+                    );
+                }
+            }
+
+            editor.applyEdits();
+        }),
+        new PlotStyleEditorProvider()
+    ),
 ];
+
+
