@@ -248,7 +248,7 @@ export class PlotStyleEditorComponent extends React.PureComponent<Props> {
     }
 
     render() {
-        return <div className="ui plot-style-editor">
+        return <>
             {this.renderTypePropertyEditor()}
             {this.renderColorPropertyEditor()}
             {this.renderOpacityPropertyEditor()}
@@ -256,6 +256,6 @@ export class PlotStyleEditorComponent extends React.PureComponent<Props> {
             {this.renderThicknessPropertyEditor()}
             {this.renderShapePropertyEditor()}
             {this.renderHorizontalPropertyEditor()}
-        </div>;
+        </>;
     }
 }

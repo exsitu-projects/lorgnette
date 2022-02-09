@@ -1,3 +1,4 @@
+import React, { ReactElement } from "react";
 import { Observer } from "../../utilities/Observer";
 import { Throttler } from "../../utilities/Throttler";
 import { DocumentChangeOrigin } from "../documents/Document";
@@ -18,12 +19,11 @@ export interface UserInterfaceOutput {
 export type PartialUserInterfaceOutput =
     Omit<UserInterfaceOutput, "data">;
 
-type View = JSX.Element;
-
 export abstract class UserInterface<
     I extends UserInterfaceInput = UserInterfaceInput,
     O extends UserInterfaceOutput = UserInterfaceOutput
 > {
+    abstract readonly className: string;
     protected visualisation: CodeVisualisation;
     
     private modelChangeObservers: Set<Observer<O>>;
@@ -44,7 +44,7 @@ export abstract class UserInterface<
     }
 
     protected abstract get modelOutput(): O;
-    abstract createView(): View;
+    abstract createViewContent(): ReactElement;
     abstract updateModel(input: I): void;
 
     protected startTransientEdit(): void {
@@ -121,5 +121,15 @@ export abstract class UserInterface<
         else {
             this.modelChangeNotificationThrottler.runOrScheduleTask();
         }
+    }
+
+    createView(uiContainerProps: React.ComponentProps<"div"> = {}): ReactElement {
+        return <div
+            className={`ui ${this.className}`}
+            data-code-visualisation-id={this.visualisation.id}
+            {...uiContainerProps}
+        >
+            {this.createViewContent()}
+        </div>
     }
 }

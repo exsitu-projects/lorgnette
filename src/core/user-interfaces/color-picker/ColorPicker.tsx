@@ -12,6 +12,8 @@ export interface Output extends UserInterfaceOutput {
 };
 
 export class ColorPicker extends UserInterface<Input, Output> {
+    readonly className = "color-picker";
+    
     private color: RgbColor;
     // private isCurrentlyUsed: boolean;
 
@@ -30,7 +32,7 @@ export class ColorPicker extends UserInterface<Input, Output> {
         this.color = newColor;
     }
 
-    createView(): JSX.Element {
+    createViewContent(): JSX.Element {
         const onChange = (newColor: RgbColor) => {
             this.color = newColor;
             this.declareModelChange();

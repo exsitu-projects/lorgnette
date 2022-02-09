@@ -28,6 +28,8 @@ export interface Output extends UserInterfaceOutput {
 };
 
 export class PlotStyleEditor extends UserInterface<Input, Output> {
+    readonly className = "plot-style-editor";
+
     private style: PlotStyle;
     private lastStyleChange: PlotStyle;
     // private isLastStyleChangeTransient: boolean;
@@ -53,7 +55,7 @@ export class PlotStyleEditor extends UserInterface<Input, Output> {
         this.settings = derivePlotStyleEditorSettingsFromDefaults(input.settings ?? {});
     }
 
-    createView(): JSX.Element {
+    createViewContent(): JSX.Element {
         const onChange: PlotStyleEditorChangeHandler = (
             styleChange: PlotStyle,
             newStyle: PlotStyle,

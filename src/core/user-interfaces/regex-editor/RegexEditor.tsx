@@ -16,6 +16,8 @@ export interface Output extends UserInterfaceOutput {
 };
 
 export class RegexEditor extends UserInterface<Input, Output> {
+    readonly className = "regex-editor";
+
     private regex: RegExp;
     private regexRange: Range | null;
 
@@ -31,7 +33,7 @@ export class RegexEditor extends UserInterface<Input, Output> {
         this.regexRange = newInput.range ?? null;
     }
 
-    createView(): JSX.Element {
+    createViewContent(): JSX.Element {
         return <RegexEditorComponent
             regex={this.regex}
             regexRange={this.regexRange}

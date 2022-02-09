@@ -104,7 +104,7 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
 
     render() {
         if (!this.props.rootNode) {
-            return <div className="ui tree" />;
+            return <></>;
         }
 
         const treeId = this.state.treeId;
@@ -118,28 +118,26 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
             }
         };
 
-        return <div className="ui tree">
-            <GlobalContext.Consumer>{ context => (
-                <ControlledTreeEnvironment
-                    items={treeItems}
-                    getItemTitle={item => item.data.title}
-                    canReorderItems={true}
-                    canDragAndDrop={true}
-                    onDrop={(movedItems, targetPosition) => this.props.onNodesMove({
-                        // TODO: deal with multiple moves?
-                        movedItem: movedItems[0],
-                        targetPosition: targetPosition
-                    })}
-                    viewState={treeViewState}
-                >
-                    <Tree
-                        treeId={treeId}
-                        rootItem="0"
-                        renderItemTitle={props => TreeComponent.renderTreeItemTitle<T>(props, context)}
-                    />
-                </ControlledTreeEnvironment>
-            )}</GlobalContext.Consumer>
-        </div>;
+        return <GlobalContext.Consumer>{ context => (
+            <ControlledTreeEnvironment
+                items={treeItems}
+                getItemTitle={item => item.data.title}
+                canReorderItems={true}
+                canDragAndDrop={true}
+                onDrop={(movedItems, targetPosition) => this.props.onNodesMove({
+                    // TODO: deal with multiple moves?
+                    movedItem: movedItems[0],
+                    targetPosition: targetPosition
+                })}
+                viewState={treeViewState}
+            >
+                <Tree
+                    treeId={treeId}
+                    rootItem="0"
+                    renderItemTitle={props => TreeComponent.renderTreeItemTitle<T>(props, context)}
+                />
+            </ControlledTreeEnvironment>
+        )}</GlobalContext.Consumer>;
     }
 
     private static getUniqueTreeId(): string {

@@ -1,7 +1,6 @@
 import React from "react";
 import TabPanel from "./TabPanel";
 import { ItemRenderer, Select } from "@blueprintjs/select";
-import { CodeEditor, createRangesToHighlightForCodeVisualisations, createRangesToHighlightFromGlobalCodeEditorRanges } from "../code-editor/CodeEditor";
 import { Button, MenuItem } from "@blueprintjs/core";
 import { GlobalContext } from "../../context";
 import { Language, SUPPORTED_LANGUAGES } from "../../core/languages/Language";
@@ -14,6 +13,7 @@ import { Document } from "../../core/documents/Document";
 import { GenericSyntaxTree } from "../syntax-tree/GenericSyntaxTree";
 import { CodeRange } from "../utilities/CodeRange";
 import { SyntaxTree } from "../syntax-tree/SyntaxTree";
+import { MonocleCodeEditor } from "../code-editor/MonocleCodeEditor";
 
 export const LanguageSelect = Select.ofType<Language>();
 
@@ -110,7 +110,7 @@ export default class CodeEditorPanel extends React.PureComponent {
 
                     {/* User interface */}
                     {/* <strong>User interface:</strong> */}
-                    {visualisation.userInterface.createView()}
+                    {visualisation.userInterface.createViewContent()}
                   </li>
                 ))
               }
@@ -126,7 +126,7 @@ export default class CodeEditorPanel extends React.PureComponent {
           <div style={{
             display: "grid",
             gridTemplateRows: "auto",
-            gridTemplateColumns: "4fr 3fr 3fr",
+            gridTemplateColumns: "8fr 2fr",
             gap: "1em",
             height: "100%"
           }}>
@@ -142,16 +142,7 @@ export default class CodeEditorPanel extends React.PureComponent {
                   onLanguageChange={l => {console.log("changed", l); context.updateCodeEditorLanguage(l)}}
                 />
               </div>
-              <CodeEditor
-                language={context.codeEditorLanguage}
-                initialContent={context.document.content}
-                onContentChange={newContent => context.updateDocumentContent(newContent)}
-                onSelectionChange={() => context.updateCodeEditorRanges({ selected: [] })}
-                rangesToHighlight={[
-                  ...createRangesToHighlightForCodeVisualisations(context.codeVisualisations),
-                  ...createRangesToHighlightFromGlobalCodeEditorRanges(context.codeEditorRanges)
-                ]}
-              />
+              <MonocleCodeEditor />
             </div>
             <div style={{ overflowY: "auto" }}>
               <h3>Syntax tree</h3>
@@ -163,13 +154,13 @@ export default class CodeEditorPanel extends React.PureComponent {
                 }}
               />
             </div>
-            <div style={{ overflowY: "auto" }}>
+            {/* <div style={{ overflowY: "auto" }}>
               <h3>Visualisations ({context.codeVisualisations.length}):</h3>
               <CodeVisualisationDetails
                 providers={context.codeVisualisationProviders}
                 document={context.document}
               />
-            </div>
+            </div> */}
           </div>
         </TabPanel>
       )}</GlobalContext.Consumer>

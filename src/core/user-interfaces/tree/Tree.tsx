@@ -25,6 +25,8 @@ export interface Output<T> extends UserInterfaceOutput {
 };
 
 export class Tree<T = any> extends UserInterface<Input<T>, Output<T>> {
+    readonly className = "tree";
+
     private rootNode: TreeNode<T> | null;
     private lastNodeMoveData: NodeMoveData<T> | null;
 
@@ -39,7 +41,7 @@ export class Tree<T = any> extends UserInterface<Input<T>, Output<T>> {
         this.rootNode = topLevelNodes;
     }
 
-    createView(): JSX.Element {
+    createViewContent(): JSX.Element {
         return <TreeComponent
             rootNode={this.rootNode}
             onNodesMove={(moveData: NodeMoveData<T>) => {

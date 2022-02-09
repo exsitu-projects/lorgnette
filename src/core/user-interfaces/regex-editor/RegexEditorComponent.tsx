@@ -163,11 +163,11 @@ export class RegexEditorComponent extends React.Component<Props, State> {
         const thumbnailVisualisation = this.createThumbnailVisualisation(iframes.thumbnail, splitRegex);
         const enlargedVisualisation = this.createEnlargedVisualisation(iframes.enlarged, splitRegex);
 
-        return <div className="ui regex-editor">
+        return <>
             {/* {regexBody} / {regexFlags} */}
             {thumbnailVisualisation}
             {enlargedVisualisation}
-        </div>;
+        </>;
     }
 
     private static getRegexBody(regex: RegExp): string {

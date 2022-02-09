@@ -11,13 +11,11 @@ type Props = {
 
 export class ColorPickerComponent extends React.PureComponent<Props> {
     render() {
-        return <div className="ui color-picker">
-            <RgbColorPicker
-                color={this.props.color}
-                onChange={this.props.onChange}
-                onMouseDown={this.props.onDragStart}
-                onMouseUp={this.props.onDragEnd}
-            />
-        </div>;
+        return <RgbColorPicker
+            color={this.props.color}
+            onChange={this.props.onChange}
+            onMouseDown={this.props.onDragStart}
+            onMouseUp={this.props.onDragEnd}
+        />;
     }
 }

@@ -7,6 +7,7 @@ export type Input = any;
 export interface Output extends UserInterfaceOutput {};
 
 export class InputPrinter extends UserInterface<Input, Output> {
+    readonly className = "input-printer";
     private input: any;
 
     constructor(visualisation: CodeVisualisation) {
@@ -19,7 +20,7 @@ export class InputPrinter extends UserInterface<Input, Output> {
         this.input = newInput;
     }
 
-    createView(): JSX.Element {
+    createViewContent(): JSX.Element {
         return <InputPrinterComponent
             input={this.input}
         />;

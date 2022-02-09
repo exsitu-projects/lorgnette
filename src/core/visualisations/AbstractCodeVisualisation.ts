@@ -7,12 +7,15 @@ import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../user-
 import { CodeVisualisationProvider } from "./CodeVisualisationProvider";
 import { CodeVisualisationType } from "./CodeVisualisationType";
 import { Document } from "../documents/Document";
+import { CodeVisualisationId, getUnusedId } from "./CodeVisualisationId";
 
 export abstract class AbstractCodeVisualisation<
     T extends CodeVisualisationType,
     // S = NonNullable<ReturnType<SiteProvider<T>["provideForPattern"]>>
 > {
     readonly provider: CodeVisualisationProvider<T>;
+
+    readonly id: CodeVisualisationId;
     
     abstract get document(): Document;
     abstract get range(): Range;
@@ -25,6 +28,7 @@ export abstract class AbstractCodeVisualisation<
 
     constructor(provider: CodeVisualisationProvider<T>) {
         this.provider = provider;
+        this.id = getUnusedId();
     }
 
     protected initialise(): void {
