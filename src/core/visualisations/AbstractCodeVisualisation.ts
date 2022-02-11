@@ -8,6 +8,8 @@ import { CodeVisualisationProvider } from "./CodeVisualisationProvider";
 import { CodeVisualisationType } from "./CodeVisualisationType";
 import { Document } from "../documents/Document";
 import { CodeVisualisationId, getUnusedId } from "./CodeVisualisationId";
+import { CodeVisualisationRenderer } from "../../components/code-editor/CodeVisualisationRenderer";
+import { ClassOf } from "../../utilities/types";
 
 export abstract class AbstractCodeVisualisation<
     T extends CodeVisualisationType,
@@ -24,11 +26,14 @@ export abstract class AbstractCodeVisualisation<
 
     abstract get inputMapping(): InputMapping<T>;
     abstract get outputMapping(): OutputMapping<T> | null;
+
     abstract get userInterface(): UserInterface;
+    readonly renderer: ClassOf<CodeVisualisationRenderer>;
 
     constructor(provider: CodeVisualisationProvider<T>) {
         this.provider = provider;
         this.id = getUnusedId();
+        this.renderer = CodeVisualisationRenderer;
     }
 
     protected initialise(): void {
