@@ -1,0 +1,8 @@
+.code-visualisation-popover-wrapper {
+    position: absolute;
+}
+
+.code-visualisation-popover-content-wrapper {
+    padding: "10px";
+    background-color: "#fafafa";
+}

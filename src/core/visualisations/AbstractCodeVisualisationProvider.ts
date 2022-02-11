@@ -5,6 +5,7 @@ import { Document } from "../documents/Document";
 import { InputMapping } from "../mappings/InputMapping";
 import { OutputMapping } from "../mappings/OutputMapping";
 import { Renderer } from "../renderers/Renderer";
+import { RendererProvider } from "../renderers/RendererProvider";
 import { Site } from "../sites/Site";
 import { SiteProvider } from "../sites/SiteProvider";
 import { UserInterfaceProvider } from "../user-interfaces/UserInterfaceProvider";
@@ -24,7 +25,7 @@ export abstract class AbstractCodeVisualisationProvider<
     inputMapping: InputMapping<T>;
     outputMapping: OutputMapping<T> | null;
     userInterfaceProvider: UserInterfaceProvider;
-    renderer: ClassOf<Renderer>;
+    rendererProvider: RendererProvider;
 
     constructor(
         name: string,
@@ -34,7 +35,7 @@ export abstract class AbstractCodeVisualisationProvider<
         inputMapping: InputMapping<T>,
         outputMapping: OutputMapping<T> | null,
         userInterfaceProvider: UserInterfaceProvider,
-        renderer: ClassOf<Renderer>
+        rendererProvider: RendererProvider
     ) {
         this.name = name;
         this.useContexts = useContexts;
@@ -44,7 +45,7 @@ export abstract class AbstractCodeVisualisationProvider<
         this.inputMapping = inputMapping;
         this.outputMapping = outputMapping;
         this.userInterfaceProvider = userInterfaceProvider;
-        this.renderer = renderer;
+        this.rendererProvider = rendererProvider;
     }
 
     canBeUsedInDocument(document: Document): boolean {

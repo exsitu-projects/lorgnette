@@ -1,25 +1,26 @@
-import React, { ReactElement } from "react";
-import { Button } from "@blueprintjs/core";
-import { Popover2, Popover2TargetProps } from "@blueprintjs/popover2";
-import { Renderer, Props } from "./Renderer";
+import React, { ComponentProps, ReactElement } from "react";
+import "./popover-renderer.css";
+import { Popover2, Popover2Props, Popover2TargetProps } from "@blueprintjs/popover2";
+import { Renderer, RendererProps } from "../Renderer";
 
+export interface PopoverRendererProps extends RendererProps {
+    popoverTarget: (props: Popover2TargetProps) => ReactElement;
+}
 
-export class PopoverRenderer extends Renderer {
-    readonly name: string = "popover";
+export abstract class PopoverRenderer<P extends PopoverRendererProps = PopoverRendererProps> extends Renderer<P> {
+    protected popoverWrapperRef: React.RefObject<HTMLDivElement>;
 
-    private wrapperRef: React.RefObject<HTMLDivElement>;
-
-    constructor(props: Props) {
+    constructor(props: P) {
         super(props);
-        this.wrapperRef = React.createRef();
+        this.popoverWrapperRef = React.createRef();
     }
 
-    private repositionWrapper(): void {
+    protected repositionWrapper(): void {
         // Wait for the next redraw of the webpage before updating the wrapper's position.
         // This is required to ensure that the code editor and the markers are part of the DOM
         // and positioned correctly, which is mandatory for positioning relatively to them.
         window.requestAnimationFrame(() => {
-            const wrapperRef = this.wrapperRef.current;
+            const wrapperRef = this.popoverWrapperRef.current;
             const codeEditorRef = this.props.codeEditorRef.current;
 
             if (!wrapperRef || !codeEditorRef) {
@@ -54,7 +55,7 @@ export class PopoverRenderer extends Renderer {
         this.repositionWrapper();
     }
 
-    componentDidUpdate(oldProps: Props) {
+    componentDidUpdate(oldProps: RendererProps) {
         if (oldProps.codeEditorRef === this.props.codeEditorRef
         &&  oldProps.codeVisualisation === this.props.codeVisualisation) {
             return;
@@ -63,28 +64,36 @@ export class PopoverRenderer extends Renderer {
         this.repositionWrapper();
     }
 
-    private renderPopoverContent(): ReactElement {
-        return <div style={{ padding: "10px", backgroundColor: "#fafafa"}}>
+    protected get popoverProps(): Popover2Props {
+        return {
+            placement: "right",
+            minimal: true,
+            transitionDuration: 150
+        };
+    }
+
+    protected get popoverContentWrapperProps(): ComponentProps<"div"> {
+        return {};
+    }
+
+    protected abstract renderPopoverTarget(props: Popover2TargetProps): ReactElement;
+
+    protected renderPopoverContent(): ReactElement {
+        return <div
+            className="code-visualisation-popover-content-wrapper"
+            {...this.popoverContentWrapperProps}
+        >
             {this.props.codeVisualisation.userInterface.createView()}
         </div>;
     }
 
-    private renderPopoverTarget(props: Popover2TargetProps): ReactElement {
-        const { isOpen, ref,  ...targetProps } = props;
-        return <Button
-            elementRef={props.ref as any}
-            {...targetProps}
-        >
-            visualisation
-        </Button>;
-    }
-
     render() {
-        return <div className="code-visualisation-ui-wrapper" ref={this.wrapperRef}>
+        return <div
+            className="code-visualisation-popover-wrapper"
+            ref={this.popoverWrapperRef}
+        >
             <Popover2
-                placement="right"
-                minimal={true}
-                transitionDuration={150}
+                {...this.popoverProps}
                 content={this.renderPopoverContent()}
                 renderTarget={props => this.renderPopoverTarget(props)}
             />

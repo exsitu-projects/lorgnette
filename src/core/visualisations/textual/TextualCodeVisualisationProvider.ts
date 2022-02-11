@@ -1,10 +1,9 @@
-import { ClassOf } from "../../../utilities/types";
 import { PatternFinder } from "../../code-patterns/PatternFinder";
 import { TextualPattern } from "../../code-patterns/textual/TextualPattern";
 import { Document } from "../../documents/Document";
 import { InputMapping } from "../../mappings/InputMapping";
 import { OutputMapping } from "../../mappings/OutputMapping";
-import { Renderer } from "../../renderers/Renderer";
+import { RendererProvider } from "../../renderers/RendererProvider";
 import { SiteProvider } from "../../sites/SiteProvider";
 import { TextualSite } from "../../sites/textual/TextualSite";
 import { UserInterfaceProvider } from "../../user-interfaces/UserInterfaceProvider";
@@ -26,9 +25,9 @@ export class TextualCodeVisualisationProvider extends AbstractCodeVisualisationP
         inputMapping: InputMapping<CodeVisualisationType.Textual>,
         outputMapping: OutputMapping<CodeVisualisationType.Textual> | null,
         userInterfaceProvider: UserInterfaceProvider,
-        renderer: ClassOf<Renderer>
+        rendererProvider: RendererProvider
     ) {
-        super(name, useContexts, patternFinder, siteProviders, inputMapping, outputMapping, userInterfaceProvider, renderer);
+        super(name, useContexts, patternFinder, siteProviders, inputMapping, outputMapping, userInterfaceProvider, rendererProvider);
         this.cachedCodeVisualisations = [];
     }
 
@@ -70,7 +69,7 @@ export class TextualCodeVisualisationProvider extends AbstractCodeVisualisationP
                     this.inputMapping,
                     this.outputMapping,
                     this.userInterfaceProvider,
-                    this.renderer
+                    this.rendererProvider.provide()
                 );
             });
     }

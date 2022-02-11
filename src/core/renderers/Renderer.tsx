@@ -3,12 +3,12 @@ import { Button } from "@blueprintjs/core";
 import { CodeVisualisation } from "../visualisations/CodeVisualisation";
 import { CodeEditor } from "../../components/code-editor/CodeEditor";
 
-export type Props = {
+export interface RendererProps {
     codeVisualisation: CodeVisualisation;
     codeEditorRef: React.RefObject<CodeEditor>;
 };
 
-export abstract class Renderer extends React.Component<Props> {
+export abstract class Renderer<P extends RendererProps = RendererProps> extends React.Component<P> {
     abstract get name(): string;
     abstract render(): ReactElement;
 }

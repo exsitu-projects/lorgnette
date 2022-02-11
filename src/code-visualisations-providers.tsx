@@ -26,7 +26,7 @@ import { PlotStyle } from "./core/user-interfaces/plot-style-editor/PlotStyleEdi
 import { convertCssColorToRgbColor, convertRgbColorToCssColor, RgbColor } from "./utilities/RgbColor";
 import { NumberNode } from "./core/languages/json/nodes/NumberNode";
 import { BooleanNode } from "./core/languages/json/nodes/BooleanNode";
-import { PopoverRenderer } from "./core/renderers/PopoverRenderer";
+import { ButtonPopoverRenderer } from "./core/renderers/popover/ButtonPopoverRenderer";
 
 export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
     // new TextualCodeVisualisationProvider(
@@ -61,7 +61,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
     //         documentEditor.applyEdits();
     //     }),
     //     new ColorPickerProvider(),
-    //     PopoverRenderer
+    //     ButtonPopoverRenderer.makeProvider("Color")
     // ),
         
         
@@ -100,7 +100,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.applyEdits();
         }),
         new ColorPickerProvider(),
-        PopoverRenderer
+        ButtonPopoverRenderer.makeProvider("Color")
     ),
             
             
@@ -142,7 +142,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
     //         documentEditor.applyEdits();
     //     }),
     //     new ColorPickerProvider(),
-    //     PopoverRenderer
+    //     ButtonPopoverRenderer.makeProvider("Color")
     // ),
     
 
@@ -221,7 +221,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             NodeMoveProcesser.processTreeOutput(output, arg.document);
         }),
         new TreeProvider<SyntaxTreeNode>(),
-        PopoverRenderer
+        ButtonPopoverRenderer.makeProvider("TSX")
     ),
 
 
@@ -291,7 +291,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.applyEdits();
         }),
         new RegexEditorProvider(),
-        PopoverRenderer
+        ButtonPopoverRenderer.makeProvider("Regex")
     ),
 
 
@@ -331,7 +331,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.applyEdits();
         }),
         new RegexEditorProvider(),
-        PopoverRenderer
+        ButtonPopoverRenderer.makeProvider("Regex")
     ),
 
 
@@ -458,7 +458,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.applyEdits();
         }),
         new PlotStyleEditorProvider(),
-        PopoverRenderer
+        ButtonPopoverRenderer.makeProvider("Vega")
     ),
 ];
 
