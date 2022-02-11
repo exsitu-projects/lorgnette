@@ -30,7 +30,7 @@ export class ButtonPopoverRenderer extends PopoverRenderer {
     }
 
     static makeProvider(content: ButtonContent, props: ButtonProps = {}): RendererProvider {
-        class Provider extends ButtonPopoverRenderer {
+        const Renderer = class extends ButtonPopoverRenderer {
             protected get buttonContent(): ButtonContent {
                 return content;
             }
@@ -41,7 +41,7 @@ export class ButtonPopoverRenderer extends PopoverRenderer {
         };
 
         return {
-            provide: () => Provider
+            provide: () => Renderer
         }
     }
 }

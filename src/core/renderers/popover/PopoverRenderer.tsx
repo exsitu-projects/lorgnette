@@ -3,14 +3,10 @@ import "./popover-renderer.css";
 import { Popover2, Popover2Props, Popover2TargetProps } from "@blueprintjs/popover2";
 import { Renderer, RendererProps } from "../Renderer";
 
-export interface PopoverRendererProps extends RendererProps {
-    popoverTarget: (props: Popover2TargetProps) => ReactElement;
-}
-
-export abstract class PopoverRenderer<P extends PopoverRendererProps = PopoverRendererProps> extends Renderer<P> {
+export abstract class PopoverRenderer extends Renderer {
     protected popoverWrapperRef: React.RefObject<HTMLDivElement>;
 
-    constructor(props: P) {
+    constructor(props: RendererProps) {
         super(props);
         this.popoverWrapperRef = React.createRef();
     }
@@ -45,7 +41,6 @@ export abstract class PopoverRenderer<P extends PopoverRendererProps = PopoverRe
             // const top = visualisedCodeBoundingBox.top - (codeVisualisationBoundingBox.height / 2);
             const left = visualisedCodeBoundingBox.right + 20;
 
-            wrapperRef.style.position = "absolute";
             wrapperRef.style.top = `${top}px`;
             wrapperRef.style.left = `${left}px`;
         });
