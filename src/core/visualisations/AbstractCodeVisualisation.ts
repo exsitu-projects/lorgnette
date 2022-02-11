@@ -8,7 +8,7 @@ import { CodeVisualisationProvider } from "./CodeVisualisationProvider";
 import { CodeVisualisationType } from "./CodeVisualisationType";
 import { Document } from "../documents/Document";
 import { CodeVisualisationId, getUnusedId } from "./CodeVisualisationId";
-import { CodeVisualisationRenderer } from "../../components/code-editor/CodeVisualisationRenderer";
+import { Renderer } from "../renderers/Renderer";
 import { ClassOf } from "../../utilities/types";
 
 export abstract class AbstractCodeVisualisation<
@@ -21,6 +21,7 @@ export abstract class AbstractCodeVisualisation<
     
     abstract get document(): Document;
     abstract get range(): Range;
+
     abstract get pattern(): Pattern<T>;
     abstract get sites(): Site<T>[];
 
@@ -28,12 +29,11 @@ export abstract class AbstractCodeVisualisation<
     abstract get outputMapping(): OutputMapping<T> | null;
 
     abstract get userInterface(): UserInterface;
-    readonly renderer: ClassOf<CodeVisualisationRenderer>;
+    abstract get renderer(): ClassOf<Renderer>;
 
     constructor(provider: CodeVisualisationProvider<T>) {
         this.provider = provider;
         this.id = getUnusedId();
-        this.renderer = CodeVisualisationRenderer;
     }
 
     protected initialise(): void {

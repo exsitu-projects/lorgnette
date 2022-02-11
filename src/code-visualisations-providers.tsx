@@ -26,6 +26,7 @@ import { PlotStyle } from "./core/user-interfaces/plot-style-editor/PlotStyleEdi
 import { convertCssColorToRgbColor, convertRgbColorToCssColor, RgbColor } from "./utilities/RgbColor";
 import { NumberNode } from "./core/languages/json/nodes/NumberNode";
 import { BooleanNode } from "./core/languages/json/nodes/BooleanNode";
+import { PopoverRenderer } from "./core/renderers/PopoverRenderer";
 
 export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
     // new TextualCodeVisualisationProvider(
@@ -59,7 +60,8 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             
     //         documentEditor.applyEdits();
     //     }),
-    //     new ColorPickerProvider()
+    //     new ColorPickerProvider(),
+    //     PopoverRenderer
     // ),
         
         
@@ -97,7 +99,8 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             
             editor.applyEdits();
         }),
-        new ColorPickerProvider()
+        new ColorPickerProvider(),
+        PopoverRenderer
     ),
             
             
@@ -138,7 +141,8 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             
     //         documentEditor.applyEdits();
     //     }),
-    //     new ColorPickerProvider()
+    //     new ColorPickerProvider(),
+    //     PopoverRenderer
     // ),
     
 
@@ -216,7 +220,8 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             const output = arg.output;
             NodeMoveProcesser.processTreeOutput(output, arg.document);
         }),
-        new TreeProvider<SyntaxTreeNode>()
+        new TreeProvider<SyntaxTreeNode>(),
+        PopoverRenderer
     ),
 
 
@@ -285,7 +290,8 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.replace(regexArgumentsRange, newRegexArguments);
             editor.applyEdits();
         }),
-        new RegexEditorProvider()
+        new RegexEditorProvider(),
+        PopoverRenderer
     ),
 
 
@@ -324,7 +330,8 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.replace(regexRange, regex.toString());
             editor.applyEdits();
         }),
-        new RegexEditorProvider()
+        new RegexEditorProvider(),
+        PopoverRenderer
     ),
 
 
@@ -450,7 +457,8 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
 
             editor.applyEdits();
         }),
-        new PlotStyleEditorProvider()
+        new PlotStyleEditorProvider(),
+        PopoverRenderer
     ),
 ];
 

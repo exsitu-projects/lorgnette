@@ -13,7 +13,7 @@ import { Document } from "../../core/documents/Document";
 import { GenericSyntaxTree } from "../syntax-tree/GenericSyntaxTree";
 import { CodeRange } from "../utilities/CodeRange";
 import { SyntaxTree } from "../syntax-tree/SyntaxTree";
-import { MonocleCodeEditor } from "../code-editor/MonocleCodeEditor";
+import { AugmentedCodeEditor } from "../augmented-code-editor/AugmentedCodeEditor";
 
 export const LanguageSelect = Select.ofType<Language>();
 
@@ -142,7 +142,7 @@ export default class CodeEditorPanel extends React.PureComponent {
                   onLanguageChange={l => {console.log("changed", l); context.updateCodeEditorLanguage(l)}}
                 />
               </div>
-              <MonocleCodeEditor />
+              <AugmentedCodeEditor />
             </div>
             <div style={{ overflowY: "auto" }}>
               <h3>Syntax tree</h3>

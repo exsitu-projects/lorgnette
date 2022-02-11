@@ -1,8 +1,10 @@
+import { ClassOf } from "../../utilities/types";
 import { Pattern } from "../code-patterns/Pattern";
 import { PatternFinder } from "../code-patterns/PatternFinder";
 import { Document } from "../documents/Document";
 import { InputMapping } from "../mappings/InputMapping";
 import { OutputMapping } from "../mappings/OutputMapping";
+import { Renderer } from "../renderers/Renderer";
 import { Site } from "../sites/Site";
 import { SiteProvider } from "../sites/SiteProvider";
 import { UserInterfaceProvider } from "../user-interfaces/UserInterfaceProvider";
@@ -22,6 +24,7 @@ export abstract class AbstractCodeVisualisationProvider<
     inputMapping: InputMapping<T>;
     outputMapping: OutputMapping<T> | null;
     userInterfaceProvider: UserInterfaceProvider;
+    renderer: ClassOf<Renderer>;
 
     constructor(
         name: string,
@@ -30,7 +33,8 @@ export abstract class AbstractCodeVisualisationProvider<
         siteProviders: SiteProvider<T>[],
         inputMapping: InputMapping<T>,
         outputMapping: OutputMapping<T> | null,
-        userInterfaceProvider: UserInterfaceProvider
+        userInterfaceProvider: UserInterfaceProvider,
+        renderer: ClassOf<Renderer>
     ) {
         this.name = name;
         this.useContexts = useContexts;
@@ -40,6 +44,7 @@ export abstract class AbstractCodeVisualisationProvider<
         this.inputMapping = inputMapping;
         this.outputMapping = outputMapping;
         this.userInterfaceProvider = userInterfaceProvider;
+        this.renderer = renderer;
     }
 
     canBeUsedInDocument(document: Document): boolean {

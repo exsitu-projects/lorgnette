@@ -10,6 +10,8 @@ import { OutputMapping } from "../../mappings/OutputMapping";
 import { UserInterface } from "../../user-interfaces/UserInterface";
 import { Document } from "../../documents/Document";
 import { UserInterfaceProvider } from "../../user-interfaces/UserInterfaceProvider";
+import { Renderer } from "../../renderers/Renderer";
+import { ClassOf } from "../../../utilities/types";
 
 export class TextualCodeVisualisation extends AbstractCodeVisualisation<
     CodeVisualisationType.Textual
@@ -22,6 +24,7 @@ export class TextualCodeVisualisation extends AbstractCodeVisualisation<
     readonly inputMapping: InputMapping<CodeVisualisationType.Textual>;
     readonly outputMapping: OutputMapping<CodeVisualisationType.Textual> | null;
     readonly userInterface: UserInterface;
+    readonly renderer: ClassOf<Renderer>;
 
     constructor(
         provider: TextualCodeVisualisationProvider,
@@ -30,7 +33,8 @@ export class TextualCodeVisualisation extends AbstractCodeVisualisation<
         sites: TextualSite[],
         inputMapping: InputMapping<CodeVisualisationType.Textual>,
         outputMapping: OutputMapping<CodeVisualisationType.Textual> | null,
-        userInterfaceProvider: UserInterfaceProvider
+        userInterfaceProvider: UserInterfaceProvider,
+        renderer: ClassOf<Renderer>
     ) {
         super(provider);
 
@@ -43,6 +47,7 @@ export class TextualCodeVisualisation extends AbstractCodeVisualisation<
         this.inputMapping = inputMapping;
         this.outputMapping = outputMapping;
         this.userInterface = userInterfaceProvider.provide(this);
+        this.renderer = renderer;
 
         this.initialise();
     }

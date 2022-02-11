@@ -1,6 +1,6 @@
 import React from "react";
 import AceEditor, { IMarker } from "react-ace";
-import "./CodeEditor.css";
+import "./code-editor.css";
 
 // Configuration files for the Ace editor.
 import "ace-builds/src-min-noconflict/mode-typescript";

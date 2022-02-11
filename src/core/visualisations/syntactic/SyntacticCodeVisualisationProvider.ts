@@ -1,8 +1,10 @@
+import { ClassOf } from "../../../utilities/types";
 import { PatternFinder } from "../../code-patterns/PatternFinder";
 import { SyntacticPattern } from "../../code-patterns/syntactic/SyntacticPattern";
 import { Document } from "../../documents/Document";
 import { InputMapping } from "../../mappings/InputMapping";
 import { OutputMapping } from "../../mappings/OutputMapping";
+import { Renderer } from "../../renderers/Renderer";
 import { SiteProvider } from "../../sites/SiteProvider";
 import { SyntacticSite } from "../../sites/syntactic/SyntacticSite";
 import { UserInterfaceProvider } from "../../user-interfaces/UserInterfaceProvider";
@@ -23,9 +25,10 @@ export class SyntacticCodeVisualisationProvider extends AbstractCodeVisualisatio
         siteProviders: SiteProvider<CodeVisualisationType.Syntactic>[],
         inputMapping: InputMapping<CodeVisualisationType.Syntactic>,
         outputMapping: OutputMapping<CodeVisualisationType.Syntactic> | null,
-        userInterfaceProvider: UserInterfaceProvider
+        userInterfaceProvider: UserInterfaceProvider,
+        renderer: ClassOf<Renderer>
     ) {
-        super(name, useContexts, patternFinder, siteProviders, inputMapping, outputMapping, userInterfaceProvider);
+        super(name, useContexts, patternFinder, siteProviders, inputMapping, outputMapping, userInterfaceProvider, renderer);
         this.cachedCodeVisualisations = [];
     }
 
@@ -72,6 +75,7 @@ export class SyntacticCodeVisualisationProvider extends AbstractCodeVisualisatio
                     this.inputMapping,
                     this.outputMapping,
                     this.userInterfaceProvider,
+                    this.renderer
                 );
             });
     }

@@ -1,19 +1,15 @@
 import React, { ReactElement } from "react";
-import "./monocle-code-editor.css";
+import "./augmented-code-editor.css";
 import { GlobalContext } from "../../context";
 import { CodeVisualisation } from "../../core/visualisations/CodeVisualisation";
-import { CodeEditor } from "./CodeEditor";
-import { createRangesToHighlightForCodeVisualisations, createRangesToHighlightFromGlobalCodeEditorRanges } from "./RangeToHighlight";
+import { CodeEditor } from "../code-editor/CodeEditor";
+import { createRangesToHighlightForCodeVisualisations, createRangesToHighlightFromGlobalCodeEditorRanges } from "../code-editor/RangeToHighlight";
 
 export type Props = {
 
 };
 
-type State = {
-
-};
-
-export class MonocleCodeEditor extends React.Component<Props, State> {
+export class AugmentedCodeEditor extends React.Component<Props> {
     private codeEditorRef: React.RefObject<CodeEditor>;
     private codeVisualisationContainerRef: React.RefObject<HTMLDivElement>;
 
@@ -22,8 +18,6 @@ export class MonocleCodeEditor extends React.Component<Props, State> {
 
         this.codeEditorRef = React.createRef();
         this.codeVisualisationContainerRef = React.createRef();
-
-        this.state = {};
     }
 
     private renderLocalCodeVisualisations(codeVisualisations: CodeVisualisation[]): ReactElement {

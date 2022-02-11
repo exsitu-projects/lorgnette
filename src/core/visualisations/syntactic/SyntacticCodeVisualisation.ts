@@ -10,6 +10,8 @@ import { CodeVisualisationType } from "../CodeVisualisationType";
 import { SyntacticCodeVisualisationProvider } from "./SyntacticCodeVisualisationProvider";
 import { Document } from "../../documents/Document";
 import { UserInterfaceProvider } from "../../user-interfaces/UserInterfaceProvider";
+import { Renderer } from "../../renderers/Renderer";
+import { ClassOf } from "../../../utilities/types";
 
 export class SyntacticCodeVisualisation extends AbstractCodeVisualisation<CodeVisualisationType.Syntactic> {
     private currentCodeBinding: {
@@ -20,6 +22,7 @@ export class SyntacticCodeVisualisation extends AbstractCodeVisualisation<CodeVi
     readonly inputMapping: InputMapping<CodeVisualisationType.Syntactic>;
     readonly outputMapping: OutputMapping<CodeVisualisationType.Syntactic> | null;
     readonly userInterface: UserInterface;
+    readonly renderer: ClassOf<Renderer>;
 
     constructor(
         provider: SyntacticCodeVisualisationProvider,
@@ -28,7 +31,8 @@ export class SyntacticCodeVisualisation extends AbstractCodeVisualisation<CodeVi
         sites: SyntacticSite[],
         inputMapping: InputMapping<CodeVisualisationType.Syntactic>,
         outputMapping: OutputMapping<CodeVisualisationType.Syntactic> | null,
-        userInterfaceProvider: UserInterfaceProvider
+        userInterfaceProvider: UserInterfaceProvider,
+        renderer: ClassOf<Renderer>
     ) {
         super(provider);
 
@@ -40,6 +44,7 @@ export class SyntacticCodeVisualisation extends AbstractCodeVisualisation<CodeVi
         this.inputMapping = inputMapping;
         this.outputMapping = outputMapping;
         this.userInterface = userInterfaceProvider.provide(this);
+        this.renderer = renderer;
         
         this.initialise();
     }

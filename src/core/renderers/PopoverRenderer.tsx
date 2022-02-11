@@ -1,15 +1,12 @@
 import React, { ReactElement } from "react";
 import { Button } from "@blueprintjs/core";
 import { Popover2, Popover2TargetProps } from "@blueprintjs/popover2";
-import { CodeVisualisation } from "../../core/visualisations/CodeVisualisation";
-import { CodeEditor } from "./CodeEditor";
+import { Renderer, Props } from "./Renderer";
 
-type Props = {
-    codeVisualisation: CodeVisualisation;
-    codeEditorRef: React.RefObject<CodeEditor>;
-};
 
-export class CodeVisualisationRenderer extends React.Component<Props> {
+export class PopoverRenderer extends Renderer {
+    readonly name: string = "popover";
+
     private wrapperRef: React.RefObject<HTMLDivElement>;
 
     constructor(props: Props) {
