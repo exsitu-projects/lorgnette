@@ -298,7 +298,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.applyEdits();
         }),
         new RegexEditorProvider(),
-        ButtonPopoverRenderer.makeProvider("🔎 edit regex")
+        ButtonPopoverRenderer.makeProvider()
     ),
 
 
@@ -338,7 +338,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.applyEdits();
         }),
         new RegexEditorProvider(),
-        ButtonPopoverRenderer.makeProvider("🔎 edit regex")
+        ButtonPopoverRenderer.makeProvider()
     ),
 
 
@@ -465,7 +465,9 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.applyEdits();
         }),
         new PlotStyleEditorProvider(),
-        ButtonPopoverRenderer.makeProvider("🎨 edit style")
+        ButtonPopoverRenderer.makeProvider({
+            buttonContent: "🎨 edit style"
+        })
     ),
 ];
 

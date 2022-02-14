@@ -4,40 +4,33 @@ import { Button, ButtonProps } from "@blueprintjs/core";
 import { Popover2TargetProps } from "@blueprintjs/popover2";
 import { PopoverRenderer } from "./PopoverRenderer";
 import { RendererProvider } from "../RendererProvider";
+import { ButtonPopoverRendererSettings, DEFAULT_BUTTON_POPOVER_RENDERER_SETTINGS, deriveButtonPopoverRendererSettingsFrom } from "./ButtonPopoverRendererSettings";
+import { RendererProps } from "../Renderer";
 
-export type ButtonContent = string | ReactElement;
 
 export class ButtonPopoverRenderer extends PopoverRenderer {
     readonly name: string = "button-popover";
+    protected settings: ButtonPopoverRendererSettings;
 
-    protected get buttonContent(): ButtonContent {
-        return "";
-    }
-
-    protected get buttonProps(): ButtonProps {
-        return {};
+    constructor(props: RendererProps) {
+        super(props);
+        this.settings = DEFAULT_BUTTON_POPOVER_RENDERER_SETTINGS;
     }
 
     protected renderPopoverTarget(props: Popover2TargetProps): ReactElement {
         const { isOpen, ref, ...targetProps } = props;
         return <Button
-            {...this.buttonProps}
+            {...this.settings.buttonProps}
             elementRef={props.ref as any}
             {...targetProps}
         >
-            {this.buttonContent}
+            {this.settings.buttonContent}
         </Button>;
     }
 
-    static makeProvider(content: ButtonContent, props: ButtonProps = {}): RendererProvider {
+    static makeProvider(settings: Partial<ButtonPopoverRendererSettings> = {}): RendererProvider {
         const Renderer = class extends ButtonPopoverRenderer {
-            protected get buttonContent(): ButtonContent {
-                return content;
-            }
-        
-            protected get buttonProps(): ButtonProps {
-                return props;
-            }
+            protected settings = deriveButtonPopoverRendererSettingsFrom(settings);
         };
 
         return {
