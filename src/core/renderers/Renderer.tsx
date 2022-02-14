@@ -1,5 +1,4 @@
 import React, { ReactElement } from "react";
-import { Button } from "@blueprintjs/core";
 import { CodeVisualisation } from "../visualisations/CodeVisualisation";
 import { CodeEditor } from "../../components/code-editor/CodeEditor";
 
