@@ -29,6 +29,7 @@ import { BooleanNode } from "./core/languages/json/nodes/BooleanNode";
 import { ButtonPopoverRenderer } from "./core/renderers/popover/ButtonPopoverRenderer";
 import { AsideRenderer } from "./core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "./core/renderers/aside/AsideRendererSettings";
+import { ButtonPopupRenderer } from "./core/renderers/popup/ButtonPopupRenderer";
 
 export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
     // new TextualCodeVisualisationProvider(
@@ -465,7 +466,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.applyEdits();
         }),
         new PlotStyleEditorProvider(),
-        ButtonPopoverRenderer.makeProvider({
+        ButtonPopupRenderer.makeProvider({
             buttonContent: "🎨 edit style"
         })
     ),

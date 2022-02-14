@@ -1,5 +1,5 @@
 .ui.plot-style-editor {
-    background-color: rgba(0, 0, 0, 0.05);
+    /* background-color: rgba(0, 0, 0, 0.05); */
     padding: 1em;
 }
 
@@ -17,6 +17,7 @@
 .ui.plot-style-editor .property-editor .label {
     /* grid-area: label; */
     flex-grow: 1;
+    min-width: 80px;
     font-size: 0.9em;
     text-transform: uppercase;
 }
