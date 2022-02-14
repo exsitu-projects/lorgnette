@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import "./popover-renderer.css";
+import "../renderers.css";
 import { Button, ButtonProps } from "@blueprintjs/core";
 import { Popover2TargetProps } from "@blueprintjs/popover2";
 import { PopoverRenderer } from "./PopoverRenderer";

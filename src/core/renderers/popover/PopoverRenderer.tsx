@@ -1,5 +1,5 @@
 import React, { ComponentProps, ReactElement } from "react";
-import "./popover-renderer.css";
+import "../renderers.css";
 import { Popover2, Popover2Props, Popover2TargetProps } from "@blueprintjs/popover2";
 import { Renderer, RendererProps } from "../Renderer";
 
@@ -39,7 +39,7 @@ export abstract class PopoverRenderer extends Renderer {
             // Position the wrapper next to the markers' bounding box.
             const top = visualisedCodeBoundingBox.top;
             // const top = visualisedCodeBoundingBox.top - (codeVisualisationBoundingBox.height / 2);
-            const left = visualisedCodeBoundingBox.right + 20;
+            const left = visualisedCodeBoundingBox.right + 10;
 
             wrapperRef.style.top = `${top}px`;
             wrapperRef.style.left = `${left}px`;

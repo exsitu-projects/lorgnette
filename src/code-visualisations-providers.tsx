@@ -27,6 +27,8 @@ import { convertCssColorToRgbColor, convertRgbColorToCssColor, RgbColor } from "
 import { NumberNode } from "./core/languages/json/nodes/NumberNode";
 import { BooleanNode } from "./core/languages/json/nodes/BooleanNode";
 import { ButtonPopoverRenderer } from "./core/renderers/popover/ButtonPopoverRenderer";
+import { AsideRenderer } from "./core/renderers/aside/AsideRenderer";
+import { AsideRendererPosition } from "./core/renderers/aside/AsideRendererSettings";
 
 export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
     // new TextualCodeVisualisationProvider(
@@ -100,7 +102,9 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.applyEdits();
         }),
         new ColorPickerProvider(),
-        ButtonPopoverRenderer.makeProvider("Color")
+        AsideRenderer.makeProvider({
+            onlyShowWhenCursorIsInRange: true
+        })
     ),
             
             
@@ -221,7 +225,10 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             NodeMoveProcesser.processTreeOutput(output, arg.document);
         }),
         new TreeProvider<SyntaxTreeNode>(),
-        ButtonPopoverRenderer.makeProvider("TSX")
+        AsideRenderer.makeProvider({
+            onlyShowWhenCursorIsInRange: true,
+            position: AsideRendererPosition.RightSideOfEditor
+        })
     ),
 
 
@@ -291,7 +298,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.applyEdits();
         }),
         new RegexEditorProvider(),
-        ButtonPopoverRenderer.makeProvider("Regex")
+        ButtonPopoverRenderer.makeProvider("🔎 edit regex")
     ),
 
 
@@ -331,7 +338,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.applyEdits();
         }),
         new RegexEditorProvider(),
-        ButtonPopoverRenderer.makeProvider("Regex")
+        ButtonPopoverRenderer.makeProvider("🔎 edit regex")
     ),
 
 
@@ -458,7 +465,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.applyEdits();
         }),
         new PlotStyleEditorProvider(),
-        ButtonPopoverRenderer.makeProvider("Vega")
+        ButtonPopoverRenderer.makeProvider("🎨 edit style")
     ),
 ];
 

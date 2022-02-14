@@ -1,0 +1,55 @@
+/* Popover renderers */
+
+.code-visualisation-popover-wrapper {
+    position: absolute;
+}
+
+.code-visualisation-popover-wrapper > button.bp3-button,
+.code-visualisation-popover-wrapper > button.bp3-button:active,
+.code-visualisation-popover-wrapper > button.bp3-button.bp3-active,
+.code-visualisation-popover-wrapper > button.bp3-button:hover {
+    display: block;
+    min-width: auto;
+    min-height: auto;
+    margin: 0;
+    padding: 0 0.5ex;
+    background: none;
+    border: 1px solid #aaa;
+    outline: none;
+    box-shadow: none;
+    color: #aaa;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+.code-visualisation-popover-wrapper > button.bp3-button > span {
+    display: inline-block;
+}
+
+.code-visualisation-popover-wrapper > button.bp3-button:hover,
+.code-visualisation-popover-wrapper > button.bp3-button:active,
+.code-visualisation-popover-wrapper > button.bp3-button.bp3-active {
+    background: #eee;
+    border: 1px solid #888;
+    color: #666;
+}
+
+.code-visualisation-popover-content-wrapper {
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+
+
+/* Aside renderers */
+
+.code-visualisation-aside-wrapper {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.code-visualisation-aside-wrapper.hidden {
+    display: none;
+}

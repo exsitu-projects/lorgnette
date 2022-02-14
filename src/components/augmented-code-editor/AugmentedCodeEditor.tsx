@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 import "./augmented-code-editor.css";
 import { GlobalContext } from "../../context";
 import { CodeVisualisation } from "../../core/visualisations/CodeVisualisation";
-import { CodeEditor } from "../code-editor/CodeEditor";
+import { CodeEditor, getCursorPositionInEditor, getSelectionInEditor } from "../code-editor/CodeEditor";
 import { createRangesToHighlightForCodeVisualisations, createRangesToHighlightFromGlobalCodeEditorRanges } from "../code-editor/RangeToHighlight";
 
 export type Props = {
@@ -42,7 +42,12 @@ export class AugmentedCodeEditor extends React.Component<Props> {
                     language={context.document.language}
                     initialContent={context.document.content}
                     onContentChange={newContent => context.updateDocumentContent(newContent)}
-                    onSelectionChange={() => context.updateCodeEditorRanges({ selected: [] })}
+                    onSelectionChange={aceEditor =>
+                        context.updateCodeEditorRanges({ selected: [getSelectionInEditor(aceEditor, context.document)] })
+                    }
+                    onCursorChange={aceEditor =>
+                        context.updateCodeEditorCursorPosition(getCursorPositionInEditor(aceEditor, context.document))
+                    }
                     rangesToHighlight={[
                         ...createRangesToHighlightForCodeVisualisations(context.codeVisualisations),
                         ...createRangesToHighlightFromGlobalCodeEditorRanges(context.codeEditorRanges)
