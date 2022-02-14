@@ -3,6 +3,7 @@ import { Range } from "../../documents/Range";
 import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
 import { RegexEditorComponent } from "./RegexEditorComponent";
+import { RegexEditorPopupComponent } from "./RegexEditorPopupComponent";
 
 export type Input = {
     regex: RegExp;
@@ -20,12 +21,14 @@ export class RegexEditor extends UserInterface<Input, Output> {
 
     private regex: RegExp;
     private regexRange: Range | null;
+    private withPopup: boolean;
 
-    constructor(visualisation: CodeVisualisation) {
+    constructor(visualisation: CodeVisualisation, withPopup: boolean = false) {
         super(visualisation);
 
         this.regex = RegExp("");
         this.regexRange = null;
+        this.withPopup = withPopup;
     }
 
     setInput(newInput: Input): void {
@@ -34,14 +37,18 @@ export class RegexEditor extends UserInterface<Input, Output> {
     }
 
     createViewContent(): JSX.Element {
-        return <RegexEditorComponent
-            regex={this.regex}
-            regexRange={this.regexRange}
-            onChange={(regexContent, regexFlags) => {
+        const props = {
+            regex: this.regex,
+            regexRange: this.regexRange,
+            onChange: (regexContent: string, regexFlags: string) => {
                 this.regex = new RegExp(regexContent, regexFlags);
                 this.declareModelChange();
-            }}
-        />;
+            }
+        };
+
+        return this.withPopup
+            ? <RegexEditorPopupComponent {...props} />
+            : <RegexEditorComponent {...props} />;
     }
 
     protected get modelOutput(): Output {

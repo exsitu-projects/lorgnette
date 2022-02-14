@@ -5,7 +5,6 @@ import { RegexEditor } from "./RegexEditor";
 
 export class RegexEditorProvider implements UserInterfaceProvider {
     provide(visualisation: CodeVisualisation): UserInterface<UserInterfaceInput, UserInterfaceOutput> {
-        return new RegexEditor(visualisation);
+        return new RegexEditor(visualisation, true);
     }
-
 }

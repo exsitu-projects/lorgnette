@@ -1,11 +1,12 @@
 import React from "react";
+import { SplitRegex } from "../../../utilities/SplitRegex";
 
 type Props = {
-    src: string;
+    splitRegex: SplitRegex;
     htmlAttributes: Record<string, string>;
 };
 
-export class Iframe extends React.PureComponent<Props> {
+export class RegulexIframe extends React.PureComponent<Props> {
     private iframeContainerRef: React.RefObject<HTMLDivElement>;
 
     constructor(props: Props) {
@@ -13,10 +14,15 @@ export class Iframe extends React.PureComponent<Props> {
         this.iframeContainerRef = React.createRef();
     }
 
+    private get url(): string {
+        const encodedRegexBody = encodeURIComponent(this.props.splitRegex.body);
+        const encodedRegexFlags = encodeURIComponent(this.props.splitRegex.flags);
+
+        return `https://jex.im/regulex/#!embed=true&flags=${encodedRegexFlags}&re=${encodedRegexBody}`;
+    }
+
     private dynamicallyCreateIframe(): void {
         const containerNode = this.iframeContainerRef.current;
-        console.log(this.props.src)
-
         const htmlAttributesAsText = Object.entries(this.props.htmlAttributes)
             .map(([key, value]) => `${key}="${value.replace("\"", "\\\"")}"`)
             .join("\n");
@@ -24,7 +30,7 @@ export class Iframe extends React.PureComponent<Props> {
         if (containerNode) {
             containerNode.innerHTML = `
                 <iframe
-                    src="${this.props.src}"
+                    src="${this.url}"
                     sandbox="allow-scripts"
                     ${htmlAttributesAsText}
                 ></iframe>
@@ -33,7 +39,7 @@ export class Iframe extends React.PureComponent<Props> {
     }
 
     componentDidUpdate(previousProps: Props) {
-        if (previousProps.src === this.props.src) {
+        if (previousProps.splitRegex.isEqualTo(this.props.splitRegex)) {
             return;
         }
 
