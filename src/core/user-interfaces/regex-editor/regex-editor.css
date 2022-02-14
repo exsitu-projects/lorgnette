@@ -44,7 +44,33 @@
 
 
 
-/* Popup editor */
+/* Editor */
+
+.regex-editor-with-diagram {
+    display: flex;
+    flex-direction: column;
+}
+
+.regex-editor {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: 0 0 1em 0;
+}
+
+.regex-editor .regex-body {
+    flex-grow: 4;
+    margin-right: 1em;
+}
+
+.regex-editor .regex-flags {
+    flex-grow: 1;
+}
+
+
+
+
+/* Popup */
 
 .regex-popup-content-wrapper {
     display: flex;
@@ -63,19 +89,4 @@
 .regex-popup-content-panel,
 .regex-popup-content-panel * {
     z-index: 1000;
-}
-
-.regex-popup-content-panel .regex-editor {
-    display: flex;
-    flex-direction: row;
-    margin: 0 0 1em 0;
-}
-
-.regex-popup-content-panel .regex-editor .regex-body {
-    flex-grow: 3;
-    margin-right: 1em;
-}
-
-.regex-popup-content-panel .regex-editor .regex-flags {
-    flex-grow: 1;
 }

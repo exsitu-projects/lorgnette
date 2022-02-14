@@ -42,12 +42,12 @@ export class RegexEditorComponent extends React.Component<Props> {
     }
 
     render() {
-        return <>
+        return <div className="regex-editor-with-diagram">
             {this.createEditor()}
             <LargeRegexDiagramComponent
                 regex={this.props.regex}
                 regexRange={this.props.regexRange}
             />
-        </>;
+        </div>;
     }
 }

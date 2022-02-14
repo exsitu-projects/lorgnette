@@ -1,11 +1,12 @@
 import React from "react";
 import { Range } from "../../documents/Range";
 import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
-import { UserInterface, UserInterfaceOutput } from "../UserInterface";
+import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../UserInterface";
+import { UserInterfaceProvider } from "../UserInterfaceProvider";
 import { RegexEditorComponent } from "./RegexEditorComponent";
 import { RegexEditorPopupComponent } from "./RegexEditorPopupComponent";
 
-export type Input = {
+export interface Input extends UserInterfaceInput {
     regex: RegExp;
     range?: Range;
 };
@@ -63,5 +64,13 @@ export class RegexEditor extends UserInterface<Input, Output> {
     updateModel(input: Input): void {
         // TODO: check input
         this.setInput(input);
+    }
+
+    static makeProvider(withPopup: boolean = false): UserInterfaceProvider {
+        return {
+            provide: (visualisation: CodeVisualisation): UserInterface<Input, Output> => {
+                return new RegexEditor(visualisation, withPopup);
+            }
+        };
     }
 }

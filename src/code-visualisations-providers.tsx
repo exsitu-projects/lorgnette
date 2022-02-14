@@ -6,7 +6,6 @@ import { SKIP_MATCH_DESCENDANTS, SyntaxTreePattern } from "./core/languages/Synt
 import { ProgrammableInputMapping } from "./core/mappings/ProgrammableInputMapping";
 import { ProgrammableOutputMapping } from "./core/mappings/ProgrammableOutputMapping";
 import { Output } from "./core/user-interfaces/color-picker/ColorPicker";
-import { RegexEditorProvider } from "./core/user-interfaces/regex-editor/RegexEditorProvider";
 import { TreeProvider } from "./core/user-interfaces/tree/TreeProvider";
 import { NodeMoveProcesser } from "./core/user-interfaces/tree/utilities/NodeMoveProcesser";
 import { SyntacticCodeVisualisationProvider } from "./core/visualisations/syntactic/SyntacticCodeVisualisationProvider";
@@ -30,6 +29,7 @@ import { ButtonPopoverRenderer } from "./core/renderers/popover/ButtonPopoverRen
 import { AsideRenderer } from "./core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "./core/renderers/aside/AsideRendererSettings";
 import { ButtonPopupRenderer } from "./core/renderers/popup/ButtonPopupRenderer";
+import { RegexEditor } from "./core/user-interfaces/regex-editor/RegexEditor";
 
 export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
     // new TextualCodeVisualisationProvider(
@@ -298,8 +298,8 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.replace(regexArgumentsRange, newRegexArguments);
             editor.applyEdits();
         }),
-        new RegexEditorProvider(),
-        ButtonPopoverRenderer.makeProvider()
+        RegexEditor.makeProvider(),
+        ButtonPopupRenderer.makeProvider()
     ),
 
 
@@ -338,8 +338,8 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.replace(regexRange, regex.toString());
             editor.applyEdits();
         }),
-        new RegexEditorProvider(),
-        ButtonPopoverRenderer.makeProvider()
+        RegexEditor.makeProvider(),
+        ButtonPopupRenderer.makeProvider()
     ),
 
 
