@@ -1,5 +1,6 @@
 import React from "react";
 import { Document } from "./core/documents/Document";
+import { ABSOLUTE_ORIGIN_POSITION, Position } from "./core/documents/Position";
 import { Range } from "./core/documents/Range";
 import { Language, SUPPORTED_LANGUAGES } from "./core/languages/Language";
 import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
@@ -21,9 +22,12 @@ export const defaultGlobalContext = {
   codeEditorLanguage: DEFAULT_LANGUAGE,
   updateCodeEditorLanguage: (newlanguage: Language) => {},
 
+  codeEditorCursorPosition: ABSOLUTE_ORIGIN_POSITION,
+  updateCodeEditorCursorPosition: (newPosition: Position) => {},
+
   codeEditorRanges: defaultCodeEditorRanges,
   updateCodeEditorRanges: (ranges: Partial<CodeEditorRanges>) => {},
-  
+
   document: new Document(DEFAULT_LANGUAGE, DEFAULT_LANGUAGE.codeExample),
   updateDocumentContent: (newContent: string) => {},
   

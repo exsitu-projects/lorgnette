@@ -12,19 +12,24 @@ import { Range } from "../../core/documents/Range";
 import { Document } from "../../core/documents/Document";
 import { MarkerSet } from "./MarkerSet";
 import { RangeToHighlight } from "./RangeToHighlight";
+import { Position } from "../../core/documents/Position";
 
+export function getCursorPositionInEditor(aceEditor: any, document: Document): Position {
+  const cursorLine = aceEditor.cursor.row;
+  const cursorColumn = aceEditor.cursor.column;
+  return document.getPositionAtLineAndColumn(cursorLine, cursorColumn);
+}
 
-export function createSelectionRange(aceEditor: any, document: Document): Range {
-  const anchorLine = aceEditor.anchor.row - 1;
-  const anchorColumn = aceEditor.anchor.column - 1;
+export function getSelectionInEditor(aceEditor: any, document: Document): Range {
+  const anchorLine = aceEditor.anchor.row ;
+  const anchorColumn = aceEditor.anchor.column;
   const anchorPosition = document.getPositionAtLineAndColumn(anchorLine, anchorColumn);
 
-  const cursorLine = aceEditor.cursor.row - 1;
-  const cursorColumn = aceEditor.cursor.column - 1;
+  const cursorLine = aceEditor.cursor.row;
+  const cursorColumn = aceEditor.cursor.column;
   const cursorPosition = document.getPositionAtLineAndColumn(cursorLine, cursorColumn);
 
-  return new Range(anchorPosition, cursorPosition);
-  
+  return Range.fromUnsortedPositions(anchorPosition, cursorPosition);
 }
 
 type Props = {

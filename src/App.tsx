@@ -8,6 +8,7 @@ import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
 import { Document, DocumentChangeOrigin } from "./core/documents/Document";
 import { Tabs, Tab } from "@blueprintjs/core";
 import { DEFAULT_CODE_VISUALISATION_PROVIDERS } from "./code-visualisations-providers";
+import { ABSOLUTE_ORIGIN_POSITION, Position } from "./core/documents/Position";
 
 type Props = {};
 type State = GlobalContextContent;
@@ -26,6 +27,13 @@ export default class App extends React.Component<Props, State> {
           codeEditorLanguage: newLanguage,
           document: newDocument,
           codeVisualisations: newCodeVisualisations
+        });
+      },
+
+      codeEditorCursorPosition: ABSOLUTE_ORIGIN_POSITION,
+      updateCodeEditorCursorPosition: (newPosition: Position) => {
+        this.setState({
+          codeEditorCursorPosition: newPosition
         });
       },
 
