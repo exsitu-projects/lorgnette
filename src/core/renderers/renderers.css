@@ -2,6 +2,7 @@
 
 .code-visualisation-popover-wrapper {
     position: absolute;
+    z-index: 200;
 }
 
 .code-visualisation-popover-wrapper > button.bp3-button,
@@ -38,6 +39,7 @@
     padding: 10px;
     background-color: #eee;
     box-shadow: 0 0 10px rgba(120, 120, 120, 0.4);
+    z-index: 500;
 }
 
 
@@ -48,6 +50,7 @@
 
 .code-visualisation-popup-wrapper {
     position: absolute;
+    z-index: 200;
 }
 
 .code-visualisation-popup-wrapper > button.bp3-button,
@@ -86,6 +89,7 @@
     justify-content: center;
     width: 100%;
     height: 100%;
+    z-index: 800;
 }
 
 .code-visualisation-popup-content-panel {
@@ -93,9 +97,12 @@
     background-color: #eee;
     border: 2px solid #ccc;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
 }
 
-
+.code-visualisation-popup-content-panel * {
+    z-index: 1000;
+}
 
 
 /* Aside renderers */
@@ -104,6 +111,7 @@
     position: absolute;
     background-color: rgba(255, 255, 255, 0.8);
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    z-index: 500;
 }
 
 .code-visualisation-aside-wrapper.hidden {
