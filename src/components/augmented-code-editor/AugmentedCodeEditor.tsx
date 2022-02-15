@@ -42,9 +42,6 @@ export class AugmentedCodeEditor extends React.Component<Props> {
                     language={context.document.language}
                     initialContent={context.document.content}
                     onContentChange={newContent => context.updateDocumentContent(newContent)}
-                    onSelectionChange={aceEditor =>
-                        context.updateCodeEditorRanges({ selected: [getSelectionInEditor(aceEditor, context.document)] })
-                    }
                     onCursorChange={aceEditor =>
                         context.updateCodeEditorCursorPosition(getCursorPositionInEditor(aceEditor, context.document))
                     }

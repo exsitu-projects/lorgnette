@@ -112,7 +112,7 @@ export class Document {
         const lastLine = lines.pop();
         const previousLines = lines;
 
-        if (!lastLine) {
+        if (lastLine === undefined) {
             throw new Error(`There is no line at the given line index: ${line}`);
         }
 
