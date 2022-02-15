@@ -466,7 +466,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             editor.applyEdits();
         }),
         new PlotStyleEditorProvider(),
-        ButtonPopupRenderer.makeProvider({
+        ButtonPopoverRenderer.makeProvider({
             buttonContent: "🎨 edit style"
         })
     ),
