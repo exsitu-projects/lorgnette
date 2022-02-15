@@ -2,6 +2,7 @@ import React from "react";
 import { Range } from "../../documents/Range";
 import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
+import { UserInterfaceProvider } from "../UserInterfaceProvider";
 import { NodeMoveData, TreeComponent } from "./TreeComponent";
 
 
@@ -74,5 +75,13 @@ export class Tree<T = any> extends UserInterface<Input<T>, Output<T>> {
     updateModel(input: TreeNode<T>): void {
         // TODO: check input
         this.setTopLevelNodes(input);
+    }
+
+    static makeProvider<T = any>(): UserInterfaceProvider {
+        return {
+            provide: (visualisation: CodeVisualisation): UserInterface<Input<T>, Output<T>> => {
+                return new Tree<T>(visualisation);
+            }
+        };
     }
 }

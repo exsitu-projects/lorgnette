@@ -2,6 +2,7 @@ import React from "react";
 import { RgbColor } from "../../../utilities/RgbColor";
 import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
 import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../UserInterface";
+import { UserInterfaceProvider } from "../UserInterfaceProvider";
 import { PlotStyleEditorChangeHandler, PlotStyleEditorComponent } from "./PlotStyleEditorComponent";
 import { DEFAULT_PLOT_STYLE_EDITOR_SETTINGS, derivePlotStyleEditorSettingsFromDefaults, PartialPlotStyleEditorSettings, PlotStyleEditorSettings } from "./PlotStyleEditorSettings";
 
@@ -100,5 +101,13 @@ export class PlotStyleEditor extends UserInterface<Input, Output> {
     updateModel(input: Input): void {
         // TODO: check input
         this.setStateFromInput(input);
+    }
+
+    static makeProvider(): UserInterfaceProvider {
+        return {
+            provide: (visualisation: CodeVisualisation): UserInterface<Input, Output> => {
+                return new PlotStyleEditor(visualisation);
+            }
+        };
     }
 }

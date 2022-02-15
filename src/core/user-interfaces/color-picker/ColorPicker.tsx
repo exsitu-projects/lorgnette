@@ -2,6 +2,7 @@ import React from "react";
 import { BLACK, RgbColor } from "../../../utilities/RgbColor";
 import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
+import { UserInterfaceProvider } from "../UserInterfaceProvider";
 import { ColorPickerComponent } from "./ColorPickerComponent";
 
 
@@ -63,5 +64,13 @@ export class ColorPicker extends UserInterface<Input, Output> {
     updateModel(input: Input): void {
         // TODO: check input
         this.setColor(input);
+    }
+
+    static makeProvider(): UserInterfaceProvider {
+        return {
+            provide: (visualisation: CodeVisualisation): UserInterface<Input, Output> => {
+                return new ColorPicker(visualisation);
+            }
+        };
     }
 }

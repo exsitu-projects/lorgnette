@@ -1,6 +1,7 @@
 import React from "react";
 import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
+import { UserInterfaceProvider } from "../UserInterfaceProvider";
 import { InputPrinterComponent } from "./InputPrinterComponent";
 
 export type Input = any;
@@ -36,5 +37,13 @@ export class InputPrinter extends UserInterface<Input, Output> {
     updateModel(input: Input): void {
         // TODO: check input
         this.setInput(input);
+    }
+
+    static makeProvider(): UserInterfaceProvider {
+        return {
+            provide: (visualisation: CodeVisualisation): UserInterface<Input, Output> => {
+                return new InputPrinter(visualisation);
+            }
+        };
     }
 }

@@ -5,23 +5,20 @@ import { SyntaxTreeNode } from "./core/languages/SyntaxTreeNode";
 import { SKIP_MATCH_DESCENDANTS, SyntaxTreePattern } from "./core/languages/SyntaxTreePattern";
 import { ProgrammableInputMapping } from "./core/mappings/ProgrammableInputMapping";
 import { ProgrammableOutputMapping } from "./core/mappings/ProgrammableOutputMapping";
-import { Output } from "./core/user-interfaces/color-picker/ColorPicker";
-import { TreeProvider } from "./core/user-interfaces/tree/TreeProvider";
+import { ColorPicker } from "./core/user-interfaces/color-picker/ColorPicker";
 import { NodeMoveProcesser } from "./core/user-interfaces/tree/utilities/NodeMoveProcesser";
 import { SyntacticCodeVisualisationProvider } from "./core/visualisations/syntactic/SyntacticCodeVisualisationProvider";
 import { RegexPatternFinder } from "./core/code-patterns/textual/RegexPatternFinder";
 import { ProgrammableSiteProvider } from "./core/sites/syntactic/ProgrammableSiteProvider";
 import { RangeSiteProvider } from "./core/sites/textual/RangeSiteProvider";
 import { RegexSiteProvider } from "./core/sites/textual/RegexSiteProvider";
-import { ColorPickerProvider } from "./core/user-interfaces/color-picker/ColorPickerProvider";
 import { TextualCodeVisualisationProvider } from "./core/visualisations/textual/TextualCodeVisualisationProvider";
 import { Range } from "./core/documents/Range";
-import { TreeNode } from "./core/user-interfaces/tree/Tree";
-import { PlotStyleEditorProvider } from "./core/user-interfaces/plot-style-editor/PlotStyleEditorProvider";
+import { Tree, TreeNode } from "./core/user-interfaces/tree/Tree";
 import { PropertyNode } from "./core/languages/json/nodes/PropertyNode";
 import { ObjectNode } from "./core/languages/json/nodes/ObjectNode";
 import { StringNode } from "./core/languages/json/nodes/StringNode";
-import { PlotStyle } from "./core/user-interfaces/plot-style-editor/PlotStyleEditor";
+import { PlotStyle, PlotStyleEditor } from "./core/user-interfaces/plot-style-editor/PlotStyleEditor";
 import { convertCssColorToRgbColor, convertRgbColorToCssColor, RgbColor } from "./utilities/RgbColor";
 import { NumberNode } from "./core/languages/json/nodes/NumberNode";
 import { BooleanNode } from "./core/languages/json/nodes/BooleanNode";
@@ -63,8 +60,10 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             
     //         documentEditor.applyEdits();
     //     }),
-    //     new ColorPickerProvider(),
-    //     ButtonPopoverRenderer.makeProvider("Color")
+    //     ColorPicker.makeProvider(),
+    //     AsideRenderer.makeProvider({
+    //         onlyShowWhenCursorIsInRange: true
+    //     })
     // ),
         
         
@@ -102,7 +101,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             
             editor.applyEdits();
         }),
-        new ColorPickerProvider(),
+        ColorPicker.makeProvider(),
         AsideRenderer.makeProvider({
             onlyShowWhenCursorIsInRange: true
         })
@@ -146,8 +145,10 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             
     //         documentEditor.applyEdits();
     //     }),
-    //     new ColorPickerProvider(),
-    //     ButtonPopoverRenderer.makeProvider("Color")
+    //     ColorPicker.makeProvider(),
+    //     AsideRenderer.makeProvider({
+    //         onlyShowWhenCursorIsInRange: true
+    //     })
     // ),
     
 
@@ -225,7 +226,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             const output = arg.output;
             NodeMoveProcesser.processTreeOutput(output, arg.document);
         }),
-        new TreeProvider<SyntaxTreeNode>(),
+        Tree.makeProvider<SyntaxTreeNode>(),
         AsideRenderer.makeProvider({
             onlyShowWhenCursorIsInRange: true,
             position: AsideRendererPosition.RightSideOfEditor
@@ -465,7 +466,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
 
             editor.applyEdits();
         }),
-        new PlotStyleEditorProvider(),
+        PlotStyleEditor.makeProvider(),
         ButtonPopoverRenderer.makeProvider({
             buttonContent: "🎨 edit style"
         })
