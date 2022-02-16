@@ -1,5 +1,5 @@
 import React from "react";
-import { RgbColor } from "../../../utilities/RgbColor";
+import { Color } from "../../../utilities/Color";
 import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
 import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../UserInterface";
 import { UserInterfaceProvider } from "../UserInterfaceProvider";
@@ -8,7 +8,7 @@ import { DEFAULT_PLOT_STYLE_EDITOR_SETTINGS, derivePlotStyleEditorSettingsFromDe
 
 export type PlotStyle = {
     type?: string;
-    color?: RgbColor;
+    color?: Color;
     filled?: boolean;
     opacity?: number;
     thickness?: number;

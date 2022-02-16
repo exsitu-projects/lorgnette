@@ -33,9 +33,9 @@
 }
 
 .color-picker-popover {
-    padding: 2px;
-    background-color: #000;
     border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    z-index: 1000;
 }
 
 .ui.plot-style-editor .property-editor .color-preview {

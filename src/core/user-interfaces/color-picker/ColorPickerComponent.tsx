@@ -1,10 +1,10 @@
 import React from "react";
 import { RgbColorPicker } from "react-colorful";
-import { RgbColor } from "../../../utilities/RgbColor";
+import { Color } from "../../../utilities/Color";
 
 type Props = {
-    color: RgbColor,
-    onChange(newColor: RgbColor): void;
+    color: Color,
+    onChange(newColor: Color): void;
     onDragStart(): void;
     onDragEnd(): void;
 };
@@ -13,7 +13,7 @@ export class ColorPickerComponent extends React.PureComponent<Props> {
     render() {
         return <RgbColorPicker
             color={this.props.color}
-            onChange={this.props.onChange}
+            onChange={newColor => this.props.onChange(Color.fromRgb(newColor))}
             onMouseDown={this.props.onDragStart}
             onMouseUp={this.props.onDragEnd}
         />;

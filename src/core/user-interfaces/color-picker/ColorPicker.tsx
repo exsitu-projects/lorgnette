@@ -1,5 +1,5 @@
 import React from "react";
-import { BLACK, RgbColor } from "../../../utilities/RgbColor";
+import { BLACK, Color } from "../../../utilities/Color";
 import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
 import { UserInterfaceProvider } from "../UserInterfaceProvider";
@@ -7,18 +7,18 @@ import { ColorPickerComponent } from "./ColorPickerComponent";
 
 
 
-export interface Input extends RgbColor {};
+export interface Input extends Color {};
 export interface Output extends UserInterfaceOutput {
-    data: RgbColor
+    data: Color
 };
 
 export class ColorPicker extends UserInterface<Input, Output> {
     readonly className = "color-picker";
     
-    private color: RgbColor;
+    private color: Color;
     // private isCurrentlyUsed: boolean;
 
-    constructor(visualisation: CodeVisualisation, color: RgbColor = BLACK) {
+    constructor(visualisation: CodeVisualisation, color: Color = BLACK) {
         super(visualisation);
 
         this.color = color;
@@ -29,12 +29,12 @@ export class ColorPicker extends UserInterface<Input, Output> {
         return 100; // ms
     }
 
-    setColor(newColor: RgbColor): void {
+    setColor(newColor: Color): void {
         this.color = newColor;
     }
 
     createViewContent(): JSX.Element {
-        const onChange = (newColor: RgbColor) => {
+        const onChange = (newColor: Color) => {
             this.color = newColor;
             this.declareModelChange();
         };

@@ -3,12 +3,11 @@ import "./plot-style-editor.css";
 import { Switch, Label, Slider, Button, MenuItem } from "@blueprintjs/core";
 import { ItemRenderer, Suggest } from "@blueprintjs/select";
 import { Popover2 } from "@blueprintjs/popover2";
-import { RgbColorPicker } from "react-colorful";
+import { RgbaColorPicker } from "react-colorful";
 import { clamp, round } from "../../../utilities/math";
 import { PlotStyle } from "./PlotStyleEditor";
 import { PlotStyleEditorSettings } from "./PlotStyleEditorSettings";
-import { convertRgbColorToCssColor } from "../../../utilities/RgbColor";
-import { start } from "repl";
+import { Color } from "../../../utilities/Color";
 
 export type PlotStyleEditorChangeHandler = (
     styleChange: PlotStyle,
@@ -115,11 +114,11 @@ export class PlotStyleEditorComponent extends React.PureComponent<Props> {
                                 modifiers={{ arrow: { enabled: false }}}
                                 content={
                                     <div className="color-picker-popover">
-                                        <RgbColorPicker
+                                        <RgbaColorPicker
                                             color={color}
                                             onMouseDown={() => this.props.onTransientChangeStart()}
                                             onMouseUp={() => this.props.onTransientChangeEnd()}
-                                            onChange={newColor => this.processChange({ color: newColor })}
+                                            onChange={newColor => this.processChange({ color: Color.fromRgba(newColor) })}
                                         />
                                     </div>
                                 }
@@ -130,7 +129,7 @@ export class PlotStyleEditorComponent extends React.PureComponent<Props> {
                                     >
                                         <div
                                             className="color-preview"
-                                            style={{ backgroundColor: convertRgbColorToCssColor(color) }}
+                                            style={{ backgroundColor: color.css }}
                                         />
                                     </Button>
                                 }

@@ -19,7 +19,7 @@ import { PropertyNode } from "./core/languages/json/nodes/PropertyNode";
 import { ObjectNode } from "./core/languages/json/nodes/ObjectNode";
 import { StringNode } from "./core/languages/json/nodes/StringNode";
 import { PlotStyle, PlotStyleEditor } from "./core/user-interfaces/plot-style-editor/PlotStyleEditor";
-import { convertCssColorToRgbColor, convertRgbColorToCssColor, RgbColor } from "./utilities/RgbColor";
+import { Color } from "./utilities/Color";
 import { NumberNode } from "./core/languages/json/nodes/NumberNode";
 import { BooleanNode } from "./core/languages/json/nodes/BooleanNode";
 import { ButtonPopoverRenderer } from "./core/renderers/popover/ButtonPopoverRenderer";
@@ -369,8 +369,8 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
 
             const colorProperty = markProperties.find(property => property.key.value === "color");
             style["color"] = colorProperty
-                ? convertCssColorToRgbColor((colorProperty.value as StringNode).value)!
-                : convertCssColorToRgbColor("#4682b4")!;
+                ? Color.fromCss((colorProperty.value as StringNode).value)!
+                : Color.fromCss("#4682b4")!;
 
             const opacityProperty = markProperties.find(property => property.key.value === "opacity");
             style["opacity"] = opacityProperty
@@ -418,7 +418,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
 
                 // Transform the value of the property if needed.
                 if (changedPropertyName === "color") {
-                    newJsonPropertyValue = convertRgbColorToCssColor(newPropertyValue as RgbColor);
+                    newJsonPropertyValue = (newPropertyValue as Color).css;
                 }
 
                 if (typeof newJsonPropertyValue === "string") {

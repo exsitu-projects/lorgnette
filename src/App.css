@@ -64,3 +64,7 @@ body {
     background-color: #FAFAFA;
     color: rgb(61, 100, 228);
 }
+
+.bp3-overlay-content {
+    /* z-index: 500; */
+}
