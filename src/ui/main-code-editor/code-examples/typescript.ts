@@ -1,5 +1,5 @@
-import { Document } from "../../core/documents/Document";
-import { TYPESCRIPT_LANGUAGE } from "../../core/languages/typescript/language";
+import { Document } from "../../../core/documents/Document";
+import { TYPESCRIPT_LANGUAGE } from "../../../core/languages/typescript/language";
 
 const text = 
 `const color = new Color(100, 150, 200);

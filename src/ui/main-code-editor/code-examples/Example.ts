@@ -1,4 +1,4 @@
-import { Document } from "../../core/documents/Document";
+import { Document } from "../../../core/documents/Document";
 import { MATH_EXAMPLE } from "./maths";
 import { TYPESCRIPT_EXAMPLE } from "./typescript";
 import { VEGA_EXAMPLE } from "./vega";

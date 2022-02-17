@@ -1,15 +1,13 @@
 import React from "react";
 import "./App.css";
-import { CodeEditorPanel } from "./components/panels/CodeEditorPanel";
-import VisualisationProvidersConfigurationPanel from "./components/panels/VisualisationConfigurationPanel";
-import { defaultCodeEditorRanges, DEFAULT_LANGUAGE, GlobalContext, GlobalContextContent } from "./context";
+import { defaultCodeEditorRanges, GlobalContext, GlobalContextContent } from "./context";
 import { Language } from "./core/languages/Language";
 import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
 import { Document, DocumentChangeOrigin } from "./core/documents/Document";
-import { Tabs, Tab } from "@blueprintjs/core";
 import { DEFAULT_CODE_VISUALISATION_PROVIDERS } from "./code-visualisations-providers";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "./core/documents/Position";
-import { DEFAULT_EXAMPLE } from "./components/code-examples/Example";
+import { DEFAULT_EXAMPLE } from "./ui/main-code-editor/code-examples/Example";
+import { MonocleUI } from "./ui/MonocleUI";
 
 type Props = {};
 type State = GlobalContextContent;
@@ -141,24 +139,9 @@ export default class App extends React.Component<Props, State> {
 
   render() {
     return (
-      <section id="MonocleApp">
+      <section id="MonocleApp" style={{ height: "100vh", width: "100vw" }}>
         <GlobalContext.Provider value={this.state}>
-          <Tabs
-            id="monocle-main-panel-tabs"
-            className="monocle-main-panel-tabs"
-            large={true}
-          >
-            <Tab
-              id="code-editor"
-              title="Code editor"
-              panel={<CodeEditorPanel/>}
-            />
-            <Tab
-              id="visualisation-configuration"
-              title="Visualisation configuration"
-              panel={<VisualisationProvidersConfigurationPanel/>}
-            />
-          </Tabs>
+          <MonocleUI />
         </GlobalContext.Provider>
       </section>
     );

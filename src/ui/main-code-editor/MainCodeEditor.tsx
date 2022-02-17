@@ -1,15 +1,15 @@
 import React, { ReactElement } from "react";
-import "./augmented-code-editor.css";
+import "./main-code-editor.css";
 import { GlobalContext } from "../../context";
 import { CodeVisualisation } from "../../core/visualisations/CodeVisualisation";
-import { CodeEditor, getCursorPositionInEditor, getSelectionInEditor } from "../code-editor/CodeEditor";
-import { createRangesToHighlightForCodeVisualisations, createRangesToHighlightFromGlobalCodeEditorRanges } from "../code-editor/RangeToHighlight";
+import { CodeEditor, getCursorPositionInEditor } from "../utilities/code-editor/CodeEditor";
+import { createRangesToHighlightForCodeVisualisations, createRangesToHighlightFromGlobalCodeEditorRanges } from "../utilities/code-editor/RangeToHighlight";
 
 export type Props = {
 
 };
 
-export class AugmentedCodeEditor extends React.Component<Props> {
+export class MainCodeEditor extends React.PureComponent<Props> {
     private codeEditorRef: React.RefObject<CodeEditor>;
     private codeVisualisationContainerRef: React.RefObject<HTMLDivElement>;
 
@@ -21,9 +21,7 @@ export class AugmentedCodeEditor extends React.Component<Props> {
     }
 
     private renderLocalCodeVisualisations(codeVisualisations: CodeVisualisation[]): ReactElement {
-        const localCodeVisualisations = codeVisualisations.filter(visualisation => true); // TODO: update this
-
-        const renderedLocalCodeVisualisations = localCodeVisualisations.map(
+        const renderedLocalCodeVisualisations = codeVisualisations.map(
             visualisation => <visualisation.renderer
                 codeVisualisation={visualisation}
                 codeEditorRef={this.codeEditorRef}
@@ -37,7 +35,7 @@ export class AugmentedCodeEditor extends React.Component<Props> {
 
     render() {
         return <GlobalContext.Consumer>{ context => (
-            <div className="monocle-code-editor-wrapper">
+            <div className="main-code-editor-wrapper">
                 <CodeEditor
                     language={context.document.language}
                     initialContent={context.document.content}

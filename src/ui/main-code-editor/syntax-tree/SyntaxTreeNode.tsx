@@ -1,7 +1,7 @@
 import React from "react";
 import "./syntax-tree.css";
-import { SyntaxTreeNode as Node } from "../../core/languages/SyntaxTreeNode";
-import { CodeRange } from "../utilities/CodeRange";
+import { SyntaxTreeNode as Node } from "../../../core/languages/SyntaxTreeNode";
+import { CodeRange } from "../../utilities/CodeRange";
 
 export interface SyntaxTreeNodeEventHandlerProps {
     onMouseEnterNode?: (syntaxTree: Node) => void;

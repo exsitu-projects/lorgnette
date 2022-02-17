@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import { CodeVisualisation } from "../visualisations/CodeVisualisation";
-import { CodeEditor } from "../../components/code-editor/CodeEditor";
+import { CodeEditor } from "../../ui/utilities/code-editor/CodeEditor";
 
 export interface RendererProps {
     codeVisualisation: CodeVisualisation;

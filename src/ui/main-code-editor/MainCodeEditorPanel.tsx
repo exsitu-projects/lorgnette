@@ -1,13 +1,12 @@
 import React, { ReactElement } from "react";
-import "./panels.css";
-import TabPanel from "./TabPanel";
+import "./main-code-editor-panel.css";
 import { ItemRenderer, Select } from "@blueprintjs/select";
 import { Button, Label, Menu, MenuItem } from "@blueprintjs/core";
 import { GlobalContext, GlobalContextContent } from "../../context";
 import { Language, SUPPORTED_LANGUAGES } from "../../core/languages/Language";
-import { SyntaxTree } from "../syntax-tree/SyntaxTree";
-import { AugmentedCodeEditor } from "../augmented-code-editor/AugmentedCodeEditor";
-import { DEFAULT_EXAMPLE, Example, EXAMPLES } from "../code-examples/Example";
+import { SyntaxTree } from "./syntax-tree/SyntaxTree";
+import { MainCodeEditor } from "./MainCodeEditor";
+import { DEFAULT_EXAMPLE, Example, EXAMPLES } from "./code-examples/Example";
 import { Popover2 } from "@blueprintjs/popover2";
 import { Document } from "../../core/documents/Document";
 
@@ -16,7 +15,7 @@ type State = {
     currentExample: Example;
 };
 
-export class CodeEditorPanel extends React.Component<Props, State> {
+export class MainCodeEditorPanel extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -97,23 +96,21 @@ export class CodeEditorPanel extends React.Component<Props, State> {
     render() {
         return (
             <GlobalContext.Consumer>{ context => (
-                <TabPanel>
-                    <div className="code-editor-panel">
-                        <div className="editor-with-menu">
-                            <div className="menu-bar">
-                                <Label className="bp3-inline" style={{ margin: 0 }}>
-                                    Language:
-                                    {this.renderLanguageSelector(context)}
-                                </Label>
-                                {this.renderExampleSelector(context)}
-                            </div>
-                            <AugmentedCodeEditor/>
+                <div className="monocle-ui-main-panel main-code-editor">
+                    <div className="editor-with-menu">
+                        <div className="menu-bar">
+                            <Label className="bp3-inline" style={{ margin: 0 }}>
+                                Language:
+                                {this.renderLanguageSelector(context)}
+                            </Label>
+                            {this.renderExampleSelector(context)}
                         </div>
-                        <div className="syntax-tree">
-                            {this.renderSyntaxTree(context)}
-                        </div>
+                        <MainCodeEditor/>
                     </div>
-                </TabPanel>
+                    <div className="syntax-tree">
+                        {this.renderSyntaxTree(context)}
+                    </div>
+                </div>
             )}</GlobalContext.Consumer>
         );
     }

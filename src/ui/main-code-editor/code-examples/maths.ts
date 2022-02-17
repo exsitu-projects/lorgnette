@@ -1,5 +1,5 @@
-import { Document } from "../../core/documents/Document";
-import { MATHEMATICS_LANGUAGE } from "../../core/languages/math/language";
+import { Document } from "../../../core/documents/Document";
+import { MATHEMATICS_LANGUAGE } from "../../../core/languages/math/language";
 
 const text = `
 1 + e^(sin(pi) + cos(pi)) * 123.456

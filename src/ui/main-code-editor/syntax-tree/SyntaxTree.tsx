@@ -1,6 +1,6 @@
 import React from "react";
 import "./syntax-tree.css";
-import { Document } from "../../core/documents/Document";
+import { Document } from "../../../core/documents/Document";
 import { SyntaxTreeNode, SyntaxTreeNodeEventHandlerProps } from "./SyntaxTreeNode";
 
 interface Props extends SyntaxTreeNodeEventHandlerProps {
