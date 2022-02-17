@@ -1,7 +1,8 @@
 import React from "react";
+import "./panels.css";
 import TabPanel from "./TabPanel";
 import { ItemRenderer, Select } from "@blueprintjs/select";
-import { Button, MenuItem } from "@blueprintjs/core";
+import { Button, Label, Menu, MenuItem, Position } from "@blueprintjs/core";
 import { GlobalContext } from "../../context";
 import { Language, SUPPORTED_LANGUAGES } from "../../core/languages/Language";
 import { Pattern } from "../../core/code-patterns/Pattern";
@@ -14,11 +15,67 @@ import { GenericSyntaxTree } from "../syntax-tree/GenericSyntaxTree";
 import { CodeRange } from "../utilities/CodeRange";
 import { SyntaxTree } from "../syntax-tree/SyntaxTree";
 import { AugmentedCodeEditor } from "../augmented-code-editor/AugmentedCodeEditor";
+import { DEFAULT_EXAMPLE, Example, EXAMPLES } from "../code-examples/Example";
+import { Popover2 } from "@blueprintjs/popover2";
 
-export const LanguageSelect = Select.ofType<Language>();
+type Props = {};
+type State = {
+  currentExample: Example;
+}
 
-export default class CodeEditorPanel extends React.PureComponent {
+export default class CodeEditorPanel extends React.Component<Props, State> {
+
+    constructor(props: Props) {
+      super(props);
+      this.state = {
+        currentExample: DEFAULT_EXAMPLE
+      }
+    }
+
+
   render() {
+    const renderExampleSelectorItem: ItemRenderer<Example> = (
+      example,
+      { handleClick, modifiers }
+    ) => {
+      if (!modifiers.matchesPredicate) {
+          return null;
+      }
+
+      return (
+          <MenuItem
+              active={modifiers.active}
+              key={example.name}
+              text={example.name}
+              label={example.document.language.name}
+              onClick={handleClick}
+          />
+      );
+  };
+
+    type OnExampleChange = (newExample: Example) => void;
+    const ExampleSelector = (props: {
+      currentExample: Example,
+      onExampleChange: OnExampleChange,
+    }) => {
+      const menu = <Menu className="bp3-menu">
+        {EXAMPLES.map(example => <MenuItem
+          key={example.name}
+          text={example.name}
+          onClick={() => props.onExampleChange(example)}
+        />)}
+      </Menu>;
+
+      return <Popover2
+        content={menu}
+        position="bottom"
+        minimal={true}
+        popoverClassName="bp3-popover"
+      >
+          <Button text="Load example..." rightIcon="caret-down" intent="primary" />
+      </Popover2>
+    };
+    
     const renderLanguageSelectorItem: ItemRenderer<Language> = (
       language,
       { handleClick, modifiers }
@@ -31,25 +88,28 @@ export default class CodeEditorPanel extends React.PureComponent {
           <MenuItem
               active={modifiers.active}
               key={language.id}
+              text={language.name}
               label={language.id}
               onClick={handleClick}
-              text={language.name}
           />
       );
   };
 
     type OnLanguageChange = (newLanguage: Language) => void;
+    const LanguageSelect = Select.ofType<Language>();
     const LanguageSelector = (props: {
       currentLanguage: Language,
       onLanguageChange: OnLanguageChange,
-    }) => <LanguageSelect
-      items={[...SUPPORTED_LANGUAGES]}
-      itemRenderer={renderLanguageSelectorItem}
-      onItemSelect={language => props.onLanguageChange(language)}
-      activeItem={props.currentLanguage}
-    >
-      <Button text={props.currentLanguage.name} rightIcon="double-caret-vertical" />
-    </LanguageSelect>
+    }) => {
+      return <LanguageSelect
+        items={[...SUPPORTED_LANGUAGES]}
+        itemRenderer={renderLanguageSelectorItem}
+        onItemSelect={language => props.onLanguageChange(language)}
+        activeItem={props.currentLanguage}
+      >
+        <Button text={props.currentLanguage.name} rightIcon="caret-down" />
+      </LanguageSelect>
+    };
 
     const AbsoluteSiteRangeCoords = (props: {pattern: Pattern, site: Site}) => {
       const absoluteSiteCodeRange = props.site.range.relativeTo(props.pattern.range.start);
@@ -137,9 +197,24 @@ export default class CodeEditorPanel extends React.PureComponent {
               }}
             >
               <div className="code-editor-menu-bar">
-                <LanguageSelector
-                  currentLanguage={context.codeEditorLanguage}
-                  onLanguageChange={l => {console.log("changed", l); context.updateCodeEditorLanguage(l)}}
+                <Label className="bp3-inline" style={{ margin: 0 }}>
+                  Language:
+                  <LanguageSelector
+                    currentLanguage={context.document.language}
+                    onLanguageChange={newLanguage => context.updateDocument(
+                      new Document(newLanguage, context.document.content)
+                    )}
+                  />
+                </Label>
+                <ExampleSelector
+                  currentExample={this.state.currentExample}
+                  onExampleChange={newExample => {
+                    this.setState({ currentExample: newExample });
+                    context.updateDocument(new Document(
+                      newExample.document.language,
+                      newExample.document.content
+                    ))
+                  }}
                 />
               </div>
               <AugmentedCodeEditor />

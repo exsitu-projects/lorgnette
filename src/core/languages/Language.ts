@@ -7,7 +7,6 @@ export interface Language {
   name: string;
   id: string;
   codeEditorLanguageId: string;
-  codeExample: string;
   parser: Parser | null;
 };
 

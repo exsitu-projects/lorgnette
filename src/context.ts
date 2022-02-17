@@ -19,16 +19,14 @@ export const defaultCodeEditorRanges: CodeEditorRanges = {
 };
 
 export const defaultGlobalContext = {
-  codeEditorLanguage: DEFAULT_LANGUAGE,
-  updateCodeEditorLanguage: (newlanguage: Language) => {},
-
   codeEditorCursorPosition: ABSOLUTE_ORIGIN_POSITION,
   updateCodeEditorCursorPosition: (newPosition: Position) => {},
 
   codeEditorRanges: defaultCodeEditorRanges,
   updateCodeEditorRanges: (ranges: Partial<CodeEditorRanges>) => {},
 
-  document: new Document(DEFAULT_LANGUAGE, DEFAULT_LANGUAGE.codeExample),
+  document: new Document(DEFAULT_LANGUAGE, ""),
+  updateDocument: (newDocument: Document) => {},
   updateDocumentContent: (newContent: string) => {},
   
   codeVisualisationProviders: [] as CodeVisualisationProvider[],

@@ -98,7 +98,7 @@ export class CodeEditor extends React.Component<Props, State> {
     return (
       <AceEditor
         className="code-editor"
-        value={this.props.initialContent ?? this.props.language.codeExample}
+        value={this.props.initialContent ?? ""}
         mode={this.props.language.codeEditorLanguageId}
         theme={this.state.theme}
         onChange={newContent => {this.props.onContentChange && this.props.onContentChange(newContent)}}

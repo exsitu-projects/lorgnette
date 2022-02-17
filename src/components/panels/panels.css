@@ -5,6 +5,8 @@
 }
 
 .code-editor-menu-bar {
+    display: flex;
+    justify-content: space-between;
     margin: 0 0 1ex 0;
 }
 

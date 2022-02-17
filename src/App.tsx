@@ -9,6 +9,7 @@ import { Document, DocumentChangeOrigin } from "./core/documents/Document";
 import { Tabs, Tab } from "@blueprintjs/core";
 import { DEFAULT_CODE_VISUALISATION_PROVIDERS } from "./code-visualisations-providers";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "./core/documents/Position";
+import { DEFAULT_EXAMPLE } from "./components/code-examples/Example";
 
 type Props = {};
 type State = GlobalContextContent;
@@ -18,18 +19,6 @@ export default class App extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      codeEditorLanguage: DEFAULT_LANGUAGE,
-      updateCodeEditorLanguage: newLanguage => {
-        const newDocument = this.createDocument(newLanguage, newLanguage.codeExample);
-        const newCodeVisualisations = this.createNewCodeVisualisationsForDocument(newDocument);
-
-        this.setState({
-          codeEditorLanguage: newLanguage,
-          document: newDocument,
-          codeVisualisations: newCodeVisualisations
-        });
-      },
-
       codeEditorCursorPosition: ABSOLUTE_ORIGIN_POSITION,
       updateCodeEditorCursorPosition: (newPosition: Position) => {
         this.setState({
@@ -47,9 +36,17 @@ export default class App extends React.Component<Props, State> {
         });
       },
 
-      document: this.createDocument(DEFAULT_LANGUAGE, DEFAULT_LANGUAGE.codeExample),
+      document: DEFAULT_EXAMPLE.document,
+      updateDocument: newDocument => {
+        const newCodeVisualisations = this.createNewCodeVisualisationsForDocument(newDocument);
+
+        this.setState({
+          document: newDocument,
+          codeVisualisations: newCodeVisualisations
+        });        
+      },
       updateDocumentContent: newContent => {
-        const newDocument = this.createDocument(this.state.codeEditorLanguage, newContent);
+        const newDocument = this.createDocument(this.state.document.language, newContent);
         const newCodeVisualisations = this.createNewCodeVisualisationsForDocument(newDocument);
 
         this.setState({
@@ -78,8 +75,7 @@ export default class App extends React.Component<Props, State> {
     const document = new Document(language, content);
     document.addChangeObserver({
       processChange: event => {
-        console.log("change document")
-        const newDocument = this.createDocument(this.state.codeEditorLanguage, event.document.content);
+        const newDocument = this.createDocument(this.state.document.language, event.document.content);
 
         // Case 1: if the change originates from a manual edit operation
         // performed by the user, update the code visualisations.

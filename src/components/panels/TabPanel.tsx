@@ -1,5 +1,5 @@
 import React from "react";
-import "./TabPanel.css";
+import "./panels.css";
 
 export default class TabPanel extends React.PureComponent {
     render() {
