@@ -1,13 +1,10 @@
 import React from "react";
 import "./syntax-tree.css";
 import { Document } from "../../core/documents/Document";
-import { Language } from "../../core/languages/Language";
-import { GenericSyntaxTree } from "./GenericSyntaxTree";
-import { GenericSyntaxTreeNodeEventHandlers } from "./GenericSyntaxTreeNode";
+import { SyntaxTreeNode, SyntaxTreeNodeEventHandlerProps } from "./SyntaxTreeNode";
 
-type Props = {
+interface Props extends SyntaxTreeNodeEventHandlerProps {
     document: Document,
-    eventHandlers: Partial<GenericSyntaxTreeNodeEventHandlers>
 };
 
 export class SyntaxTree extends React.PureComponent<Props> {
@@ -20,10 +17,12 @@ export class SyntaxTree extends React.PureComponent<Props> {
         }
 
         try {
-            return <GenericSyntaxTree
-                syntaxTree={this.props.document.syntaxTree}
-                eventHandlers={this.props.eventHandlers}
-            />;
+            return <div className="syntax-tree">
+                <SyntaxTreeNode
+                    {...this.props}
+                    node={this.props.document.syntaxTree.root}
+                />
+            </div>;
         }
         catch (error: any) {
             return (

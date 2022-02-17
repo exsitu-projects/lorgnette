@@ -1,5 +1,5 @@
 .syntax-tree {
-    font-size: 0.8em;
+    font-size: 0.9em;
 }
 
 .syntax-tree .syntax-tree-node {
@@ -8,12 +8,6 @@
     border-width: 1px 0 1px 2px;
     border-style: solid;
     border-color: rgba(0, 0, 0, 0.05);
-}
-
-.syntax-tree .syntax-tree-node:hover {
-    /* background-color: rgba(255, 255, 0, 0.015); */
-    /* background: rgba(255, 255, 0, 0.025); */
-    /* border-color: rgba(255, 255, 0, 0.05); */
 }
 
 .syntax-tree .syntax-tree-node:hover .syntax-tree-node:hover {

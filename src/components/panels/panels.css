@@ -4,13 +4,30 @@
     padding: 1em;
 }
 
-.code-editor-menu-bar {
+.code-editor-panel {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 4fr 1fr;
+    grid-template-areas:
+        "editor syntax-tree";
+    gap: 1em;
+    height: 100%;
+    width: 100%;
+    align-content: space-between;
+}
+
+.code-editor-panel > .editor-with-menu {
+    grid-area: editor;
+    display: flex;
+    flex-direction: column;
+}
+
+.code-editor-panel > .editor-with-menu .menu-bar {
     display: flex;
     justify-content: space-between;
     margin: 0 0 1ex 0;
 }
 
-.code-range {
-    color: #999;
-    list-style-type: none;
+.code-editor-panel > .syntax-tree {
+    grid-area: syntax-tree;
 }

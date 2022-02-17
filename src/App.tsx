@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import CodeEditorPanel from "./components/panels/CodeEditorPanel";
+import { CodeEditorPanel } from "./components/panels/CodeEditorPanel";
 import VisualisationProvidersConfigurationPanel from "./components/panels/VisualisationConfigurationPanel";
 import { defaultCodeEditorRanges, DEFAULT_LANGUAGE, GlobalContext, GlobalContextContent } from "./context";
 import { Language } from "./core/languages/Language";
