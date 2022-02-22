@@ -9,6 +9,7 @@ import { MainCodeEditor } from "./MainCodeEditor";
 import { DEFAULT_EXAMPLE, Example, EXAMPLES } from "./code-examples/Example";
 import { Popover2 } from "@blueprintjs/popover2";
 import { Document } from "../../core/documents/Document";
+import Split from "react-split";
 
 type Props = {};
 type State = {
@@ -96,7 +97,11 @@ export class MainCodeEditorPanel extends React.Component<Props, State> {
     render() {
         return (
             <GlobalContext.Consumer>{ context => (
-                <div className="monocle-ui-main-panel main-code-editor">
+                <Split
+                    className="monocle-ui-main-panel main-code-editor"
+                    sizes={[70, 30]}
+                    minSize={250}
+                >
                     <div className="editor-with-menu">
                         <div className="menu-bar">
                             <Label className="bp3-inline" style={{ margin: 0 }}>
@@ -110,7 +115,7 @@ export class MainCodeEditorPanel extends React.Component<Props, State> {
                     <div className="syntax-tree">
                         {this.renderSyntaxTree(context)}
                     </div>
-                </div>
+                </Split>
             )}</GlobalContext.Consumer>
         );
     }

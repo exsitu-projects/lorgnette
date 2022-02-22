@@ -1,17 +1,13 @@
 .monocle-ui-main-panel.main-code-editor {
-    display: grid;
-    grid-template-rows: auto;
-    grid-template-columns: 4fr 1fr;
-    grid-template-areas:
-        "editor syntax-tree";
-    gap: 1em;
+    display: flex;
+    flex-direction: row;
     height: 100%;
     width: 100%;
     align-content: space-between;
 }
 
 .monocle-ui-main-panel.main-code-editor > .editor-with-menu {
-    grid-area: editor;
+    /* grid-area: editor; */
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -24,6 +20,16 @@
 }
 
 .monocle-ui-main-panel.main-code-editor > .syntax-tree {
-    grid-area: syntax-tree;
+    /* grid-area: syntax-tree; */
     overflow-y: auto;
+}
+
+.monocle-ui-main-panel.main-code-editor .gutter {
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
+
+.monocle-ui-main-panel.main-code-editor .gutter.gutter-horizontal {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==");
+    cursor: col-resize;
 }
