@@ -81,7 +81,10 @@ export abstract class PopupRenderer extends Renderer<RendererProps, PopupRendere
             className="code-visualisation-popup-content-wrapper"
             onClick={() => this.setState({ isPopupOpen: false })}
         >
-            <div className="code-visualisation-popup-content-panel">
+            <div
+                className="code-visualisation-popup-content-panel"
+                onClick={event => event.stopPropagation()}
+            >
                 {this.props.codeVisualisation.userInterface.createView()}
             </div>
         </div>;
