@@ -26,7 +26,7 @@ export const defaultGlobalContext = {
   updateCodeEditorRanges: (ranges: Partial<CodeEditorRanges>) => {},
 
   document: new Document(DEFAULT_LANGUAGE, ""),
-  updateDocument: (newDocument: Document) => {},
+  updateDocument: (language: Language, content: string) => {},
   updateDocumentContent: (newContent: string) => {},
   
   codeVisualisationProviders: [] as CodeVisualisationProvider[],

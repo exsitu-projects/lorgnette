@@ -1,4 +1,3 @@
-import { Document } from "../../../core/documents/Document";
 import { JSON_LANGUAGE } from "../../../core/languages/json/language";
 
 // From https://vega.github.io/vega-lite/examples/layer_line_rolling_mean_point_raw.html
@@ -43,5 +42,6 @@ const text =
 
 export const VEGA_EXAMPLE = {
     name: "Vega",
-    document: new Document(JSON_LANGUAGE, text.trim())
+    language: JSON_LANGUAGE,
+    content: text.trim()
 };

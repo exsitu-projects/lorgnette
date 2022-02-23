@@ -1,4 +1,3 @@
-import { Document } from "../../../core/documents/Document";
 import { TYPESCRIPT_LANGUAGE } from "../../../core/languages/typescript/language";
 
 const text = 
@@ -38,5 +37,6 @@ const tsx = (
 
 export const TYPESCRIPT_EXAMPLE = {
     name: "Typescript",
-    document: new Document(TYPESCRIPT_LANGUAGE, text.trim())
+    language: TYPESCRIPT_LANGUAGE,
+    content: text.trim()
 };

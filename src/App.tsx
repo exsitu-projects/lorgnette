@@ -34,8 +34,9 @@ export default class App extends React.Component<Props, State> {
         });
       },
 
-      document: DEFAULT_EXAMPLE.document,
-      updateDocument: newDocument => {
+      document: this.createDocument(DEFAULT_EXAMPLE.language, DEFAULT_EXAMPLE.content),
+      updateDocument: (language: Language, content: string) => {
+        const newDocument = this.createDocument(language, content);
         const newCodeVisualisations = this.createNewCodeVisualisationsForDocument(newDocument);
 
         this.setState({
@@ -44,13 +45,7 @@ export default class App extends React.Component<Props, State> {
         });        
       },
       updateDocumentContent: newContent => {
-        const newDocument = this.createDocument(this.state.document.language, newContent);
-        const newCodeVisualisations = this.createNewCodeVisualisationsForDocument(newDocument);
-
-        this.setState({
-          document: newDocument,
-          codeVisualisations: newCodeVisualisations
-        });
+        this.state.updateDocument(this.state.document.language, newContent);
       },
 
       codeVisualisationProviders: DEFAULT_CODE_VISUALISATION_PROVIDERS,

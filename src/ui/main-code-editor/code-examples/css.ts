@@ -26,5 +26,6 @@ ul li {
 
 export const CSS_EXAMPLE = {
     name: "CSS",
-    document: new Document(CSS_LANGUAGE, text.trim())
+    language: CSS_LANGUAGE,
+    content: text.trim()
 };

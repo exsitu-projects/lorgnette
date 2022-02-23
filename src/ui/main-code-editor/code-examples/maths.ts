@@ -1,4 +1,3 @@
-import { Document } from "../../../core/documents/Document";
 import { MATHEMATICS_LANGUAGE } from "../../../core/languages/math/language";
 
 const text = `
@@ -7,5 +6,6 @@ const text = `
 
 export const MATH_EXAMPLE = {
     name: "Maths",
-    document: new Document(MATHEMATICS_LANGUAGE, text.trim())
+    language: MATHEMATICS_LANGUAGE,
+    content: text.trim()
 };

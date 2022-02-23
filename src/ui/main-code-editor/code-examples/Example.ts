@@ -1,4 +1,4 @@
-import { Document } from "../../../core/documents/Document";
+import { Language } from "../../../core/languages/Language";
 import { CSS_EXAMPLE } from "./css";
 import { MATH_EXAMPLE } from "./maths";
 import { TYPESCRIPT_EXAMPLE } from "./typescript";
@@ -6,7 +6,8 @@ import { VEGA_EXAMPLE } from "./vega";
 
 export interface Example {
     name: string;
-    document: Document;
+    language: Language;
+    content: string;
 }
 
 export const EXAMPLES: Example[] = [

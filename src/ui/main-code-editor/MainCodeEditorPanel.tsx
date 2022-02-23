@@ -8,7 +8,6 @@ import { SyntaxTree } from "./syntax-tree/SyntaxTree";
 import { MainCodeEditor } from "./MainCodeEditor";
 import { DEFAULT_EXAMPLE, Example, EXAMPLES } from "./code-examples/Example";
 import { Popover2 } from "@blueprintjs/popover2";
-import { Document } from "../../core/documents/Document";
 import Split from "react-split";
 
 type Props = {};
@@ -46,7 +45,7 @@ export class MainCodeEditorPanel extends React.Component<Props, State> {
         return <LanguageSelect
             items={[...SUPPORTED_LANGUAGES]}
             itemRenderer={renderLanguageSelectorItem}
-            onItemSelect={newLanguage => context.updateDocument(new Document(newLanguage, context.document.content))}
+            onItemSelect={newLanguage => context.updateDocument(newLanguage, context.document.content)}
             activeItem={context.document.language}
         >
             <Button text={context.document.language.name} rightIcon="caret-down" />
@@ -61,10 +60,10 @@ export class MainCodeEditorPanel extends React.Component<Props, State> {
                 text={example.name}
                 onClick={() => {
                     this.setState({ currentExample: example });
-                    context.updateDocument(new Document(
-                        example.document.language,
-                        example.document.content
-                    ))
+                    context.updateDocument(
+                        example.language,
+                        example.content
+                    )
                 }}
             />;
         };
