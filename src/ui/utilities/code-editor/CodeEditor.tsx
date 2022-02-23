@@ -5,6 +5,7 @@ import "./code-editor.css";
 // Configuration files for the Ace editor.
 import "ace-builds/src-min-noconflict/mode-typescript";
 import "ace-builds/src-min-noconflict/mode-json";
+import "ace-builds/src-min-noconflict/mode-css";
 import "ace-builds/src-noconflict/theme-tomorrow";
 
 import { Language } from "../../../core/languages/Language";

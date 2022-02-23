@@ -11,6 +11,7 @@
     "@types/react-dom": "^17.0.0",
     "ace-builds": "^1.4.12",
     "ajv": "^8.6.3",
+    "css-tree": "^2.0.4",
     "moo": "^0.5.1",
     "react": "^17.0.2",
     "react-ace": "^9.4.3",
@@ -49,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "@types/css-tree": "^1.0.7",
     "@types/moo": "^0.5.5",
     "@types/nearley": "^2.11.2",
     "nearley": "^2.20.1"

@@ -1,3 +1,4 @@
+import { CSS_LANGUAGE } from "./css/language";
 import { JSON_LANGUAGE } from "./json/language";
 import { MATHEMATICS_LANGUAGE } from "./math/language";
 import { Parser } from "./Parser";
@@ -13,7 +14,8 @@ export interface Language {
 export const SUPPORTED_LANGUAGES = [
   TYPESCRIPT_LANGUAGE,
   MATHEMATICS_LANGUAGE,
-  JSON_LANGUAGE
+  JSON_LANGUAGE,
+  CSS_LANGUAGE
 ] as const;
 
 export type SupportedLanguages = typeof SUPPORTED_LANGUAGES[number];
