@@ -26,7 +26,6 @@ export class SyntaxTreeNode extends React.PureComponent<Props> {
             },
             onMouseLeave: () => {
                 if (this.props.onMouseTargetNodeChange) {
-                    console.log("mouse leave", this.props.node)
                     this.props.onMouseTargetNodeChange(this.props.parentNode);
                 }
             },
