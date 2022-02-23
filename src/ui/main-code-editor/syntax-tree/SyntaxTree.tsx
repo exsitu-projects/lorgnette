@@ -2,9 +2,11 @@ import React from "react";
 import "./syntax-tree.css";
 import { Document } from "../../../core/documents/Document";
 import { SyntaxTreeNode, SyntaxTreeNodeEventHandlerProps } from "./SyntaxTreeNode";
+import { Position } from "../../../core/documents/Position";
 
 interface Props extends SyntaxTreeNodeEventHandlerProps {
-    document: Document,
+    document: Document;
+    cursorPosition: Position;
 };
 
 export class SyntaxTree extends React.PureComponent<Props> {
@@ -21,6 +23,8 @@ export class SyntaxTree extends React.PureComponent<Props> {
                 <SyntaxTreeNode
                     {...this.props}
                     node={this.props.document.syntaxTree.root}
+                    parentNode={null}
+                    cursorPosition={this.props.cursorPosition}
                 />
             </div>;
         }

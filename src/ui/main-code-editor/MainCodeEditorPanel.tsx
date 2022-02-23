@@ -88,8 +88,12 @@ export class MainCodeEditorPanel extends React.Component<Props, State> {
             <h3>Syntax tree</h3>
             <SyntaxTree
                 document={context.document}
-                onMouseEnterNode={node => context.updateCodeEditorRanges({ hovered: [node.range] })}
-                onMouseLeaveNode={node => context.updateCodeEditorRanges({ hovered: [] })}
+                cursorPosition={context.codeEditorCursorPosition}
+                onMouseTargetNodeChange={node =>
+                    node
+                        ? context.updateCodeEditorRanges({ hovered: [node.range] })
+                        : context.updateCodeEditorRanges({ hovered: [] })
+                }
             />
         </>;
     }

@@ -10,9 +10,19 @@
     border-color: rgba(0, 0, 0, 0.05);
 }
 
-.syntax-tree .syntax-tree-node:hover .syntax-tree-node:hover {
+.syntax-tree .syntax-tree-node.contains-cursor {
+    background-color: rgba(255, 255, 0, 0.015);
+    border-color: rgba(100, 100, 0, 0.40);    
+}
+/* 
+.syntax-tree .syntax-tree-node.contains-cursor:hover {
     background-color: rgba(255, 255, 0, 0.01);
-    border-color: rgba(0, 0, 0, 0.25);
+    border-color: rgba(100, 100, 0, 0.55);    
+} */
+
+.syntax-tree .syntax-tree-node:hover .syntax-tree-node:hover {
+    background-color: rgba(0, 255, 0, 0.01);
+    border-color: rgba(0, 100, 0, 0.25);
 }
 
 .syntax-tree .syntax-tree-node:hover .syntax-tree-node:not(:hover) {
