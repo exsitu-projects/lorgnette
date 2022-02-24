@@ -31,15 +31,3 @@
 .ui.plot-style-editor .property-editor .preview {
     display: none;
 }
-
-.color-picker-popover {
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
-    z-index: 1000;
-}
-
-.ui.plot-style-editor .property-editor .color-preview {
-    height: 1.5em;
-    width: 2.8em;
-    border: 1px solid rgba(0, 0, 0, 0.8);
-}

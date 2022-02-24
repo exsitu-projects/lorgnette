@@ -1,9 +1,9 @@
 import React from "react";
 import { BLACK, Color } from "../../../utilities/Color";
+import { RgbColorPicker } from "../../../utilities/components/color-pickers/RgbColorPicker";
 import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
 import { UserInterfaceProvider } from "../UserInterfaceProvider";
-import { ColorPickerComponent } from "./ColorPickerComponent";
 
 
 
@@ -39,7 +39,7 @@ export class ColorPicker extends UserInterface<Input, Output> {
             this.declareModelChange();
         };
 
-        return <ColorPickerComponent 
+        return <RgbColorPicker
             color={this.color}
             onChange={onChange}
             onDragStart={() => {

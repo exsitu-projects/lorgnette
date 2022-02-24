@@ -2,12 +2,11 @@ import React, { ReactElement } from "react";
 import "./plot-style-editor.css";
 import { Switch, Label, Slider, Button, MenuItem } from "@blueprintjs/core";
 import { ItemRenderer, Suggest } from "@blueprintjs/select";
-import { Popover2 } from "@blueprintjs/popover2";
-import { RgbaColorPicker } from "react-colorful";
 import { clamp, round } from "../../../utilities/math";
 import { PlotStyle } from "./PlotStyleEditor";
 import { PlotStyleEditorSettings } from "./PlotStyleEditorSettings";
 import { Color } from "../../../utilities/Color";
+import { ButtonColorPicker } from "../../../utilities/components/color-pickers/ButtonColorPicker";
 
 export type PlotStyleEditorChangeHandler = (
     styleChange: PlotStyle,
@@ -109,30 +108,11 @@ export class PlotStyleEditorComponent extends React.PureComponent<Props> {
                 <Label className="property-editor">
                     <span className="label">Color</span>
                         <div className="editor">
-                            <Popover2
-                                placement="left"
-                                modifiers={{ arrow: { enabled: false }}}
-                                content={
-                                    <div className="color-picker-popover">
-                                        <RgbaColorPicker
-                                            color={color}
-                                            onMouseDown={() => this.props.onTransientChangeStart()}
-                                            onMouseUp={() => this.props.onTransientChangeEnd()}
-                                            onChange={newColor => this.processChange({ color: Color.fromRgba(newColor) })}
-                                        />
-                                    </div>
-                                }
-                                renderTarget={({ isOpen, ref,  ...targetProps }) =>
-                                    <Button
-                                        {...targetProps}
-                                        elementRef={ref as any}
-                                    >
-                                        <div
-                                            className="color-preview"
-                                            style={{ backgroundColor: color.css }}
-                                        />
-                                    </Button>
-                                }
+                            <ButtonColorPicker
+                                color={color}
+                                onDragStart={() => this.props.onTransientChangeStart()}
+                                onDragEnd={() => this.props.onTransientChangeEnd()}
+                                onChange={newColor => this.processChange({ color: Color.fromRgba(newColor) })}
                             />
                         </div>
                 </Label>
