@@ -47,6 +47,14 @@ export class Position {
         );
     }
 
+    shiftBy(row: number, column: number, offset: number): Position {
+        return new Position(
+            this.row + row,
+            this.column + column,
+            this.offset + offset,
+        );
+    }
+
     toString(): string {
         return `${this.row};${this.column}`;
     }

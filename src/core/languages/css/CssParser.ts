@@ -13,9 +13,10 @@ export class CssParser implements Parser {
         };
 
         const rootCssTreeNode = csstree.parse(text, {
-            // parseValue: false,
+            parseValue: false,
             positions: true
         });
+        
         return CssSyntaxTree.fromCssTreeRootNode(rootCssTreeNode, parsingContext);
     }
 }

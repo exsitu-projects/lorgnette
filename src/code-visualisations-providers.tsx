@@ -18,8 +18,8 @@ import { Tree, TreeNode } from "./core/user-interfaces/tree/Tree";
 import { PropertyNode } from "./core/languages/json/nodes/PropertyNode";
 import { ObjectNode } from "./core/languages/json/nodes/ObjectNode";
 import { StringNode } from "./core/languages/json/nodes/StringNode";
-import { PlotStyle, PlotStyleEditor } from "./core/user-interfaces/plot-style-editor/PlotStyleEditor";
-import { Color } from "./utilities/Color";
+import { Output, PlotStyle, PlotStyleEditor } from "./core/user-interfaces/plot-style-editor/PlotStyleEditor";
+import { Color, TRANSPARENT } from "./utilities/Color";
 import { NumberNode } from "./core/languages/json/nodes/NumberNode";
 import { BooleanNode } from "./core/languages/json/nodes/BooleanNode";
 import { ButtonPopoverRenderer } from "./core/renderers/popover/ButtonPopoverRenderer";
@@ -27,6 +27,7 @@ import { AsideRenderer } from "./core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "./core/renderers/aside/AsideRendererSettings";
 import { ButtonPopupRenderer } from "./core/renderers/popup/ButtonPopupRenderer";
 import { RegexEditor } from "./core/user-interfaces/regex-editor/RegexEditor";
+import { Block, Declaration, Raw } from "css-tree";
 
 export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
     // new TextualCodeVisualisationProvider(
@@ -471,6 +472,138 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             buttonContent: "🎨 edit style"
         })
     ),
+
+
+
+
+    new SyntacticCodeVisualisationProvider(
+        "CSS style editor",
+        { languages: ["css"] },
+        new SyntacticPatternFinder(new SyntaxTreePattern(
+            n => n.type === "Rule",
+            SKIP_MATCH_DESCENDANTS
+        )),
+        [],
+        new ProgrammableInputMapping(arg => {
+            const blockNode = (arg.pattern as SyntacticPattern).node.childNodes[1];
+            const blockCssNode = blockNode.parserNode as Block;
+
+            const propertyNamesToValues = new Map(
+                blockCssNode.children.toArray()
+                    .filter(cssNode => cssNode.type === "Declaration")
+                    .map(cssNode => [(cssNode as Declaration).property, (cssNode as Declaration).value as Raw])
+            );
+
+            let style: PlotStyle = {};
+
+            const addStyle = <K extends keyof PlotStyle>(
+                styleKey: K,
+                cssPropertyName: string,
+                transform: (cssNode: Raw) => PlotStyle[K],
+                defaultStyleValue?: PlotStyle[K]
+            ) => {
+                const valueOrNothing = propertyNamesToValues.get(cssPropertyName);
+                if (valueOrNothing || defaultStyleValue !== undefined) {
+                    style[styleKey] = valueOrNothing
+                        ? transform(valueOrNothing)
+                        : defaultStyleValue;
+                }
+            };
+            
+            addStyle("color", "background-color", cssNode => Color.fromCss(cssNode.value), TRANSPARENT);
+            addStyle("opacity", "opacity", cssNode => Number(cssNode.value), 1);
+
+            return {
+                style: style
+            };
+        }),
+        new ProgrammableOutputMapping(arg => {
+            const output = arg.output as Output;
+            const editor = output.editor;
+            const styleChange = output.data.styleChange;
+
+            // Get the current properties of the CSS rule.
+            const blockNode = (arg.pattern as SyntacticPattern).node.childNodes[1];
+            const blockCssNode = blockNode.parserNode as Block;
+
+            const cssProperties = blockNode.childNodes.filter(node => node.parserNode.type === "Declaration");
+            const cssPropertyNamesToAstNodes = new Map(
+                cssProperties.map(node => [(node.parserNode as Declaration).property, node])
+            );
+
+            // Map possibly modified properties to CSS properties.
+            const stylePropertyNamesToCssPropertyNames: Record<keyof PlotStyle, string | null> = {
+                "type": null,
+                "color": "background-color",
+                "filled": null,
+                "opacity": "opacity",
+                "thickness": null,
+                "shape": null,
+                "horizontal": null
+            };
+
+            const changedProperties = Object.keys(styleChange) as (keyof PlotStyle)[];
+            const propertiesToInsert: {name: string, value: string}[] = [];
+
+            for (let changedPropertyName of changedProperties) {
+                const cssPropertyName = stylePropertyNamesToCssPropertyNames[changedPropertyName];
+                if (!cssPropertyName) {
+                    break;
+                }
+
+                // Get the value of the modified property.
+                const newPropertyValue = styleChange[changedPropertyName]!;
+                let newCssPropertyValue = newPropertyValue;
+
+                // Transform the value of the property if needed.
+                if (changedPropertyName === "color") {
+                    newCssPropertyValue = (newPropertyValue as Color).css;
+                }
+
+                // If the property already exists in the CSS rule, updates its value.
+                // Otherwise, add the property to the list of properties that must be inserted in the CSS rule.
+                const cssPropertyAstNode = cssPropertyNamesToAstNodes.get(cssPropertyName);
+                if (cssPropertyAstNode) {
+                    editor.replace(
+                        cssPropertyAstNode.childNodes[0].range,
+                        newCssPropertyValue.toString()
+                    );
+                }
+                else {
+                    propertiesToInsert.push({
+                        name: cssPropertyName,
+                        value: newCssPropertyValue.toString()
+                    })
+                }
+            }
+
+            // Insert all the new properties.
+            const hasPropertiesToInsert = propertiesToInsert.length > 0;
+            if (hasPropertiesToInsert) {
+                const concatenatedPropertiesToInsert = propertiesToInsert
+                    .map(property => `\n\t${property.name}: ${property.value};`)
+                    .join("");
+    
+                const cssRuleHasExistingProperties = cssProperties.length > 0;
+                if (cssRuleHasExistingProperties) {
+                    editor.insert(
+                        cssProperties[cssProperties.length - 1].range.end.shiftBy(0, 1, 1),
+                        `${concatenatedPropertiesToInsert}`
+                    );
+                }
+                else {
+                    editor.replace(
+                        blockNode.range,
+                        `{${concatenatedPropertiesToInsert}\n}`
+                    );
+                }
+            }
+
+            editor.applyEdits();
+        }),
+        PlotStyleEditor.makeProvider(),
+        ButtonPopoverRenderer.makeProvider({
+            buttonContent: "Edit style 🎨",
+        })
+    ),
 ];
-
-
