@@ -37,7 +37,8 @@
 
 .code-visualisation-popover-content-wrapper {
     padding: 10px;
-    background-color: #eee;
+    background-color: #FAFAFA;
+    border: 1px solid #CCC;
     box-shadow: 0 0 10px rgba(120, 120, 120, 0.4);
     z-index: 500;
 }
