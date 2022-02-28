@@ -7,3 +7,10 @@ export type DeepOptionalProperties<T> = {
             ? T[P]
             : DeepOptionalProperties<T[P]>
 };
+
+export type DeepRequiredProperties<T> = {
+    [P in keyof Required<T>]-?:
+        T[P] extends Array<any>
+            ? T[P]
+            : DeepRequiredProperties<T[P]>
+};

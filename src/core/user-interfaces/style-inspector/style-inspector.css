@@ -1,0 +1,102 @@
+.ui.style-inspector {
+    max-width: 400px;
+}
+
+.ui.style-inspector .specialised-style-inspector {
+    padding: 1ex;
+}
+
+.ui.style-inspector .thickness-preview  {
+    width: 12px;
+    height: 1px;
+    border-bottom-color: black;
+    border-bottom-style: solid;
+}
+
+.ui.style-inspector .specialised-style-inspector .title {
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
+.ui.style-inspector .specialised-style-inspector .editor {
+
+}
+
+.ui.style-inspector .specialised-style-inspector .title {
+    margin: 0 0 1ex 0;
+    padding: 0.5ex 0;
+    border-bottom: 1px solid #EEE;
+}
+
+.ui.style-inspector .specialised-style-inspector .editor .bp3-label {
+    color: #666;
+    font-size: 0.8em;
+    text-align: left;
+}
+
+.ui.style-inspector .specialised-style-inspector .preview {
+    display: none;
+}
+
+.ui.style-inspector .specialised-style-inspector.background .editor {
+    display: grid;
+}
+
+.ui.style-inspector .specialised-style-inspector.border .editor {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 1em;
+}
+
+.ui.style-inspector .specialised-style-inspector.border .editor .thickness {
+    text-align: left;
+}
+
+.ui.style-inspector .specialised-style-inspector.border .editor .type {
+    text-align: center;
+}
+
+.ui.style-inspector .specialised-style-inspector.border .editor .color {
+    text-align: right;
+}
+
+.ui.style-inspector .specialised-style-inspector.font .editor {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    column-gap: 1em;
+}
+
+.ui.style-inspector .specialised-style-inspector.font .editor .size {
+    text-align: left;
+}
+
+.ui.style-inspector .specialised-style-inspector.font .editor .style {
+    text-align: center;
+}
+
+.ui.style-inspector .specialised-style-inspector.font .editor .color {
+    text-align: right;
+}
+
+.ui.style-inspector .specialised-style-inspector.font .editor .family {
+    grid-area: family;
+    flex-grow: 1;
+}
+
+.ui.style-inspector .specialised-style-inspector.font .editor .size .bp3-form-content {
+    display: flex;
+}
+
+.ui.style-inspector .specialised-style-inspector.font .editor .size .unit {
+    margin: 0 0 0 1ex;
+}
+
+.ui.style-inspector .specialised-style-inspector.font .editor .size .value .bp3-input,
+.ui.style-inspector .specialised-style-inspector.font .editor .size .unit .bp3-input {
+    width: 4em;
+}
+
+.ui.style-inspector .specialised-style-inspector.margin .editor {
+
+}

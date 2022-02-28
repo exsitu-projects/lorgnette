@@ -18,8 +18,8 @@ import { Tree, TreeNode } from "./core/user-interfaces/tree/Tree";
 import { PropertyNode } from "./core/languages/json/nodes/PropertyNode";
 import { ObjectNode } from "./core/languages/json/nodes/ObjectNode";
 import { StringNode } from "./core/languages/json/nodes/StringNode";
-import { Output, PlotStyle, PlotStyleEditor } from "./core/user-interfaces/plot-style-editor/PlotStyleEditor";
-import { Color, TRANSPARENT } from "./utilities/Color";
+import { Output as PlotStyleEditorOutput, PlotStyle, PlotStyleEditor } from "./core/user-interfaces/plot-style-editor/PlotStyleEditor";
+import { BLACK, Color, TRANSPARENT, WHITE } from "./utilities/Color";
 import { NumberNode } from "./core/languages/json/nodes/NumberNode";
 import { BooleanNode } from "./core/languages/json/nodes/BooleanNode";
 import { ButtonPopoverRenderer } from "./core/renderers/popover/ButtonPopoverRenderer";
@@ -28,6 +28,11 @@ import { AsideRendererPosition } from "./core/renderers/aside/AsideRendererSetti
 import { ButtonPopupRenderer } from "./core/renderers/popup/ButtonPopupRenderer";
 import { RegexEditor } from "./core/user-interfaces/regex-editor/RegexEditor";
 import { Block, Declaration, Raw } from "css-tree";
+import { Style } from "./core/user-interfaces/style-inspector/Style";
+import { Input as StyleInspectorInput, Output as StyleInspectorOutput, StyleInspector } from "./core/user-interfaces/style-inspector/StyleInspector";
+import { ValueWithUnit } from "./utilities/ValueWithUnit";
+import { Margin } from "./core/user-interfaces/style-inspector/inspectors/MarginInspector";
+import { DISABLED_PROPERTY, isDisabled } from "./core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
 
 export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
     // new TextualCodeVisualisationProvider(
@@ -494,31 +499,161 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
                     .map(cssNode => [(cssNode as Declaration).property, (cssNode as Declaration).value as Raw])
             );
 
-            let style: PlotStyle = {};
+            const uniqueCssPropertyNamesAndValues = [...propertyNamesToValues];
 
-            const addStyle = <K extends keyof PlotStyle>(
-                styleKey: K,
-                cssPropertyName: string,
-                transform: (cssNode: Raw) => PlotStyle[K],
-                defaultStyleValue?: PlotStyle[K]
+            let style: Style = {};
+
+            const addProperty = <K1 extends keyof Style, K2 extends keyof NonNullable<Style[K1]>>(
+                cssProperty: [string, Raw],
+                targetCssPropertyName: string,
+                styleKey: K1,
+                stylePropertyKey: K2,
+                disableOrTransformValue: typeof DISABLED_PROPERTY | ((cssNode: Raw) => NonNullable<Style[K1]>[K2])
             ) => {
-                const valueOrNothing = propertyNamesToValues.get(cssPropertyName);
-                if (valueOrNothing || defaultStyleValue !== undefined) {
-                    style[styleKey] = valueOrNothing
-                        ? transform(valueOrNothing)
-                        : defaultStyleValue;
+                if (cssProperty[0] === targetCssPropertyName ) {
+                    if (!style[styleKey]) {
+                        style[styleKey] = {};
+                    }
+
+                    try {
+                        const properties = style[styleKey]!;
+                        (properties[stylePropertyKey] as NonNullable<Style[K1]>[K2] | typeof DISABLED_PROPERTY) =
+                            disableOrTransformValue === DISABLED_PROPERTY
+                                ? DISABLED_PROPERTY
+                                : disableOrTransformValue(cssProperty[1]);
+                    }
+                    catch (error) { }
                 }
             };
-            
-            addStyle("color", "background-color", cssNode => Color.fromCss(cssNode.value), TRANSPARENT);
-            addStyle("opacity", "opacity", cssNode => Number(cssNode.value), 1);
 
-            return {
-                style: style
+            const addProperties = <K extends keyof Style>(
+                cssProperty: [string, Raw],
+                targetCssPropertyName: string,
+                styleKey: K,
+                transform: (cssNode: Raw) => Partial<Style[K]>
+            ) => {
+                if (cssProperty[0] === targetCssPropertyName) {
+                    if (!style[styleKey]) {
+                        style[styleKey] = {};
+                    }
+
+                    try {
+                        style[styleKey] = transform(cssProperty[1]);
+                    }
+                    catch (error) { }
+                }
             };
+
+            for (let cssProperty of uniqueCssPropertyNamesAndValues) {
+                // Background properties.
+                addProperty(cssProperty, "background-color", "background", "color", cssNode => Color.fromCss(cssNode.value));
+
+                // Border properties.
+
+                // addProperty(cssProperty, "border-color", "border", "color", cssNode => Color.fromCss(cssNode.value));
+                // addProperty(cssProperty, "border-width", "border", "thickness", cssNode =>
+                //     ValueWithUnit.fromText(cssNode.value) ?? undefined
+                // );
+                // addProperty(cssProperty, "border-style", "border", "type", cssNode => {
+                //     const value = cssNode.value;
+                //     switch (value) {
+                //         case "solid":
+                //         case "dashed":
+                //         case "dotted":
+                //             return value;
+
+                //         default:
+                //         return undefined;
+                //     }
+                // });
+
+                addProperties(cssProperty, "border", "border", cssNode => {
+                    const borderProperties = cssNode.value.split(" ");
+
+                    const rawBorderType = borderProperties[1];
+                    let borderType = undefined;
+                    if (["solid", "dashed", "dotted"].includes(rawBorderType)) {
+                        borderType = borderProperties[1] as "solid" | "dashed" | "dotted";
+                    }
+
+                    return {
+                        thickness: ValueWithUnit.fromText(borderProperties[0]) ?? undefined,
+                        color: Color.fromCss(borderProperties[2]),
+                        type: borderType,
+                    };
+                })
+
+                // Font properties.
+                addProperty(cssProperty, "color", "font", "color", cssNode => Color.fromCss(cssNode.value));
+                addProperty(cssProperty, "font-size", "font", "size", cssNode => ValueWithUnit.fromText(cssNode.value) ?? undefined);
+                addProperty(cssProperty, "font-family", "font", "family", cssNode =>
+                    cssNode.value
+                        .split(",")
+                        .map(fontName => fontName.trim())
+                );
+
+                addProperty(cssProperty, "font-weight", "font", "bold", cssNode =>
+                    cssNode.value === "bold" ||
+                    cssNode.value === "700" ||
+                    cssNode.value === "800" ||
+                    cssNode.value === "900"
+                );
+
+                addProperty(cssProperty, "font-style", "font", "italic", cssNode => cssNode.value === "italic");
+                addProperty(cssProperty, "text-decoration", "font", "underline", cssNode => cssNode.value.includes("underline"));
+
+                // Margin properties.
+                function computeMarginFromCssValue(cssNode: Raw): Margin {
+                    const marginValues = cssNode.value
+                        .split(" ")
+                        .map(valueWithUnitAsText => ValueWithUnit.fromText(valueWithUnitAsText));
+
+                    let top, bottom, left, right;
+                    switch (marginValues.length) {
+                        case 1:
+                            top = bottom = left = right = marginValues[0]!;
+                            break;
+                        case 2:
+                            top = bottom = marginValues[0]!;
+                            left = right = marginValues[1]!;
+                            break;
+                        case 3:
+                            top = marginValues[0]!;
+                            left = right = marginValues[1]!;
+                            bottom = marginValues[2]!;
+                            break;
+                        case 4:
+                            top = marginValues[0]!;
+                            right = marginValues[1]!;
+                            bottom = marginValues[2]!;
+                            left = marginValues[3]!;
+                            break;
+                        default:
+                            throw new Error("Unknown number of values for a margin/padding.");
+                    }
+
+                    return { top, bottom, left, right };
+                };
+
+                addProperty(cssProperty, "margin", "margin", "outer", cssNode => computeMarginFromCssValue(cssNode));
+                addProperty(cssProperty, "padding", "margin", "inner", cssNode => computeMarginFromCssValue(cssNode));
+            }
+
+            const input: StyleInspectorInput = {
+                style: style,
+                settings: {
+                    defaultStyle: {
+                        font: {
+                            // bold: DISABLED_PROPERTY
+                        }
+                    }
+                }
+            };
+
+            return input;
         }),
         new ProgrammableOutputMapping(arg => {
-            const output = arg.output as Output;
+            const output = arg.output as StyleInspectorOutput;
             const editor = output.editor;
             const styleChange = output.data.styleChange;
 
@@ -532,48 +667,100 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             );
 
             // Map possibly modified properties to CSS properties.
-            const stylePropertyNamesToCssPropertyNames: Record<keyof PlotStyle, string | null> = {
-                "type": null,
-                "color": "background-color",
-                "filled": null,
-                "opacity": "opacity",
-                "thickness": null,
-                "shape": null,
-                "horizontal": null
-            };
+            // const stylePropertyNamesToCssPropertyNames: [keyof Style, keyof > = {
+            //     []
+            // };
 
-            const changedProperties = Object.keys(styleChange) as (keyof PlotStyle)[];
+            // const changedProperties = Object.keys(styleChange) as (keyof Style)[];
             const propertiesToInsert: {name: string, value: string}[] = [];
 
-            for (let changedPropertyName of changedProperties) {
-                const cssPropertyName = stylePropertyNamesToCssPropertyNames[changedPropertyName];
-                if (!cssPropertyName) {
-                    break;
-                }
 
-                // Get the value of the modified property.
-                const newPropertyValue = styleChange[changedPropertyName]!;
-                let newCssPropertyValue = newPropertyValue;
-
-                // Transform the value of the property if needed.
-                if (changedPropertyName === "color") {
-                    newCssPropertyValue = (newPropertyValue as Color).css;
-                }
-
-                // If the property already exists in the CSS rule, updates its value.
-                // Otherwise, add the property to the list of properties that must be inserted in the CSS rule.
+            // If the property already exists in the CSS rule, updates its value.
+            // Otherwise, add the property to the list of properties that must be inserted in the CSS rule.
+            function updateOrAddCssProperty(
+                cssPropertyName: string,
+                newValue: string
+            ): void {
                 const cssPropertyAstNode = cssPropertyNamesToAstNodes.get(cssPropertyName);
                 if (cssPropertyAstNode) {
                     editor.replace(
                         cssPropertyAstNode.childNodes[0].range,
-                        newCssPropertyValue.toString()
+                        newValue
                     );
                 }
                 else {
                     propertiesToInsert.push({
                         name: cssPropertyName,
-                        value: newCssPropertyValue.toString()
+                        value: newValue
                     })
+                }
+            }
+
+            // Background.
+            const backgroundChange = styleChange.background;
+            if (backgroundChange && !isDisabled(backgroundChange.color)) {
+                if (backgroundChange.color) {
+                    updateOrAddCssProperty("background-color", backgroundChange.color.css);
+                }
+            }
+
+            // Border.
+            const borderChange = styleChange.border;
+            if (borderChange && !isDisabled(borderChange.thickness) && !isDisabled(borderChange.type) && !isDisabled(borderChange.color)) {
+                const borderWidth = (borderChange.thickness ?? 1).toString();
+                const borderStyle = borderChange.type && !Array.isArray(borderChange.type)
+                    ? borderChange.type
+                    : "solid";
+                const borderColor = (borderChange.color ?? BLACK).css;
+                updateOrAddCssProperty("border", `${borderWidth} ${borderStyle} ${borderColor}`);
+            }
+
+            // Font.
+            const fontChange = styleChange.font;
+            if (fontChange) {
+                if (fontChange.color && !isDisabled(fontChange.color)) {
+                    updateOrAddCssProperty("color", fontChange.color.css);
+                }
+
+                if (fontChange.family && !isDisabled(fontChange.family)) {
+                    updateOrAddCssProperty("font-family", fontChange.family.join(", "));
+                }
+
+                if (fontChange.size && !isDisabled(fontChange.size)) {
+                    updateOrAddCssProperty("font-size", fontChange.size.toString());
+                }
+            }
+
+            // Margins.
+            const marginChange = styleChange.margin;
+            function createCssValueFromMargin(margin: Margin): string {
+                let marginAsText = "";
+
+                if (margin.left === margin.right) {
+                    if (margin.top === margin.bottom) {
+                        if (margin.top === margin.left) {
+                            marginAsText = `${margin.top}`;
+                        }
+                        else {
+                            marginAsText = `${margin.top} ${margin.left}`;
+                        }
+                    }
+                    else {
+                        marginAsText = `${margin.top} ${margin.left} ${margin.bottom}`;
+                    }
+                    marginAsText = `${margin.top} ${margin.right} ${margin.bottom} ${margin.left}`;
+                }
+
+                return marginAsText;
+            }
+
+            if (styleChange.margin) {
+                if (styleChange.margin.inner && !isDisabled(styleChange.margin.inner)) {
+                    updateOrAddCssProperty("padding", createCssValueFromMargin(styleChange.margin.inner));
+                }
+
+                if (styleChange.margin.outer && !isDisabled(styleChange.margin.outer)) {
+                    updateOrAddCssProperty("padding", createCssValueFromMargin(styleChange.margin.outer));
                 }
             }
 
@@ -601,9 +788,9 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
 
             editor.applyEdits();
         }),
-        PlotStyleEditor.makeProvider(),
+        StyleInspector.makeProvider(),
         ButtonPopoverRenderer.makeProvider({
-            buttonContent: "Edit style 🎨",
+            buttonContent: "Inspect 🎨",
         })
     ),
 ];

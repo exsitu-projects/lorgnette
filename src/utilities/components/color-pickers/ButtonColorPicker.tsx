@@ -10,6 +10,7 @@ import { RgbColorPicker } from "./RgbColorPicker";
 type Props = {
     color: Color;
     useRgba?: boolean;
+    disabled?: boolean;
     onChange?: (newColor: Color) => void;
     onDragStart?: () => void;
     onDragEnd?: () => void;
@@ -41,6 +42,7 @@ export class ButtonColorPicker extends React.PureComponent<Props> {
                     {...targetProps}
                     elementRef={ref as any}
                     className="color-picker-button"
+                    disabled={this.props.disabled}
                 >
                     <div
                         className="color-preview"
