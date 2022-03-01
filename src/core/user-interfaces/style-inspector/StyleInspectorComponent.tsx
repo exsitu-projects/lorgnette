@@ -13,9 +13,8 @@ type InspectorPropsForStyleKey<K extends keyof Style> = SpecialisedStyleInspecto
 type InspectorForStyleKey<K extends keyof Style> = (props: InspectorPropsForStyleKey<K>) => ReactElement;
 
 export type StyleInspectorChangeHandler = (
-    styleChange: Style,
-    newStyle: Style,
-    isTransient: boolean
+    styleChange: Partial<Style>,
+    newStyle: Style
 ) => void;
 
 type Props = {
@@ -51,32 +50,36 @@ export class StyleInspectorComponent extends React.PureComponent<Props> {
             ...styleChange
         };
 
-        this.props.onChange(styleChange, newStyle, this.isInTransientState);
+        this.props.onChange(styleChange, newStyle);
     }
 
     private renderSpecialisedInspector<K extends StyleKeys>(
         key: K,
         inspector: InspectorForStyleKey<K>
     ): ReactElement | null {
+        const sharedInspectorProps = {
+            onPropertyChange: (modifiedProperties: Partial<NonNullable<Style[K]>>) => {
+                this.processChange({ [key]: modifiedProperties });
+            },
+            onTransientChangeStart: () => {
+                this.props.onTransientChangeStart();
+            },
+            onTransientChangeEnd: () => {
+                this.props.onTransientChangeEnd();
+            }
+        };
+
         const properties = this.props.style[key];
         if (properties) {
             return inspector({
                 properties: this.props.style[key]!,
-                onPropertyChange: modifiedProperties => {
-                    this.processChange({ [key]: modifiedProperties });
-                },
-                onTransientChangeStart: () => { this.isInTransientState = true; },
-                onTransientChangeEnd: () => { this.isInTransientState = false; },
+                ...sharedInspectorProps
             });
         }
         else if (this.props.settings.inspectors[key].showWithDefaultValues) {
             return inspector({
                 properties: this.props.settings.defaultStyle[key]!,
-                onPropertyChange: modifiedProperties => {
-                    this.processChange({ [key]: modifiedProperties });
-                },
-                onTransientChangeStart: () => { this.isInTransientState = true; },
-                onTransientChangeEnd: () => { this.isInTransientState = false; },
+                ...sharedInspectorProps
             });
         }
         else {

@@ -14,9 +14,9 @@ export class RgbaColorPicker extends React.PureComponent<RgbColorPickerProps> {
     private get colorPickerProps(): ColorPickerBaseProps<RgbaColor> {
         return {
             color: this.props.color as RgbaColor,
-            onChange: newColor => this.props.onChange && this.props.onChange(Color.fromRgb(newColor)),
+            onChange: newColor => this.props.onChange && this.props.onChange(Color.fromRgba(newColor)),
             onMouseDown: () => this.props.onDragStart && this.props.onDragStart(),
-            onMouseUp: () => this.props.onDragEnd && this.props.onDragEnd(),
+            onMouseUp: () => this.props.onDragEnd && this.props.onDragEnd()
         };
     }
     

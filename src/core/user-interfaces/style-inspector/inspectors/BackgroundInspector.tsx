@@ -19,6 +19,9 @@ export class BackgroundInspector extends SpecialisedStyleInspector<BackgroundPro
                 <ButtonColorPicker
                     color={propertyValue}
                     disabled={isDisabled}
+                    onDragStart={() => this.props.onTransientChangeStart()}
+                    onDragEnd={() => this.props.onTransientChangeEnd()}
+                    onChange={newColor => this.props.onPropertyChange({ color: newColor })}
                 />
         });
     }
