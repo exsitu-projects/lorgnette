@@ -52,12 +52,14 @@ export class BorderInspector extends SpecialisedStyleInspector<BorderProperties>
                         active={hasZeroThicknessValue}
                         disabled={isDisabled}
                         icon="disable"
+                        onClick={() => this.changeProperties({ thickness: new ValueWithUnit(0, "px") })}
                     />
                     {thicknessValues.map((thicknessValue, index) =>
                         <Button
                             active={index === selectedThicknessValueIndex}
                             disabled={isDisabled}
                             icon={thicknessValue === 0 ? "disable" : null}
+                            onClick={() => this.changeProperties({ thickness: new ValueWithUnit(thicknessValue, "px") })}
                         >{
                             <div className="thickness-preview" style={{ borderWidth: thicknessValue }} />
                         }</Button>
@@ -77,16 +79,19 @@ export class BorderInspector extends SpecialisedStyleInspector<BorderProperties>
                         text="–"
                         active={propertyValue === "solid"}
                         disabled={isDisabled}
+                        onClick={() => this.changeProperties({ type: "solid" })}
                     />
                     <Button
                         text="- -"
                         active={propertyValue === "dashed"}
                         disabled={isDisabled}
+                        onClick={() => this.changeProperties({ type: "dashed" })}
                     />
                     <Button
                         text="···"
                         active={propertyValue === "dotted"}
                         disabled={isDisabled}
+                        onClick={() => this.changeProperties({ type: "dotted" })}
                     />
                 </ButtonGroup>
         });
@@ -100,6 +105,9 @@ export class BorderInspector extends SpecialisedStyleInspector<BorderProperties>
                 <ButtonColorPicker
                     color={propertyValue}
                     disabled={isDisabled}
+                    onDragStart={() => this.startTransientChange()}
+                    onDragEnd={() => this.endTransientChange()}
+                    onChange={newColor => this.changeProperties({ color: newColor })}
                 />
         });
     }

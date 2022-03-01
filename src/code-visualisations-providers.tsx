@@ -32,7 +32,8 @@ import { Style } from "./core/user-interfaces/style-inspector/Style";
 import { Input as StyleInspectorInput, Output as StyleInspectorOutput, StyleInspector } from "./core/user-interfaces/style-inspector/StyleInspector";
 import { ValueWithUnit } from "./utilities/ValueWithUnit";
 import { Margin } from "./core/user-interfaces/style-inspector/inspectors/MarginInspector";
-import { DISABLED_PROPERTY, isDisabled } from "./core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
+import { DISABLED_PROPERTY, isDisabled, isEnabledAndDefined } from "./core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
+import { Position } from "./core/documents/Position";
 
 export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
     // new TextualCodeVisualisationProvider(
@@ -589,7 +590,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
                 addProperty(cssProperty, "font-family", "font", "family", cssNode =>
                     cssNode.value
                         .split(",")
-                        .map(fontName => fontName.trim())
+                        .map(familyName => familyName.replaceAll(/"'/g, ""))
                 );
 
                 addProperty(cssProperty, "font-weight", "font", "bold", cssNode =>
@@ -654,8 +655,11 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
         }),
         new ProgrammableOutputMapping(arg => {
             const output = arg.output as StyleInspectorOutput;
+            const document = arg.document;
             const editor = output.editor;
             const styleChange = output.data.styleChange;
+
+            console.log(styleChange)
 
             // Get the current properties of the CSS rule.
             const blockNode = (arg.pattern as SyntacticPattern).node.childNodes[1];
@@ -666,21 +670,21 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
                 cssProperties.map(node => [(node.parserNode as Declaration).property, node])
             );
 
-            // Map possibly modified properties to CSS properties.
-            // const stylePropertyNamesToCssPropertyNames: [keyof Style, keyof > = {
-            //     []
-            // };
-
-            // const changedProperties = Object.keys(styleChange) as (keyof Style)[];
             const propertiesToInsert: {name: string, value: string}[] = [];
+            const propertiesToRemove: string[] = [];
 
-
-            // If the property already exists in the CSS rule, updates its value.
+            // If the property already exists in the CSS rule, updates its value (string) or remove the property (null).
             // Otherwise, add the property to the list of properties that must be inserted in the CSS rule.
-            function updateOrAddCssProperty(
+            const REMOVE_PROPERTY = Symbol("Remove CSS property");
+            function modifyProperty(
                 cssPropertyName: string,
-                newValue: string
+                newValue: string | typeof REMOVE_PROPERTY
             ): void {
+                if (newValue === REMOVE_PROPERTY) {
+                    propertiesToRemove.push(cssPropertyName);
+                    return;
+                }
+
                 const cssPropertyAstNode = cssPropertyNamesToAstNodes.get(cssPropertyName);
                 if (cssPropertyAstNode) {
                     editor.replace(
@@ -692,42 +696,64 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
                     propertiesToInsert.push({
                         name: cssPropertyName,
                         value: newValue
-                    })
+                    });
                 }
             }
 
             // Background.
             const backgroundChange = styleChange.background;
-            if (backgroundChange && !isDisabled(backgroundChange.color)) {
-                if (backgroundChange.color) {
-                    updateOrAddCssProperty("background-color", backgroundChange.color.css);
+            if (backgroundChange) {
+                if (isEnabledAndDefined(backgroundChange.color)) {
+                    modifyProperty("background-color", backgroundChange.color.css);
                 }
             }
 
             // Border.
             const borderChange = styleChange.border;
-            if (borderChange && !isDisabled(borderChange.thickness) && !isDisabled(borderChange.type) && !isDisabled(borderChange.color)) {
-                const borderWidth = (borderChange.thickness ?? 1).toString();
-                const borderStyle = borderChange.type && !Array.isArray(borderChange.type)
+            if (borderChange) {
+                const borderWidth = (borderChange.thickness ?? new ValueWithUnit(1, "px")).toString();
+                const borderStyle = isEnabledAndDefined(borderChange.type) && !Array.isArray(borderChange.type)
                     ? borderChange.type
                     : "solid";
-                const borderColor = (borderChange.color ?? BLACK).css;
-                updateOrAddCssProperty("border", `${borderWidth} ${borderStyle} ${borderColor}`);
+                const borderColor = (isEnabledAndDefined(borderChange.color) ? borderChange.color : BLACK).css;
+                
+                modifyProperty("border", `${borderWidth} ${borderStyle} ${borderColor}`);
             }
 
             // Font.
             const fontChange = styleChange.font;
             if (fontChange) {
-                if (fontChange.color && !isDisabled(fontChange.color)) {
-                    updateOrAddCssProperty("color", fontChange.color.css);
+                if (isEnabledAndDefined(fontChange.size)) {
+                    modifyProperty("font-size", fontChange.size.toString());
                 }
 
-                if (fontChange.family && !isDisabled(fontChange.family)) {
-                    updateOrAddCssProperty("font-family", fontChange.family.join(", "));
+                if (isEnabledAndDefined(fontChange.bold)) {
+                    modifyProperty("font-weight", fontChange.bold ? "bold" : REMOVE_PROPERTY);
                 }
 
-                if (fontChange.size && !isDisabled(fontChange.size)) {
-                    updateOrAddCssProperty("font-size", fontChange.size.toString());
+                if (isEnabledAndDefined(fontChange.italic)) {
+                    modifyProperty("font-style", fontChange.italic ? "italic" : REMOVE_PROPERTY);
+                }
+
+                if (isEnabledAndDefined(fontChange.underline)) {
+                    modifyProperty("text-decoration", fontChange.underline ? "underline" : REMOVE_PROPERTY);
+                }
+
+                if (isEnabledAndDefined(fontChange.color)) {
+                    modifyProperty("color", fontChange.color.css);
+                }
+
+                if (isEnabledAndDefined(fontChange.family)) {
+                    const concatenatedFamilyNames = fontChange.family
+                        .map(familyName => {
+                            const trimmedFamilyName = familyName.trim();
+                            return trimmedFamilyName.includes(" ")
+                                ? `"${trimmedFamilyName}"`
+                                : trimmedFamilyName;
+                        })
+                        .join(", ");
+                    
+                    modifyProperty("font-family", concatenatedFamilyNames);
                 }
             }
 
@@ -754,13 +780,13 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
                 return marginAsText;
             }
 
-            if (styleChange.margin) {
-                if (styleChange.margin.inner && !isDisabled(styleChange.margin.inner)) {
-                    updateOrAddCssProperty("padding", createCssValueFromMargin(styleChange.margin.inner));
+            if (marginChange) {
+                if (isEnabledAndDefined(marginChange.inner)) {
+                    modifyProperty("padding", createCssValueFromMargin(marginChange.inner));
                 }
 
-                if (styleChange.margin.outer && !isDisabled(styleChange.margin.outer)) {
-                    updateOrAddCssProperty("padding", createCssValueFromMargin(styleChange.margin.outer));
+                if (isEnabledAndDefined(marginChange.outer)) {
+                    modifyProperty("margin", createCssValueFromMargin(marginChange.outer));
                 }
             }
 
@@ -786,11 +812,59 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
                 }
             }
 
+            // Delete all the properties to remove.
+            const hasPropertiesToRemove = propertiesToRemove.length > 0;
+            if (hasPropertiesToRemove) {
+                const convertOffsetToPosition = Position.getOffsetToPositionConverterForText(document.content);
+
+                for (let propertyName of propertiesToRemove) {
+                    const astNode = cssPropertyNamesToAstNodes.get(propertyName);
+                    if (!astNode) {
+                        continue;
+                    }
+
+                    const propertyRange = new Range(
+                        astNode.range.start,
+                        astNode.range.end.shiftBy(0, 1, 1) // to include ';'
+                    );
+
+                    // Delete the whitespace surrounding the property as well (if any).
+                    const rangeBeforePropertyInFirstPropertyLine = Range.fromLineStartTo(propertyRange.start);
+                    const textBeforePropertyInFirstPropertyLine = document.getContentInRange(rangeBeforePropertyInFirstPropertyLine);
+                    const sameLineTextBeforePropertyIsWhitespace = !!textBeforePropertyInFirstPropertyLine.match(/\s+/);
+                    
+                    const textInLastPropertyLine = document.getContentInLine(propertyRange.end.row);
+                    const rangeAfterPropertyInLastPropertyLine = Range.toLineEndFrom(propertyRange.end, textInLastPropertyLine.length);
+                    const textAfterPropertyInLastPropertyLine = document.getContentInRange(rangeAfterPropertyInLastPropertyLine);
+                    const sameLineTextAfterPropertyIsWhitespace = !!textAfterPropertyInLastPropertyLine.match(/\s+/);
+
+                    let rangeToDelete = propertyRange;
+                    if (sameLineTextBeforePropertyIsWhitespace) {
+                        // In this situation, also remove the '\n' character that precede the whitespace on the first line.
+                        const endOfLineBeforeProperty = convertOffsetToPosition(
+                            Math.max(0, rangeBeforePropertyInFirstPropertyLine.start.offset - 1)
+                        );
+
+                        rangeToDelete = rangeToDelete.with({ start: endOfLineBeforeProperty });
+                    }
+                    if (sameLineTextAfterPropertyIsWhitespace) {
+                        rangeToDelete = rangeToDelete.with({ end: rangeAfterPropertyInLastPropertyLine.end });
+                    }
+
+                    editor.delete(rangeToDelete);
+                }
+            }
+
             editor.applyEdits();
         }),
         StyleInspector.makeProvider(),
-        ButtonPopoverRenderer.makeProvider({
-            buttonContent: "Inspect 🎨",
+        // ButtonPopoverRenderer.makeProvider({
+        //     buttonContent: "Inspect 🎨",
+        // })
+        AsideRenderer.makeProvider({
+            onlyShowWhenCursorIsInRange: true,
+            position: AsideRendererPosition.RightSideOfCode,
+            positionOffset: 50
         })
     ),
 ];

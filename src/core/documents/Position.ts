@@ -39,6 +39,14 @@ export class Position {
         return this.offset > otherPosition.offset;
     }
 
+    with(changes: Partial<Position>): Position {
+        return new Position(
+            changes.row ?? this.row,
+            changes.column ?? this.column,
+            changes.offset ?? this.offset,
+        );
+    }
+
     relativeTo(origin: Position): Position {
         return new Position(
             origin.row + this.row,

@@ -8,6 +8,13 @@ export function isDisabled(property: any): property is typeof DISABLED_PROPERTY 
     return property === DISABLED_PROPERTY;
 }
 
+export function isEnabledAndDefined<
+    T extends undefined | typeof DISABLED_PROPERTY,
+    U extends Exclude<any, T>
+>(property: U | undefined | typeof DISABLED_PROPERTY): property is U {
+    return property !== undefined && !isDisabled(property);
+}
+
 export type SpecialisedStyleInspectorProperties<
     T extends Record<any, any> = Record<any, any>
 > = { [K in keyof T]: SpecialisedStyleInspectorPropertyValue<T[K]> };
@@ -35,8 +42,8 @@ export abstract class SpecialisedStyleInspector<
 
     protected abstract renderEditor(): ReactElement;
 
-    protected get properties(): [string, P][] {
-        return Object.entries(this.props.properties);
+    protected get properties(): P {
+        return this.props.properties;
     }
 
     protected hasProperty(propertyName: keyof P): boolean {
@@ -52,6 +59,18 @@ export abstract class SpecialisedStyleInspector<
         return this.props.properties[propertyName];
     }
 
+    protected changeProperties(modifiedProperties: Partial<P>): void {
+        this.props.onPropertyChange(modifiedProperties);
+    }
+
+    protected startTransientChange(): void {
+        this.props.onTransientChangeStart();
+    }
+
+    protected endTransientChange(): void {
+        this.props.onTransientChangeEnd();
+    }
+
     protected renderProperty<K extends keyof P>(configuration: {
         propertyName: K,
         renderer: PropertyEditorRenderer<P, K>,
@@ -63,9 +82,6 @@ export abstract class SpecialisedStyleInspector<
 
         const propertyValue = this.getProperty(configuration.propertyName)!;
         const isDisabled = this.isPropertyDisabled(configuration.propertyName);
-
-        if (isDisabled) console.log(`Property ${configuration.propertyName} is disabled`);
-        
 
         const propertyEditor = configuration.renderer(propertyValue, isDisabled);
         if (configuration.formGroup === undefined) {

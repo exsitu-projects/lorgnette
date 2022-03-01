@@ -7,6 +7,13 @@ export class ValueWithUnit<V = number, U = string> {
         this.unit = unit;
     }
 
+    with(changes: Partial<ValueWithUnit<V, U>>): ValueWithUnit<V, U> {
+        return new ValueWithUnit(
+            changes.value ?? this.value,
+            changes.unit ?? this.unit
+        );
+    }
+
     toString(): string {
         return `${this.value}${this.unit}`;
     }

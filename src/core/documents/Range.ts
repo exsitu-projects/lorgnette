@@ -23,6 +23,13 @@ export class Range {
             && this.end.isAfter(position);
     }
 
+    with(changes: Partial<Range>): Range {
+        return new Range(
+            changes.start ?? this.start,
+            changes.end ?? this.end
+        );
+    }
+
     relativeTo(origin: Position): Range {
         return new Range(
             this.start.relativeTo(origin),
@@ -51,5 +58,19 @@ export class Range {
         return position1.isStrictlyBefore(position2)
             ? new Range(position1, position2)
             : new Range(position2, position1);
+    }
+
+    static fromLineStartTo(position: Position): Range {
+        return new Range(
+            position.with({ column: 0, offset: position.offset - position.column }),
+            position
+        );
+    }
+
+    static toLineEndFrom(position: Position, lineLength: number): Range {
+        return new Range(
+            position,
+            position.with({ column: lineLength, offset: position.offset + (lineLength - position.column) }),
+        );
     }
 }

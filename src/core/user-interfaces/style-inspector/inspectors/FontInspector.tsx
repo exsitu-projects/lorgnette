@@ -28,21 +28,34 @@ export class FontInspector extends SpecialisedStyleInspector<FontProperties> {
                         <Button
                             text="–"
                             disabled={isDisabled}
+                            onClick={() => this.changeProperties({
+                                size: propertyValue.with({ value: propertyValue.value - 1 })
+                            })}
                         />
                         <NumericInput
                             value={propertyValue.value}
+                            min={0}
                             disabled={isDisabled}
                             buttonPosition="none"
+                            onChange={htmlElement => this.changeProperties({
+                                size: propertyValue.with({ value: Number(htmlElement.target.value) })
+                            })}
                         />
                         <Button
                             text="+"
                             disabled={isDisabled}
+                            onClick={() => this.changeProperties({
+                                size: propertyValue.with({ value: Math.max(0, propertyValue.value + 1) })
+                            })}
                         />
                     </ControlGroup>
                     <InputGroup
                         value={propertyValue.unit}
                         disabled={isDisabled}
                         className="unit"
+                        onChange={htmlElement => this.changeProperties({
+                            size: propertyValue.with({ unit: htmlElement.target.value })
+                        })}
                     />
                 </>
         });
@@ -56,6 +69,7 @@ export class FontInspector extends SpecialisedStyleInspector<FontProperties> {
                     icon="bold"
                     active={propertyValue}
                     disabled={isDisabled}
+                    onClick={() => this.changeProperties({ bold: !propertyValue })}
                 />
         });
 
@@ -66,6 +80,7 @@ export class FontInspector extends SpecialisedStyleInspector<FontProperties> {
                     icon="italic"
                     active={propertyValue}
                     disabled={isDisabled}
+                    onClick={() => this.changeProperties({ italic: !propertyValue })}
                 />
         });
 
@@ -76,6 +91,7 @@ export class FontInspector extends SpecialisedStyleInspector<FontProperties> {
                     icon="underline"
                     active={propertyValue}
                     disabled={isDisabled}
+                    onClick={() => this.changeProperties({ underline: !propertyValue })}
                 />
         });
 
@@ -104,6 +120,7 @@ export class FontInspector extends SpecialisedStyleInspector<FontProperties> {
                 <TagInput
                     values={propertyValue}
                     disabled={isDisabled}
+                    onChange={tagNodes => this.changeProperties({ family: tagNodes.map(node => node!.toString()) })}
                 />
         });
     }
@@ -116,6 +133,9 @@ export class FontInspector extends SpecialisedStyleInspector<FontProperties> {
                 <ButtonColorPicker
                     color={propertyValue}
                     disabled={isDisabled}
+                    onDragStart={() => this.startTransientChange()}
+                    onDragEnd={() => this.endTransientChange()}
+                    onChange={newColor => this.changeProperties({ color: newColor })}
                 />
         });
     }

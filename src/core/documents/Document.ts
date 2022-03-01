@@ -60,6 +60,10 @@ export class Document {
         return [...this.textSplitByLine];
     }
 
+    get nbLines(): number {
+        return this.textSplitByLine.length;
+    }
+
     get range(): DocumentRange {
         const startLine = 0;
         const endLine = this.textSplitByLine.length - 1;
@@ -147,6 +151,18 @@ export class Document {
         }
 
         return lines.join("\n");
+    }
+
+    getContentInLine(line: number): string {
+        const nbLines = this.nbLines;
+        if (line >= nbLines) {
+            throw new Error(`There is no line at the given line index: ${line}`);
+        }
+
+        // Every line but the last line ends with a '\n' character (not included in 'textSplitByLine' entries).
+        return line === nbLines - 1
+            ? this.textSplitByLine[line]
+            : this.textSplitByLine[line].concat("\n");
     }
 
     setContent(
