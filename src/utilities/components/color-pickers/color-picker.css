@@ -1,7 +1,11 @@
 .floating-color-picker-wrapper {
+    z-index: 1000;
+}
+
+.floating-color-picker-wrapper .color-picker {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
-    z-index: 1000;
+
 }
 
 .bp3-button.color-picker-button {
