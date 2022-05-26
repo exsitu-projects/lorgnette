@@ -6,7 +6,8 @@ import "./code-editor.css";
 import "ace-builds/src-min-noconflict/mode-typescript";
 import "ace-builds/src-min-noconflict/mode-json";
 import "ace-builds/src-min-noconflict/mode-css";
-import "ace-builds/src-noconflict/theme-tomorrow";
+import "ace-builds/src-min-noconflict/mode-python";
+import "ace-builds/src-min-noconflict/theme-tomorrow";
 
 import { Language } from "../../../core/languages/Language";
 import { Range } from "../../../core/documents/Range";

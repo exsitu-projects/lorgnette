@@ -1,0 +1,44 @@
+import { Range } from "../../../documents/Range";
+import { PythonSyntaxTreeNode } from "../PythonSyntaxTreeNode";
+import { PythonParserContext } from "../PythonParser";
+import { FunctionCallNode } from "./FunctionCallNode";
+import { BooleanNode } from "./BooleanNode";
+import { NoneNode } from "./NoneNode";
+import { NumberNode } from "./NumberNode";
+import { StringNode } from "./StringNode";
+import { convertParserNode } from "../PythonSyntaxTree";
+import { NamedAccessNode } from "./NamedAccessNode";
+import { IndexedAccessNode } from "./IndexedAccessNode";
+
+export type ValueNode =
+    | NamedAccessNode
+    | IndexedAccessNode
+    | FunctionCallNode
+    | StringNode
+    | NumberNode
+    | BooleanNode
+    | NoneNode;
+
+export class ExpressionNode extends PythonSyntaxTreeNode {
+    static readonly type = "Expression";
+    readonly type = ExpressionNode.type;
+
+    readonly value: ValueNode;
+
+    constructor(value: ValueNode, parserNode: any, range: Range) {
+        super(parserNode, range);
+        this.value = value;
+    }
+
+    get childNodes(): PythonSyntaxTreeNode[] {
+        return [this.value];
+    }
+
+    static fromNearlyParserResultNode(node: any, parserContext: PythonParserContext): ExpressionNode {
+        return new ExpressionNode(
+            convertParserNode(node.value, parserContext) as ValueNode,
+            node,
+            ExpressionNode.computeRangeFromParserNode(node, parserContext)
+        );
+    }
+}

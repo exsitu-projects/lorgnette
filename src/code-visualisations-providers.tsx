@@ -80,7 +80,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
     new TextualCodeVisualisationProvider(
         "Hexadecimal color code",
         {},
-        new RegexPatternFinder("#([a-fA-F0-9]{6})"),
+        new RegexPatternFinder("=([a-fA-F0-9]{6})"),
         [
             new RangeSiteProvider(1, 2),
             new RangeSiteProvider(3, 4),
@@ -110,7 +110,7 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
         }),
         ColorPicker.makeProvider(),
         AsideRenderer.makeProvider({
-            onlyShowWhenCursorIsInRange: true
+            // onlyShowWhenCursorIsInRange: true
         })
     ),
             
@@ -118,45 +118,45 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             
             
             
-    // new SyntacticCodeVisualisationProvider(
-    //     "RGB Color constructor — Syntactic",
-    //     { languages: ["typescript"] },
-    //     new SyntacticPatternFinder(new SyntaxTreePattern(n => 
-    //         n.type === "NewExpression"
-    //             && n.childNodes[1].parserNode.escapedText === "Color"
-    //             && n.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken").length === 3,
-    //         SKIP_MATCH_DESCENDANTS
-    //     )),
-    //     [
-    //         new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[0]),
-    //         new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[1]),
-    //         new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[2])
-    //     ],
-    //     new ProgrammableInputMapping(arg => {
-    //         const sites = arg.sites;
+    new SyntacticCodeVisualisationProvider(
+        "RGB Color constructor — Syntactic",
+        { languages: ["typescript"] },
+        new SyntacticPatternFinder(new SyntaxTreePattern(n => 
+            n.type === "NewExpression"
+                && n.childNodes[1].parserNode.escapedText === "Color"
+                && n.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken").length === 3,
+            SKIP_MATCH_DESCENDANTS
+        )),
+        [
+            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[0]),
+            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[1]),
+            new ProgrammableSiteProvider(p => p.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[2])
+        ],
+        new ProgrammableInputMapping(arg => {
+            const sites = arg.sites;
             
-    //         return {
-    //             r: parseInt(sites[0].text),
-    //             g: parseInt(sites[1].text),
-    //             b: parseInt(sites[2].text)
-    //         };
-    //     }),
-    //     new ProgrammableOutputMapping(arg => {
-    //         const data = arg.output.data;
-    //         const documentEditor = arg.output.editor;
-    //         const sites = arg.sites;
+            return {
+                r: parseInt(sites[0].text),
+                g: parseInt(sites[1].text),
+                b: parseInt(sites[2].text)
+            };
+        }),
+        new ProgrammableOutputMapping(arg => {
+            const data = arg.output.data;
+            const documentEditor = arg.output.editor;
+            const sites = arg.sites;
             
-    //         documentEditor.replace(sites[0].range, data.r.toString());
-    //         documentEditor.replace(sites[1].range ,data.g.toString());
-    //         documentEditor.replace(sites[2].range, data.b.toString());
+            documentEditor.replace(sites[0].range, data.r.toString());
+            documentEditor.replace(sites[1].range ,data.g.toString());
+            documentEditor.replace(sites[2].range, data.b.toString());
             
-    //         documentEditor.applyEdits();
-    //     }),
-    //     ColorPicker.makeProvider(),
-    //     AsideRenderer.makeProvider({
-    //         onlyShowWhenCursorIsInRange: true
-    //     })
-    // ),
+            documentEditor.applyEdits();
+        }),
+        ColorPicker.makeProvider(),
+        AsideRenderer.makeProvider({
+            onlyShowWhenCursorIsInRange: true
+        })
+    ),
     
 
 
@@ -353,7 +353,6 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
 
 
 
-
     new SyntacticCodeVisualisationProvider(
         "Vega marks",
         { languages: ["json"] },
@@ -364,120 +363,149 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             SKIP_MATCH_DESCENDANTS
         )),
         [],
-        new ProgrammableInputMapping(arg => {
-            const pattern = (arg.pattern as SyntacticPattern).node as PropertyNode;
-            const markProperties = (pattern.value as ObjectNode).properties;
-
-            const style: PlotStyle = {};
-
-            const typeProperty = markProperties.find(property => property.key.value === "type");
-            const type = typeProperty ? (typeProperty.value as StringNode).value : undefined;
-            style["type"] = type ?? "(missing type)";
-
-            const colorProperty = markProperties.find(property => property.key.value === "color");
-            style["color"] = colorProperty
-                ? Color.fromCss((colorProperty.value as StringNode).value)!
-                : Color.fromCss("#4682b4")!;
-
-            const opacityProperty = markProperties.find(property => property.key.value === "opacity");
-            style["opacity"] = opacityProperty
-                ? (opacityProperty.value as NumberNode).value
-                : 1;
-
-            const filledProperty = markProperties.find(property => property.key.value === "filled");
-            style["filled"] = filledProperty
-                ? (filledProperty.value as BooleanNode).value
-                : type
-                    ? ["point", "line", "rule"].includes(type) ? false : true
-                    : true;
         
+        new ProgrammableInputMapping(arg => {
             return {
-                style: style,
+                style: {},
             };
         }),
         new ProgrammableOutputMapping(arg => {
-            const editor = arg.output.editor;
-            const propertyNode = (arg.pattern as SyntacticPattern).node as PropertyNode;
-            const markProperties = (propertyNode.value as ObjectNode).properties;
-            const styleChange = arg.output.data.styleChange as PlotStyle;
-            const stylePropertyNamesToVegaPropertyNames: Record<keyof PlotStyle, string | null> = {
-                "type": "type",
-                "color": "color",
-                "filled": "filled",
-                "opacity": "opacity",
-                "thickness": "thickness",
-                "shape": null,
-                "horizontal": null
-            };
-
-            const changedProperties = Object.keys(styleChange) as (keyof PlotStyle)[];
-            const propertiesToInsert: {key: string, value: string}[] = [];
-
-            for (let changedPropertyName of changedProperties) {
-                const vegaPropertyName = stylePropertyNamesToVegaPropertyNames[changedPropertyName];
-                if (!vegaPropertyName) {
-                    break;
-                }
-
-                // Get the value of the modified property.
-                const newPropertyValue = styleChange[changedPropertyName]!;
-                let newJsonPropertyValue = newPropertyValue;
-
-                // Transform the value of the property if needed.
-                if (changedPropertyName === "color") {
-                    newJsonPropertyValue = (newPropertyValue as Color).css;
-                }
-
-                if (typeof newJsonPropertyValue === "string") {
-                    newJsonPropertyValue = `"${newJsonPropertyValue}"`;
-                }
-
-                // If the property already exists in the JSON, updates its value.
-                // Otherwise, add the property to the list of properties that should be added to the 'mark' object.
-                const jsonProperty = markProperties.find(property => property.key.value === vegaPropertyName);
-                if (jsonProperty) {
-                    editor.replace(
-                        jsonProperty.value.range,
-                        newJsonPropertyValue.toString()
-                    );
-                }
-                else {
-                    propertiesToInsert.push({
-                        key: vegaPropertyName,
-                        value: newJsonPropertyValue.toString()
-                    })
-                }
-            }
-
-            // Insert all the new properties.
-            const hasPropertiesToInsert = propertiesToInsert.length > 0;
-            if (hasPropertiesToInsert) {
-                const concatenatedPropertiesToInsert = propertiesToInsert
-                    .map(property => `"${property.key}": ${property.value}`)
-                    .join(", ");
-    
-                const hasMarkProperties =  markProperties.length > 0;
-                if (hasMarkProperties) {
-                    editor.insert(
-                        markProperties[markProperties.length - 1].range.end,
-                        `, ${concatenatedPropertiesToInsert}`
-                    );
-                }
-                else {
-                    editor.replace(
-                        propertyNode.value.range,
-                        `{ ${concatenatedPropertiesToInsert} }`
-                    );
-                }
-            }
-
-            editor.applyEdits();
+            
         }),
-        PlotStyleEditor.makeProvider(),
+        
+        StyleInspector.makeProvider(),
         ButtonPopoverRenderer.makeProvider({
             buttonContent: "🎨 edit style"
         })
     ),
+
+
+
+
+    // new SyntacticCodeVisualisationProvider(
+    //     "Vega marks",
+    //     { languages: ["json"] },
+    //     new SyntacticPatternFinder(new SyntaxTreePattern(n =>
+    //         n.type === "Property"
+    //             && (n as PropertyNode).key.value === "mark"
+    //             && (n as PropertyNode).value.type === "Object",
+    //         SKIP_MATCH_DESCENDANTS
+    //     )),
+    //     [],
+    //     new ProgrammableInputMapping(arg => {
+    //         const pattern = (arg.pattern as SyntacticPattern).node as PropertyNode;
+    //         const markProperties = (pattern.value as ObjectNode).properties;
+
+    //         const style: PlotStyle = {};
+
+    //         const typeProperty = markProperties.find(property => property.key.value === "type");
+    //         const type = typeProperty ? (typeProperty.value as StringNode).value : undefined;
+    //         style["type"] = type ?? "(missing type)";
+
+    //         const colorProperty = markProperties.find(property => property.key.value === "color");
+    //         style["color"] = colorProperty
+    //             ? Color.fromCss((colorProperty.value as StringNode).value)!
+    //             : Color.fromCss("#4682b4")!;
+
+    //         const opacityProperty = markProperties.find(property => property.key.value === "opacity");
+    //         style["opacity"] = opacityProperty
+    //             ? (opacityProperty.value as NumberNode).value
+    //             : 1;
+
+    //         const filledProperty = markProperties.find(property => property.key.value === "filled");
+    //         style["filled"] = filledProperty
+    //             ? (filledProperty.value as BooleanNode).value
+    //             : type
+    //                 ? ["point", "line", "rule"].includes(type) ? false : true
+    //                 : true;
+        
+    //         return {
+    //             style: style,
+    //         };
+    //     }),
+    //     new ProgrammableOutputMapping(arg => {
+    //         const editor = arg.output.editor;
+    //         const propertyNode = (arg.pattern as SyntacticPattern).node as PropertyNode;
+    //         const markProperties = (propertyNode.value as ObjectNode).properties;
+    //         const styleChange = arg.output.data.styleChange as PlotStyle;
+    //         const stylePropertyNamesToVegaPropertyNames: Record<keyof PlotStyle, string | null> = {
+    //             "type": "type",
+    //             "color": "color",
+    //             "filled": "filled",
+    //             "opacity": "opacity",
+    //             "thickness": "thickness",
+    //             "shape": null,
+    //             "horizontal": null
+    //         };
+
+    //         const changedProperties = Object.keys(styleChange) as (keyof PlotStyle)[];
+    //         const propertiesToInsert: {key: string, value: string}[] = [];
+
+    //         for (let changedPropertyName of changedProperties) {
+    //             const vegaPropertyName = stylePropertyNamesToVegaPropertyNames[changedPropertyName];
+    //             if (!vegaPropertyName) {
+    //                 break;
+    //             }
+
+    //             // Get the value of the modified property.
+    //             const newPropertyValue = styleChange[changedPropertyName]!;
+    //             let newJsonPropertyValue = newPropertyValue;
+
+    //             // Transform the value of the property if needed.
+    //             if (changedPropertyName === "color") {
+    //                 newJsonPropertyValue = (newPropertyValue as Color).css;
+    //             }
+
+    //             if (typeof newJsonPropertyValue === "string") {
+    //                 newJsonPropertyValue = `"${newJsonPropertyValue}"`;
+    //             }
+
+    //             // If the property already exists in the JSON, updates its value.
+    //             // Otherwise, add the property to the list of properties that should be added to the 'mark' object.
+    //             const jsonProperty = markProperties.find(property => property.key.value === vegaPropertyName);
+    //             if (jsonProperty) {
+    //                 editor.replace(
+    //                     jsonProperty.value.range,
+    //                     newJsonPropertyValue.toString()
+    //                 );
+    //             }
+    //             else {
+    //                 propertiesToInsert.push({
+    //                     key: vegaPropertyName,
+    //                     value: newJsonPropertyValue.toString()
+    //                 })
+    //             }
+    //         }
+
+    //         // Insert all the new properties.
+    //         const hasPropertiesToInsert = propertiesToInsert.length > 0;
+    //         if (hasPropertiesToInsert) {
+    //             const concatenatedPropertiesToInsert = propertiesToInsert
+    //                 .map(property => `"${property.key}": ${property.value}`)
+    //                 .join(", ");
+    
+    //             const hasMarkProperties =  markProperties.length > 0;
+    //             if (hasMarkProperties) {
+    //                 editor.insert(
+    //                     markProperties[markProperties.length - 1].range.end,
+    //                     `, ${concatenatedPropertiesToInsert}`
+    //                 );
+    //             }
+    //             else {
+    //                 editor.replace(
+    //                     propertyNode.value.range,
+    //                     `{ ${concatenatedPropertiesToInsert} }`
+    //                 );
+    //             }
+    //         }
+
+    //         editor.applyEdits();
+    //     }),
+    //     PlotStyleEditor.makeProvider(),
+    //     ButtonPopoverRenderer.makeProvider({
+    //         buttonContent: "🎨 edit style"
+    //     })
+    // ),
 
 
 
