@@ -52,8 +52,8 @@ declare var space: any;
         return (data: any[], location: number | undefined, reject: any) => {
             data = !!dataTransformer ? dataTransformer(data) : data;
 
-            console.info(`= Creating node type: ${type} =`)
-            console.log(data)
+            // console.info(`= Creating node type: ${type} =`)
+            // console.log(data)
 
             // We only operate on well-defined child nodes that have an offset position.
             const childNodes = data.filter((parserNode: any) =>
