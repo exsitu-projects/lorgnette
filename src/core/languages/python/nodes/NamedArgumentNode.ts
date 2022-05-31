@@ -2,16 +2,16 @@ import { Range } from "../../../documents/Range";
 import { PythonSyntaxTreeNode } from "../PythonSyntaxTreeNode";
 import { PythonParserContext } from "../PythonParser";
 import { ExpressionNode } from "./ExpressionNode";
-import { convertParserNode } from "../PythonSyntaxTree";
+import { IdentifierNode } from "./IdentifierNode";
 
 export class NamedArgumentNode extends PythonSyntaxTreeNode {
     static readonly type = "NamedArgument";
     readonly type = NamedArgumentNode.type;
 
-    readonly name: string;
+    readonly name: IdentifierNode;
     readonly value: ExpressionNode;
 
-    constructor(name: string, value: ExpressionNode, parserNode: any, range: Range) {
+    constructor(name: IdentifierNode, value: ExpressionNode, parserNode: any, range: Range) {
         super(parserNode, range);
         this.name = name;
         this.value = value;

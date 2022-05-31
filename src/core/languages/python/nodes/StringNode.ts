@@ -30,7 +30,7 @@ export class StringNode extends PythonSyntaxTreeNode {
     static fromNearlyParserResultNode(node: any, parserContext: PythonParserContext): StringNode {
         const delimiterLength = node.delimiter.length;
         const stringContent = node.value.slice(
-            delimiterLength - 1,
+            delimiterLength,
             node.value.length - delimiterLength
         );
 
