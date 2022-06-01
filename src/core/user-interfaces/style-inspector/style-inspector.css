@@ -28,7 +28,7 @@
     border-bottom: 1px solid #EEE;
 }
 
-.ui.style-inspector .specialised-style-inspector .editor .bp3-label {
+.ui.style-inspector .specialised-style-inspector .editor .bp4-label {
     color: #666;
     font-size: 0.8em;
     text-align: left;
@@ -84,7 +84,7 @@
     flex-grow: 1;
 }
 
-.ui.style-inspector .specialised-style-inspector.font .editor .size .bp3-form-content {
+.ui.style-inspector .specialised-style-inspector.font .editor .size .bp4-form-content {
     display: flex;
 }
 
@@ -92,8 +92,8 @@
     margin: 0 0 0 1ex;
 }
 
-.ui.style-inspector .specialised-style-inspector.font .editor .size .value .bp3-input,
-.ui.style-inspector .specialised-style-inspector.font .editor .size .unit .bp3-input {
+.ui.style-inspector .specialised-style-inspector.font .editor .size .value .bp4-input,
+.ui.style-inspector .specialised-style-inspector.font .editor .size .unit .bp4-input {
     width: 4em;
 }
 

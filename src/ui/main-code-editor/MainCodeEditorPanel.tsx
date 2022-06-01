@@ -68,7 +68,7 @@ export class MainCodeEditorPanel extends React.Component<Props, State> {
             />;
         };
         
-        const menu = <Menu className="bp3-menu">
+        const menu = <Menu className="bp4-menu">
             {EXAMPLES.map(example => renderExampleMenuItem(example))}
         </Menu>;
             
@@ -76,7 +76,7 @@ export class MainCodeEditorPanel extends React.Component<Props, State> {
             content={menu}
             position="bottom"
             minimal={true}
-            popoverClassName="bp3-popover"
+            popoverClassName="bp4-popover"
             >
             <Button text="Load example..." rightIcon="caret-down" intent="primary" />
         </Popover2>
@@ -107,7 +107,7 @@ export class MainCodeEditorPanel extends React.Component<Props, State> {
                 >
                     <div className="editor-with-menu">
                         <div className="menu-bar">
-                            <Label className="bp3-inline" style={{ margin: 0 }}>
+                            <Label className="bp4-inline" style={{ margin: 0 }}>
                                 Language:
                                 {this.renderLanguageSelector(context)}
                             </Label>

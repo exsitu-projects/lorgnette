@@ -14,35 +14,35 @@ body {
     /* height: 4em; */
 }
 
-.monocle-ui-main-tabs .bp3-tab-list {
+.monocle-ui-main-tabs .bp4-tab-list {
     height: 60px;
     padding: 1ex 2ex;
     background-color: #4f7cc1;
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
-.monocle-ui-main-tabs .bp3-tab-panel {
+.monocle-ui-main-tabs .bp4-tab-panel {
     width: 100%;
     height: calc(100% - 60px);
     margin: 0;
 }
 
-.monocle-ui-main-tabs .bp3-tab {
+.monocle-ui-main-tabs .bp4-tab {
     color: #FFF;
     font-weight: 400;
     font-size: 1.2em;
 }
 
-.monocle-ui-main-tabs .bp3-tab:hover {
+.monocle-ui-main-tabs .bp4-tab:hover {
     color: #bad1f3;
 }
 
-.monocle-ui-main-tabs .bp3-tab::selection {
+.monocle-ui-main-tabs .bp4-tab::selection {
     background-color: #FFF;
     color: #bad1f3;
 }
 
-.monocle-ui-main-tabs .bp3-tab-indicator {
+.monocle-ui-main-tabs .bp4-tab-indicator {
     background-color: #90bcff;
 }
 

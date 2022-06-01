@@ -5,10 +5,10 @@
     /* z-index: 200; */
 }
 
-.code-visualisation-popover-wrapper > button.bp3-button,
-.code-visualisation-popover-wrapper > button.bp3-button:active,
-.code-visualisation-popover-wrapper > button.bp3-button.bp3-active,
-.code-visualisation-popover-wrapper > button.bp3-button:hover {
+.code-visualisation-popover-wrapper > button.bp4-button,
+.code-visualisation-popover-wrapper > button.bp4-button:active,
+.code-visualisation-popover-wrapper > button.bp4-button.bp4-active,
+.code-visualisation-popover-wrapper > button.bp4-button:hover {
     display: block;
     min-width: auto;
     min-height: auto;
@@ -23,13 +23,13 @@
     font-size: 0.9em;
 }
 
-.code-visualisation-popover-wrapper > button.bp3-button > span {
+.code-visualisation-popover-wrapper > button.bp4-button > span {
     display: inline-block;
 }
 
-.code-visualisation-popover-wrapper > button.bp3-button:hover,
-.code-visualisation-popover-wrapper > button.bp3-button:active,
-.code-visualisation-popover-wrapper > button.bp3-button.bp3-active {
+.code-visualisation-popover-wrapper > button.bp4-button:hover,
+.code-visualisation-popover-wrapper > button.bp4-button:active,
+.code-visualisation-popover-wrapper > button.bp4-button.bp4-active {
     background: #eee;
     border: 1px solid #888;
     color: #666;
@@ -54,10 +54,10 @@
     /* z-index: 200; */
 }
 
-.code-visualisation-popup-wrapper > button.bp3-button,
-.code-visualisation-popup-wrapper > button.bp3-button:active,
-.code-visualisation-popup-wrapper > button.bp3-button.bp3-active,
-.code-visualisation-popup-wrapper > button.bp3-button:hover {
+.code-visualisation-popup-wrapper > button.bp4-button,
+.code-visualisation-popup-wrapper > button.bp4-button:active,
+.code-visualisation-popup-wrapper > button.bp4-button.bp4-active,
+.code-visualisation-popup-wrapper > button.bp4-button:hover {
     display: block;
     min-width: auto;
     min-height: auto;
@@ -72,13 +72,13 @@
     font-size: 0.9em;
 }
 
-.code-visualisation-popup-wrapper > button.bp3-button > span {
+.code-visualisation-popup-wrapper > button.bp4-button > span {
     display: inline-block;
 }
 
-.code-visualisation-popup-wrapper > button.bp3-button:hover,
-.code-visualisation-popup-wrapper > button.bp3-button:active,
-.code-visualisation-popup-wrapper > button.bp3-button.bp3-active {
+.code-visualisation-popup-wrapper > button.bp4-button:hover,
+.code-visualisation-popup-wrapper > button.bp4-button:active,
+.code-visualisation-popup-wrapper > button.bp4-button.bp4-active {
     background: #eee;
     border: 1px solid #888;
     color: #666;
