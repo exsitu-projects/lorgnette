@@ -4,6 +4,7 @@ import { ValueWithUnit } from "../../../utilities/ValueWithUnit";
 import { FullStyle } from "./Style";
 
 export type SpecialisedInspectorSettings = {
+    show: boolean;
     showWithDefaultValues: boolean;
 }
 
@@ -49,10 +50,10 @@ export const DEFAULT_STYLE_INSPECTOR_SETTINGS: StyleInspectorSettings = {
     },
 
     inspectors: {
-        background: { showWithDefaultValues: true },
-        border: { showWithDefaultValues: true },
-        font: { showWithDefaultValues: true },
-        margin: { showWithDefaultValues: true }
+        background: { show: true, showWithDefaultValues: true },
+        border: { show: true, showWithDefaultValues: true },
+        font: { show: true, showWithDefaultValues: true },
+        margin: { show: false, showWithDefaultValues: false }
     }
 };
 

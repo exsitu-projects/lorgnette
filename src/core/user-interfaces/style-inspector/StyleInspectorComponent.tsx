@@ -69,6 +69,10 @@ export class StyleInspectorComponent extends React.PureComponent<Props> {
             }
         };
 
+        if (!this.props.settings.inspectors[key].show) {
+            return null;
+        }
+
         const properties = this.props.style[key];
         if (properties) {
             return inspector({
