@@ -4,10 +4,10 @@ import { defaultCodeEditorRanges, GlobalContext, GlobalContextContent } from "./
 import { Language } from "./core/languages/Language";
 import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
 import { Document, DocumentChangeOrigin } from "./core/documents/Document";
-import { DEFAULT_CODE_VISUALISATION_PROVIDERS } from "./code-visualisations-providers";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "./core/documents/Position";
 import { DEFAULT_EXAMPLE } from "./ui/main-code-editor/code-examples/Example";
 import { MonocleUI } from "./ui/MonocleUI";
+import { CODE_VISUALISATION_PROVIDERS } from "./visualisation-providers/providers";
 
 type Props = {};
 type State = GlobalContextContent;
@@ -48,7 +48,7 @@ export default class App extends React.Component<Props, State> {
         this.state.updateDocument(this.state.document.language, newContent);
       },
 
-      codeVisualisationProviders: DEFAULT_CODE_VISUALISATION_PROVIDERS,
+      codeVisualisationProviders: CODE_VISUALISATION_PROVIDERS,
       codeVisualisations: [],
 
       declareCodeVisualisationMutation: () => {
