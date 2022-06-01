@@ -105,7 +105,7 @@
         //     ],
         //     []),
         //     listData[3]
-        // ], listData[2])
+        // ], listData[2])// 
         return [
             listData[0],
             listData[1][0][0],
@@ -123,17 +123,10 @@
         ];
     }
 
-    function extractNamedAccessIdentifiers(namedAccessData: any[]) {
-        return [
-            namedAccessData[0],
-            ...namedAccessData[1].map((d: any[]) => d[1])
-        ];
-    }
-
-    function createListsOfArguments(positionalArguments: any[], namedArguments: any[]) {
+    function createListsOfArguments(data: any[]) {
         return {
-            positionalArguments: positionalArguments.filter((n: any) => n.type === "PositionalArgument"),
-            namedArguments: namedArguments.filter((n: any) => n.type === "NamedArgument")
+            positionalArguments: data.filter((n: any) => !!n && n.type === "PositionalArgument"),
+            namedArguments: data.filter((n: any) => !!n && n.type === "NamedArgument")
         };
     }
 %}
@@ -144,66 +137,76 @@
 
 # A list with separators between items that can be empty.
 list[LIST_ELEMENT, SEPARATOR] ->
-    _ $LIST_ELEMENT (_ $SEPARATOR _ $LIST_ELEMENT):* _              {% d => extractListElements(d) %}
+    _ $LIST_ELEMENT (_ $SEPARATOR _ $LIST_ELEMENT):* _                      {% d => extractListElements(d) %}
 
 commaList[LIST_ELEMENT] ->
-    list[$LIST_ELEMENT, ","]                                        {% id %}
+    list[$LIST_ELEMENT, ","]                                                {% id %}
 
 
 
 # ===== PYTHON GRAMMAR =====
 
-program -> instruction:*                                            {% Node("Program", d => { return { instructions: d }; }, d => d[0]) %}
+program -> instruction:*                                                    {% Node("Program", d => { return { instructions: d }; }, d => d[0]) %}
 
 instruction ->
-    _ expression _                                                  {% d => d[1] %}
+    _ expression _                                                          {% d => d[1] %}
 
 expression ->
-      number                                                        {% Node("Expression", d => { return { value: d[0] }; }) %}
-    | boolean                                                       {% Node("Expression", d => { return { value: d[0] }; }) %}
-    | none                                                          {% Node("Expression", d => { return { value: d[0] }; }) %}
-    | functionCall                                                  {% Node("Expression", d => { return { value: d[0] }; }) %}
-    | indexedAccess                                                 {% Node("Expression", d => { return { value: d[0] }; }) %}
-    | namedAccess                                                   {% Node("Expression", d => { return { value: d[0] }; }) %}
-    | string                                                        {% Node("Expression", d => { return { value: d[0] }; }) %}
+      number                                                                {% Node("Expression", d => { return { value: d[0] }; }) %}
+    | boolean                                                               {% Node("Expression", d => { return { value: d[0] }; }) %}
+    | none                                                                  {% Node("Expression", d => { return { value: d[0] }; }) %}
+    | functionCall                                                          {% Node("Expression", d => { return { value: d[0] }; }) %}
+    | indexedAccess                                                         {% Node("Expression", d => { return { value: d[0] }; }) %}
+    | namedAccess                                                           {% Node("Expression", d => { return { value: d[0] }; }) %}
+    | id                                                                    {% Node("Expression", d => { return { value: d[0] }; }) %}
+    | string                                                                {% Node("Expression", d => { return { value: d[0] }; }) %}
+
+indexableExpression ->
+      number                                                                {% id %}
+    | boolean                                                               {% id %}
+    | functionCall                                                          {% id %}
+    | indexedAccess                                                         {% id %}
+    | namedAccess                                                           {% id %}
+    | id                                                                    {% id %}
+    | string                                                                {% id %}
 
 callableExpression ->
-      functionCall                                                  {% id %}
-    | indexedAccess                                                 {% id %}
-    | namedAccess                                                   {% id %}
+      functionCall                                                          {% id %}
+    | indexedAccess                                                         {% id %}
+    | namedAccess                                                           {% id %}
+    | id                                                                    {% id %}
 
-namedAccess -> id ("." id):*                                        {% Node("NamedAccess", d => { return { identifiers: extractNamedAccessIdentifiers(d) }; }) %}
+namedAccess -> indexableExpression "." id                                   {% Node("NamedAccess", d => { return { expression: d[0], identifier: d[2] }; }) %}
 
-indexedAccess -> id "[" _ expression _ "]"                          {% Node("IndexedAccess", d => { return { value: d[0] }; }) %}
+indexedAccess -> indexableExpression "[" _ expression _ "]"                 {% Node("IndexedAccess", d => { return { expression: d[0], index: d[3] }; }) %}
 
-functionCall -> callableExpression "(" argumentList ")"             {% Node("FunctionCall", d => { return { callee: d[0], argumentList: d[2] }; }) %}
+functionCall -> callableExpression argumentList                             {% Node("FunctionCall", d => { return { callee: d[0], argumentList: d[1] }; }) %}
 
 argumentList ->
-     commaList[positionalArgument] "," commaList[namedArgument]     {% Node("ArgumentList", d => createListsOfArguments(d[0], d[2])) %}
-    | commaList[namedArgument]                                      {% Node("ArgumentList", d => createListsOfArguments([], d), d => d[0]) %}
-    | commaList[positionalArgument]                                 {% Node("ArgumentList", d => createListsOfArguments(d, []), d => d[0]) %}
+     "(" commaList[positionalArgument] "," commaList[namedArgument] ")"     {% Node("ArgumentList", d => createListsOfArguments(d), d => [d[0], ...d[1], d[2], ...d[3], d[4]]) %}
+    | "(" commaList[namedArgument] ")"                                      {% Node("ArgumentList", d => createListsOfArguments(d), d => [d[0], ...d[1], d[2]]) %}
+    | "(" commaList[positionalArgument] ")"                                 {% Node("ArgumentList", d => createListsOfArguments(d), d => [d[0], ...d[1], d[2]]) %}
+    | "(" _ ")"                                                             {% Node("ArgumentList", d => createListsOfArguments(d)) %}
 
-positionalArgument -> expression                                    {% Node("PositionalArgument", d => { return { value: d[0] }; }) %}
+positionalArgument -> expression                                            {% Node("PositionalArgument", d => { return { value: d[0] }; }) %}
 
-namedArgument -> %identifier _ "=" _ expression                     {% Node("NamedArgument", d => { return { name: d[0], value: d[4] }; }) %}
-
-# string -> %string                                                   {% Node("String", d => { return { value: d[0] }; }) %}
+namedArgument -> %identifier _ "=" _ expression                             {% Node("NamedArgument", d => { return { name: d[0], value: d[4] }; }) %}
 
 string ->
-      %singleQuoteLongString                                        {% Node("String", d => { return { delimiter: "'''", value: d[0].value }; }) %}
-    | %doubleQuoteLongString                                        {% Node("String", d => { return { delimiter: "\"\"\"", value: d[0].value }; }) %}
-    | %singleQuoteString                                            {% Node("String", d => { return { delimiter: "'", value: d[0].value }; }) %}
-    | %doubleQuoteString                                            {% Node("String", d => { return { delimiter: "\"", value: d[0].value }; }) %}
+      %singleQuoteLongString                                                {% Node("String", d => { return { delimiter: "'''", value: d[0].value }; }) %}
+    | %doubleQuoteLongString                                                {% Node("String", d => { return { delimiter: "\"\"\"", value: d[0].value }; }) %}
+    | %singleQuoteString                                                    {% Node("String", d => { return { delimiter: "'", value: d[0].value }; }) %}
+    | %doubleQuoteString                                                    {% Node("String", d => { return { delimiter: "\"", value: d[0].value }; }) %}
 
 
-number -> %number                                                   {% Node("Number", d => { return { value: d[0] }; }) %}
+number -> %number                                                           {% Node("Number", d => { return { value: d[0] }; }) %}
 
 boolean ->
-      "True"                                                        {% Node("Boolean", { value: true }) %}
-    | "False"                                                       {% Node("Boolean", { value: false }) %}
+      "True"                                                                {% Node("Boolean", { value: true }) %}
+    | "False"                                                               {% Node("Boolean", { value: false }) %}
 
-none -> "None"                                                      {% Node("None") %}
+none -> "None"                                                              {% Node("None") %}
 
-id -> %identifier                                                   {% Node("Identifier", d => { return { name: d[0] }; }) %}
+id -> %identifier                                                           {% Node("Identifier", d => { return { name: d[0] }; }) %}
 
-_ -> null | %space                                                   {% id %}
+_ -> null | %space                                                          {% id %}

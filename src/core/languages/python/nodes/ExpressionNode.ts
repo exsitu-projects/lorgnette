@@ -9,8 +9,10 @@ import { StringNode } from "./StringNode";
 import { convertParserNode } from "../PythonSyntaxTree";
 import { NamedAccessNode } from "./NamedAccessNode";
 import { IndexedAccessNode } from "./IndexedAccessNode";
+import { IdentifierNode } from "./IdentifierNode";
 
 export type ValueNode =
+    | IdentifierNode
     | NamedAccessNode
     | IndexedAccessNode
     | FunctionCallNode

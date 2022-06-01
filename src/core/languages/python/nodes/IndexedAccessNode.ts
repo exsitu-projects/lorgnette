@@ -1,30 +1,45 @@
 import { Range } from "../../../documents/Range";
 import { PythonSyntaxTreeNode } from "../PythonSyntaxTreeNode";
 import { PythonParserContext } from "../PythonParser";
-import { IdentifierNode } from "./IdentifierNode";
 import { ExpressionNode } from "./ExpressionNode";
+import { BooleanNode } from "./BooleanNode";
+import { FunctionCallNode } from "./FunctionCallNode";
+import { IdentifierNode } from "./IdentifierNode";
+import { NamedAccessNode } from "./NamedAccessNode";
+import { StringNode } from "./StringNode";
+import { NumberNode } from "./NumberNode";
+import { convertParserNode } from "../PythonSyntaxTree";
+
+export type IndexableExpressionNode =
+    | IdentifierNode
+    | NamedAccessNode
+    | IndexedAccessNode
+    | FunctionCallNode
+    | StringNode
+    | NumberNode
+    | BooleanNode;
 
 export class IndexedAccessNode extends PythonSyntaxTreeNode {
     static readonly type = "IndexedAccess";
     readonly type = IndexedAccessNode.type;
 
-    readonly identifier: IdentifierNode;
+    readonly expression: IndexableExpressionNode;
     readonly index: ExpressionNode;
 
-    constructor(identifier: IdentifierNode, index: ExpressionNode, parserNode: any, range: Range) {
+    constructor(expression: IndexableExpressionNode, index: ExpressionNode, parserNode: any, range: Range) {
         super(parserNode, range);
-        this.identifier = identifier;
+        this.expression = expression;
         this.index = index;
     }
 
     get childNodes(): PythonSyntaxTreeNode[] {
-        return [this.identifier, this.index];
+        return [this.expression, this.index];
     }
 
     static fromNearlyParserResultNode(node: any, parserContext: PythonParserContext): IndexedAccessNode {
         return new IndexedAccessNode(
-            IdentifierNode.fromNearlyParserResultNode(node.value, parserContext),
-            ExpressionNode.fromNearlyParserResultNode(node.value, parserContext),
+            convertParserNode(node.expression, parserContext) as IndexableExpressionNode,
+            ExpressionNode.fromNearlyParserResultNode(node.index, parserContext),
             node,
             IndexedAccessNode.computeRangeFromParserNode(node, parserContext)
         );

@@ -5,8 +5,10 @@ import { convertParserNode } from "../PythonSyntaxTree";
 import { ArgumentListNode } from "./ArgumentListNode";
 import { IndexedAccessNode } from "./IndexedAccessNode";
 import { NamedAccessNode } from "./NamedAccessNode";
+import { IdentifierNode } from "./IdentifierNode";
 
 export type CallableExpressionNode =
+    | IdentifierNode
     | NamedAccessNode
     | IndexedAccessNode
     | FunctionCallNode;

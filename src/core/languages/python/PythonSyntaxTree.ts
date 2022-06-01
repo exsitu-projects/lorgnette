@@ -13,10 +13,12 @@ import { ProgramNode } from "./nodes/ProgramNode";
 import { ArgumentListNode } from "./nodes/ArgumentListNode";
 import { PositionalArgumentNode } from "./nodes/PositionalArgumentNode";
 import { NamedArgumentNode } from "./nodes/NamedArgumentNode";
+import { IdentifierNode } from "./nodes/IdentifierNode";
 
 export const PYTHON_NODE_CLASSES = [
     ProgramNode,
     ExpressionNode,
+    IdentifierNode,
     NamedAccessNode,
     IndexedAccessNode,
     FunctionCallNode,
@@ -29,31 +31,10 @@ export const PYTHON_NODE_CLASSES = [
     NoneNode
 ] as const;
 
-// export type PythonNodes =
-//     | ProgramNode
-//     | ExpressionNode
-//     | NamedAccessNode
-//     | IndexedAccessNode
-//     | FunctionCallNode
-//     | ArgumentListNode
-//     | ArgumentNode
-//     | NamedArgumentNode
-//     | ArrayNode
-//     | StringNode
-//     | NumberNode
-//     | BooleanNode
-//     | NoneNode;
-
-// export type PythonNodeClasses = ClassOf<PythonNodes>;
-
-// export function makeParserNodeConverter<
-//     T extends PythonNodeClasses
-// >(nodeClasses: T[]): 
-
 export function convertParserNode(
     parserNode: any,
     parserContext: PythonParserContext
-): PythonSyntaxTreeNode {
+) {
     const parserNodeType = parserNode.type;
     const nodeClass = PYTHON_NODE_CLASSES.find(nodeClass => nodeClass.type === parserNodeType);
     if (!nodeClass) {
@@ -72,7 +53,7 @@ export class PythonSyntaxTree extends SyntaxTree<PythonSyntaxTreeNode> {
     }
 
     static fromNearlyParserResult(result: any, parserContext: PythonParserContext): PythonSyntaxTree {
-        const rootNode = convertParserNode(result, parserContext);
+        const rootNode = ProgramNode.fromNearlyParserResultNode(result, parserContext);
         return new PythonSyntaxTree(rootNode);
     } 
 }
