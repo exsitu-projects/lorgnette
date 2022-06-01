@@ -29,11 +29,15 @@ import { ButtonPopupRenderer } from "./core/renderers/popup/ButtonPopupRenderer"
 import { RegexEditor } from "./core/user-interfaces/regex-editor/RegexEditor";
 import { Block, Declaration, Raw } from "css-tree";
 import { Style } from "./core/user-interfaces/style-inspector/Style";
-import { Input as StyleInspectorInput, Output as StyleInspectorOutput, StyleInspector } from "./core/user-interfaces/style-inspector/StyleInspector";
+import { Input, Input as StyleInspectorInput, Output as StyleInspectorOutput, StyleInspector } from "./core/user-interfaces/style-inspector/StyleInspector";
 import { ValueWithUnit } from "./utilities/ValueWithUnit";
 import { Margin } from "./core/user-interfaces/style-inspector/inspectors/MarginInspector";
 import { DISABLED_PROPERTY, isDisabled, isEnabledAndDefined } from "./core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
 import { Position } from "./core/documents/Position";
+import { FunctionCallNode } from "./core/languages/python/nodes/FunctionCallNode";
+import { StringNode as PythonStringNode } from "./core/languages/python/nodes/StringNode";
+import { InputPrinter } from "./core/user-interfaces/input-printer/InputPrinter";
+import { convertColorFromExpression, createNamedArgumentModifyer, createNamedArgumentProcesser } from "./utilities/languages/python";
 
 export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
     // new TextualCodeVisualisationProvider(
@@ -893,6 +897,310 @@ export const DEFAULT_CODE_VISUALISATION_PROVIDERS = [
             onlyShowWhenCursorIsInRange: true,
             position: AsideRendererPosition.RightSideOfCode,
             positionOffset: 50
+        })
+    ),
+
+
+
+
+
+    new SyntacticCodeVisualisationProvider(
+        "Seaborn style (barplots)",
+        { languages: ["python"] },
+        new SyntacticPatternFinder(new SyntaxTreePattern(n =>
+            n.type === "FunctionCall"
+                && (n as FunctionCallNode).callee.text === "barplot",
+            SKIP_MATCH_DESCENDANTS
+        )),
+        [],
+        
+        new ProgrammableInputMapping(arg => {
+            const barplotCallNode = (arg.pattern as SyntacticPattern).node as FunctionCallNode;
+            const namedArguments = barplotCallNode.arguments.namedArguments;
+
+            const background: Input["style"]["background"] = {};
+            const border: Input["style"]["border"] = {};
+
+            const processNamedArgument = createNamedArgumentProcesser(namedArguments);
+
+            // Background color.
+            processNamedArgument("color", expression => {
+                convertColorFromExpression(expression, color => {
+                    background.color = color;
+                });
+            });
+
+            // Border color.
+            processNamedArgument("edgecolor", expression => {
+                convertColorFromExpression(expression, color => {
+                    border.color = color;
+                });
+            });
+
+            // Border thickness.
+            processNamedArgument("linewidth", expression => {
+                const thickness = Number(expression.text);
+                if (!Number.isNaN(thickness)) {
+                    border.thickness = new ValueWithUnit(thickness, "px");
+                }
+            });
+
+            // Border type.
+            processNamedArgument(["linestyle", "ls"], expression => {
+                if (expression.value.is(PythonStringNode)) {
+                    switch (expression.value.content) {
+                        case "-":
+                        case "solid":
+                            border.type = "solid";
+                            break;
+                        case "--":
+                        case "dashed":
+                            border.type = "dashed";
+                            break;
+                        case ":":
+                        case "dotted":
+                            border.type = "dotted";
+                            break;
+                        default:
+                            // Other values are not supported by the syle inspector: we ignore them.
+                            break;
+                    }
+                }
+            });
+
+            return {
+                style: {
+                    background: background,
+                    border: border,
+                },
+                settings: {
+                    inspectors: {
+                        font: { show: false }
+                    }
+                }
+            };
+        }),
+        new ProgrammableOutputMapping(arg => {
+            const output = arg.output as StyleInspectorOutput;
+            const document = arg.document;
+            const editor = output.editor;
+            const styleChange = output.data.styleChange;
+
+            const barplotCallNode = (arg.pattern as SyntacticPattern).node as FunctionCallNode;
+            const modifyNamedArgument = createNamedArgumentModifyer(document, editor, barplotCallNode);
+
+            const backgroundColorProperty = styleChange.background?.color;
+            if (isEnabledAndDefined(backgroundColorProperty)) {
+                modifyNamedArgument("color", `"${backgroundColorProperty.hexString}"`);
+            }
+
+            const borderColorProperty = styleChange.border?.color;
+            if (isEnabledAndDefined(borderColorProperty)) {
+                modifyNamedArgument("edgecolor", `"${borderColorProperty.hexString}"`);
+            }
+
+            const borderThicknessProperty = styleChange.border?.thickness;
+            if (isEnabledAndDefined(borderThicknessProperty)) {
+                modifyNamedArgument(
+                    "linewidth",
+                    borderThicknessProperty.value.toString(),
+                    thickness => thickness === "0"
+                );
+            }
+
+            const borderTypeProperty = styleChange.border?.type;
+            if (isEnabledAndDefined(borderTypeProperty)) {
+                modifyNamedArgument(
+                    ["linestyle", "ls"],
+                    `"${borderTypeProperty.toString()}"`,
+                    type => type === "solid"
+                );
+            }
+
+            editor.applyEdits();
+        }),
+        
+        StyleInspector.makeProvider(),
+        // InputPrinter.makeProvider(),
+        // ButtonPopoverRenderer.makeProvider({
+        //     buttonContent: "🎨 Style"
+        // })
+        AsideRenderer.makeProvider({
+            onlyShowWhenCursorIsInRange: true,
+            position: AsideRendererPosition.RightSideOfCode,
+            positionOffset: 150
+        })
+    ),
+
+
+
+
+
+    new SyntacticCodeVisualisationProvider(
+        "Seaborn style (text properties)",
+        { languages: ["python"] },
+        new SyntacticPatternFinder(new SyntaxTreePattern(n =>
+            n.type === "FunctionCall"
+                && [
+                    "set_title",
+                    "set_xlabel",
+                    "set_ylabel",
+                    "set_xticks",
+                    "set_yticks",
+                ].some(functionName => (n as FunctionCallNode).callee.text.endsWith(functionName)),
+            SKIP_MATCH_DESCENDANTS
+        )),
+        [],
+        
+        new ProgrammableInputMapping(arg => {
+            const functionCallNode = (arg.pattern as SyntacticPattern).node as FunctionCallNode;
+            const namedArguments = functionCallNode.arguments.namedArguments;
+
+            const background: Input["style"]["background"] = {};
+            const font: Input["style"]["font"] = {
+                underline: DISABLED_PROPERTY
+            };
+            const processNamedArgument = createNamedArgumentProcesser(namedArguments);
+
+            // Background color.
+            processNamedArgument("backgroundcolor", expression => {
+                convertColorFromExpression(expression, color => {
+                    background.color = color;
+                });
+            });
+
+            // Font size.
+            processNamedArgument(["fontsize", "size"], expression => {
+                const size = Number(expression.text);
+                if (!Number.isNaN(size)) {
+                    font.size = new ValueWithUnit(size, "pt");
+                }
+            });
+
+
+            // Font weight and style (italic).
+            processNamedArgument(["fontweight", "weight"], expression => {
+                if (expression.value.is(PythonStringNode)) {
+                    switch (expression.value.content) {
+                        case "bold":
+                            font.bold = true;
+                            break;
+                        default:
+                            // Other values are not supported by the syle inspector: we ignore them.
+                            break;
+                    }
+                }
+            });
+
+            processNamedArgument(["fontstyle", "style"], expression => {
+                if (expression.value.is(PythonStringNode)) {
+                    switch (expression.value.content) {
+                        case "italic":
+                            font.italic = true;
+                            break;
+                        default:
+                            // Other values are not supported by the syle inspector: we ignore them.
+                            break;
+                    }
+                }
+            });
+
+            // Text color.
+            processNamedArgument(["color", "c"], expression => {
+                convertColorFromExpression(expression, color => {
+                    font.color = color;
+                });
+            });
+
+            // Font family.
+            processNamedArgument(["fontfamily", "family"], expression => {
+                if (expression.value.is(PythonStringNode)) {
+                    font.family = [expression.value.content];
+                }
+            });
+
+            return {
+                style: {
+                    background: background,
+                    font: font
+                },
+                settings: {
+                    defaultStyle: {
+                        font: { size: new ValueWithUnit(10, "pt")}
+                    },
+                    inspectors: {
+                        border: { show: false }
+                    }
+                }
+            };
+        }),
+        new ProgrammableOutputMapping(arg => {
+            const output = arg.output as StyleInspectorOutput;
+            const document = arg.document;
+            const editor = output.editor;
+            const styleChange = output.data.styleChange;
+
+            const barplotCallNode = (arg.pattern as SyntacticPattern).node as FunctionCallNode;
+            const modifyNamedArgument = createNamedArgumentModifyer(document, editor, barplotCallNode);
+
+            const backgroundColorProperty = styleChange.background?.color;
+            if (isEnabledAndDefined(backgroundColorProperty)) {
+                modifyNamedArgument("backgroundcolor", `"${backgroundColorProperty.hexString}"`);
+            }
+
+            const fontColorProperty = styleChange.font?.color;
+            if (isEnabledAndDefined(fontColorProperty)) {
+                modifyNamedArgument(["color", "c"], `"${fontColorProperty.hexString}"`);
+            }
+
+            const fontSizeProperty = styleChange.font?.size;
+            if (isEnabledAndDefined(fontSizeProperty)) {
+                modifyNamedArgument(
+                    ["size", "fontsize"],
+                    fontSizeProperty.value.toString(),
+                    size => size === "10"
+                );
+            }
+
+            const fontFamilyProperty = styleChange.font?.family;
+            if (isEnabledAndDefined(fontFamilyProperty)) {
+                modifyNamedArgument(
+                    ["family", "fontfamily"],
+                    fontFamilyProperty.length >= 1 ? `"${fontFamilyProperty[0]}"` : "",
+                    value => ["", `"sans-serif"`].includes(value)
+                );
+            }
+
+            const fontIsBoldProperty = styleChange.font?.bold;
+            if (isEnabledAndDefined(fontIsBoldProperty)) {
+                modifyNamedArgument(
+                    ["weight", "fontweight"],
+                    fontIsBoldProperty ? `"bold"` : `"normal"`,
+                    value => value === `"normal"`
+                );
+            }
+
+            const fontIsItalicProperty = styleChange.font?.italic;
+            if (isEnabledAndDefined(fontIsItalicProperty)) {
+                modifyNamedArgument(
+                    ["style", "fontstyle"],
+                    fontIsItalicProperty ? `"italic"` : `"normal"`,
+                    value => value === `"normal"`
+                );
+            }
+
+            editor.applyEdits();
+        }),
+        
+        StyleInspector.makeProvider(),
+        // InputPrinter.makeProvider(),
+        // ButtonPopoverRenderer.makeProvider({
+        //     buttonContent: "🎨 Font"
+        // })
+        AsideRenderer.makeProvider({
+            onlyShowWhenCursorIsInRange: true,
+            position: AsideRendererPosition.RightSideOfCode,
+            positionOffset: 150
         })
     ),
 ];
