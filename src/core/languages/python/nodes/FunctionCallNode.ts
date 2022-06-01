@@ -31,7 +31,6 @@ export class FunctionCallNode extends PythonSyntaxTreeNode {
     }
 
     static fromNearlyParserResultNode(node: any, parserContext: PythonParserContext): FunctionCallNode {
-        console.log("FunctionCallNode fromNearlyParserResultNode", node)
         return new FunctionCallNode(
             convertParserNode(node.callee, parserContext) as CallableExpressionNode,
             ArgumentListNode.fromNearlyParserResultNode(node.argumentList, parserContext),
