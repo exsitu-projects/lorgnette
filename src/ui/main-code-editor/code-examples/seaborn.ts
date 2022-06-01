@@ -14,6 +14,10 @@ barplot(
     edgecolor = "white",
     linewidth = 1
 )
+
+ax.set_title("Effect of X on Y")
+ax.set_xlabel("Year")
+ax.set_xlabel("Time (seconds)")
 `;
 
 export const SEABORN_EXAMPLE = {
