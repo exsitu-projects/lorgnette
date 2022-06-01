@@ -31,6 +31,15 @@ export class Color {
         ? `rgb(${this.r}, ${this.g}, ${this.b})`
         : `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
     }
+
+    get hexString(): string {
+        const r = this.r.toString(16);
+        const g = this.g.toString(16);
+        const b = this.b.toString(16);
+        const a = this.a === 1 ? "" : this.a.toString(16);
+
+        return `#${r}${g}${b}${a}`;
+    }
     
     static fromRgb(rgbColor: RgbColor): Color {
         return new Color(rgbColor.r, rgbColor.g, rgbColor.b, 1);
