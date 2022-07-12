@@ -5,7 +5,7 @@ import { ObjectNode } from "./nodes/ObjectNode";
 import { PropertyNode } from "./nodes/PropertyNode";
 import { ArrayNode } from "./nodes/ArrayNode";
 import { StringNode } from "./nodes/StringNode";
-import { NumberNode } from "../math/nodes/NumberNode";
+import { NumberNode } from "./nodes/NumberNode";
 import { BooleanNode } from "./nodes/BooleanNode";
 import { NullNode } from "./nodes/NullNode";
 import { KeyNode } from "./nodes/KeyNode";
