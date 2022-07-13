@@ -19,8 +19,8 @@ export const CODE_VISUALISATION_PROVIDERS: CodeVisualisationProvider[] = [
     regexLiteralVisualisationProvider,
     regexConstructorVisualisationProvider,
 
-    vegaMarksStyleEditorProvider,
-    // vegaMarksStyleInspectorProvider,
+    // vegaMarksStyleEditorProvider,
+    vegaMarksStyleInspectorProvider,
 
     cssPropertyStyleInspectorProvider,
 
