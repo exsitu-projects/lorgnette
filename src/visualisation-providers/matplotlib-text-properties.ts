@@ -103,7 +103,7 @@ export const matplotlibTextPropertySetterStyleInspectorProvider = new SyntacticC
             },
             settings: {
                 defaultStyle: {
-                    font: { size: new ValueWithUnit(10, "pt")}
+                    font: { size: new ValueWithUnit(10, "pt") }
                 },
                 inspectors: {
                     border: { show: false }

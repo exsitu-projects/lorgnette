@@ -10,7 +10,7 @@ import { TextualCodeVisualisationProvider } from "../core/visualisations/textual
 export const hexadecimalColorCodeVisualisationProvider = new TextualCodeVisualisationProvider(
     "Hexadecimal color code",
     {},
-    new RegexPatternFinder("=([a-fA-F0-9]{6})"),
+    new RegexPatternFinder("#([a-fA-F0-9]{6})"),
     [
         new RangeSiteProvider(1, 2),
         new RangeSiteProvider(3, 4),
@@ -40,6 +40,6 @@ export const hexadecimalColorCodeVisualisationProvider = new TextualCodeVisualis
     }),
     ColorPicker.makeProvider(),
     AsideRenderer.makeProvider({
-        // onlyShowWhenCursorIsInRange: true
+        onlyShowWhenCursorIsInRange: true
     })
 );

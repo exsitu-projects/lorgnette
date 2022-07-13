@@ -8,6 +8,7 @@ import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapp
 import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMapping";
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
+import { ButtonPopoverRenderer } from "../core/renderers/popover/ButtonPopoverRenderer";
 import { Margin } from "../core/user-interfaces/style-inspector/inspectors/MarginInspector";
 import { DISABLED_PROPERTY, isEnabledAndDefined } from "../core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
 import { Style } from "../core/user-interfaces/style-inspector/Style";
@@ -392,12 +393,12 @@ export const cssPropertyStyleInspectorProvider = new SyntacticCodeVisualisationP
         editor.applyEdits();
     }),
     StyleInspector.makeProvider(),
-    // ButtonPopoverRenderer.makeProvider({
-    //     buttonContent: "Inspect 🎨",
-    // })
-    AsideRenderer.makeProvider({
-        onlyShowWhenCursorIsInRange: true,
-        position: AsideRendererPosition.RightSideOfCode,
-        positionOffset: 50
+    ButtonPopoverRenderer.makeProvider({
+        buttonContent: "Inspect 🎨",
     })
+    // AsideRenderer.makeProvider({
+    //     onlyShowWhenCursorIsInRange: true,
+    //     position: AsideRendererPosition.RightSideOfCode,
+    //     positionOffset: 50
+    // })
 );
