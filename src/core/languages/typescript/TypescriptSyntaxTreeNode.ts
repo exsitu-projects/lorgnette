@@ -18,6 +18,10 @@ export class TypescriptSyntaxTreeNode extends SyntaxTreeNode {
         this.parserNode = parserNode;
     }
 
+    get text(): string {
+        return this.parserNode.getText();
+    }
+
     protected static computeRangeFromParserNode(parserNode: ts.Node, parserContext: TypescriptParserContext): Range {
         const startOffset = parserNode.getStart();
         const endOffset = parserNode.getEnd();

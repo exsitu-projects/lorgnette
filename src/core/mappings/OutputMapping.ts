@@ -1,6 +1,5 @@
 import { Pattern } from "../code-patterns/Pattern";
 import { Document } from "../documents/Document";
-import { Site } from "../sites/Site";
 import { UserInterfaceOutput } from "../user-interfaces/UserInterface";
 import { CodeVisualisationType } from "../visualisations/CodeVisualisationType";
 
@@ -11,7 +10,6 @@ export interface OutputMapping<
     processOutput(
         output: O,
         document: Document,
-        pattern: Pattern<T>,
-        sites: Site<T>[]
+        pattern: Pattern<T>
     ): void;
 }

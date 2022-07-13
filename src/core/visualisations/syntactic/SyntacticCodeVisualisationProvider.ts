@@ -4,8 +4,6 @@ import { Document } from "../../documents/Document";
 import { InputMapping } from "../../mappings/InputMapping";
 import { OutputMapping } from "../../mappings/OutputMapping";
 import { RendererProvider } from "../../renderers/RendererProvider";
-import { SiteProvider } from "../../sites/SiteProvider";
-import { SyntacticSite } from "../../sites/syntactic/SyntacticSite";
 import { UserInterfaceProvider } from "../../user-interfaces/UserInterfaceProvider";
 import { AbstractCodeVisualisationProvider } from "../AbstractCodeVisualisationProvider";
 import { CodeVisualisation } from "../CodeVisualisation";
@@ -21,30 +19,17 @@ export class SyntacticCodeVisualisationProvider extends AbstractCodeVisualisatio
         name: string,
         useContexts: CodeVisualisationUseContext,
         patternFinder: PatternFinder<CodeVisualisationType.Syntactic>,
-        siteProviders: SiteProvider<CodeVisualisationType.Syntactic>[],
         inputMapping: InputMapping<CodeVisualisationType.Syntactic>,
         outputMapping: OutputMapping<CodeVisualisationType.Syntactic> | null,
         userInterfaceProvider: UserInterfaceProvider,
         rendererProvider: RendererProvider
     ) {
-        super(name, useContexts, patternFinder, siteProviders, inputMapping, outputMapping, userInterfaceProvider, rendererProvider);
+        super(name, useContexts, patternFinder, inputMapping, outputMapping, userInterfaceProvider, rendererProvider);
         this.cachedCodeVisualisations = [];
     }
 
     get codeVisualisations(): SyntacticCodeVisualisation[] {
         return [...this.cachedCodeVisualisations];
-    }
-
-    provideSitesForPattern(pattern: SyntacticPattern): SyntacticSite[] {
-        const sites = [];
-        for (let siteProvider of this.siteProviders) {
-            const siteOrNothing = siteProvider.provideForPattern(pattern);
-            if (siteOrNothing) {
-                sites.push(siteOrNothing);
-            }
-        }
-
-        return sites;
     }
 
     canBeUsedInDocument(document: Document): boolean {
@@ -65,12 +50,10 @@ export class SyntacticCodeVisualisationProvider extends AbstractCodeVisualisatio
 
         this.cachedCodeVisualisations = patternFinderResults
             .map(pattern => {
-                const sites = this.provideSitesForPattern(pattern);
                 return new SyntacticCodeVisualisation(
                     this,
                     document,
                     pattern,
-                    sites,
                     this.inputMapping,
                     this.outputMapping,
                     this.userInterfaceProvider,

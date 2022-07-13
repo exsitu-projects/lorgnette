@@ -27,7 +27,6 @@ export const matplotlibTextPropertySetterStyleInspectorProvider = new SyntacticC
             ].some(functionName => (n as FunctionCallNode).callee.text.endsWith(functionName)),
         SKIP_MATCH_DESCENDANTS
     )),
-    [],
     
     new ProgrammableInputMapping(arg => {
         const functionCallNode = (arg.pattern as SyntacticPattern).node as FunctionCallNode;

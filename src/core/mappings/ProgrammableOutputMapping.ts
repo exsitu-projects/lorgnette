@@ -1,7 +1,6 @@
 import { ProgrammableFunction } from "../../utilities/ProgrammableFunction";
 import { Pattern } from "../code-patterns/Pattern";
 import { Document, DocumentChangeOrigin } from "../documents/Document";
-import { Site } from "../sites/Site";
 import { UserInterfaceInput, UserInterfaceOutput } from "../user-interfaces/UserInterface";
 import { CodeVisualisationType } from "../visualisations/CodeVisualisationType";
 import { InputMapping } from "./InputMapping";
@@ -11,8 +10,7 @@ export type ProgrammableMappingFunction<T extends CodeVisualisationType> =
     ((arg: {
         output: UserInterfaceOutput,
         document: Document,
-        pattern: Pattern<T>,
-        sites: Site<T>[]
+        pattern: Pattern<T>
     }) => void);
 
 export class ProgrammableOutputMapping<T extends CodeVisualisationType = CodeVisualisationType> implements OutputMapping {
@@ -26,7 +24,11 @@ export class ProgrammableOutputMapping<T extends CodeVisualisationType = CodeVis
     }
 
     // TODO: somehow move the editor back in here...?
-    processOutput(output: UserInterfaceOutput, document: Document, pattern: Pattern<T>, sites: Site<T>[]): void {
+    processOutput(
+        output: UserInterfaceOutput,
+        document: Document,
+        pattern: Pattern<T>
+    ): void {
         try {
             this.programmableFunction.call({
                 output: output,
@@ -36,8 +38,7 @@ export class ProgrammableOutputMapping<T extends CodeVisualisationType = CodeVis
                 //     isTransientChange: output.context.isTransientState,
                 //     visualisation: output.context.visualisation
                 // }),
-                pattern: pattern,
-                sites: sites
+                pattern: pattern
             });
         }
         catch {

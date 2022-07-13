@@ -1,7 +1,6 @@
 import { CodeEditorRanges } from "../../../context";
 import { Pattern } from "../../../core/code-patterns/Pattern";
 import { Range } from "../../../core/documents/Range";
-import { Site } from "../../../core/sites/Site";
 import { CodeVisualisation } from "../../../core/visualisations/CodeVisualisation";
 import { CodeVisualisationId } from "../../../core/visualisations/CodeVisualisationId";
 
@@ -31,21 +30,12 @@ function createRangeToHiglightForPattern(pattern: Pattern, id: CodeVisualisation
     return createRangeToHighlight(pattern.range, "highlight pattern", id);
 }
 
-function createRangeToHiglightForSite(site: Site, pattern: Pattern): RangeToHighlight {
-    const absoluteSiteRange = site.range.relativeTo(pattern.range.start);
-    return createRangeToHighlight(absoluteSiteRange, "highlight site");
-}
-
 export function createRangesToHighlightForCodeVisualisations(visualisations: CodeVisualisation[]): RangeToHighlight[] {
     const rangesToHiglight: RangeToHighlight[] = [];
 
     for (let visualisation of visualisations) {
         const pattern = visualisation.pattern;
-
         rangesToHiglight.push(createRangeToHiglightForPattern(pattern, visualisation.id));
-        for (let site of visualisation.sites) {
-            rangesToHiglight.push(createRangeToHiglightForSite(site, pattern));
-        }
     }
 
     return rangesToHiglight;

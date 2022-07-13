@@ -6,8 +6,6 @@ import { InputMapping } from "../mappings/InputMapping";
 import { OutputMapping } from "../mappings/OutputMapping";
 import { Renderer } from "../renderers/Renderer";
 import { RendererProvider } from "../renderers/RendererProvider";
-import { Site } from "../sites/Site";
-import { SiteProvider } from "../sites/SiteProvider";
 import { UserInterfaceProvider } from "../user-interfaces/UserInterfaceProvider";
 import { CodeVisualisation } from "./CodeVisualisation";
 import { CodeVisualisationType } from "./CodeVisualisationType";
@@ -21,7 +19,6 @@ export abstract class AbstractCodeVisualisationProvider<
     useContexts: CodeVisualisationUseContext;
 
     patternFinder: PatternFinder<T>;
-    siteProviders: SiteProvider<T>[];
     inputMapping: InputMapping<T>;
     outputMapping: OutputMapping<T> | null;
     userInterfaceProvider: UserInterfaceProvider;
@@ -31,7 +28,6 @@ export abstract class AbstractCodeVisualisationProvider<
         name: string,
         useContexts: CodeVisualisationUseContext,
         patternFinder: PatternFinder<T>,
-        siteProviders: SiteProvider<T>[],
         inputMapping: InputMapping<T>,
         outputMapping: OutputMapping<T> | null,
         userInterfaceProvider: UserInterfaceProvider,
@@ -41,7 +37,6 @@ export abstract class AbstractCodeVisualisationProvider<
         this.useContexts = useContexts;
 
         this.patternFinder = patternFinder;
-        this.siteProviders = siteProviders;
         this.inputMapping = inputMapping;
         this.outputMapping = outputMapping;
         this.userInterfaceProvider = userInterfaceProvider;
@@ -61,6 +56,4 @@ export abstract class AbstractCodeVisualisationProvider<
     abstract get codeVisualisations(): CodeVisualisation<T>[];
 
     abstract updateFromDocument(document: Document): void;
-
-    abstract provideSitesForPattern(pattern: Pattern<T>): Site<T>[];
 }

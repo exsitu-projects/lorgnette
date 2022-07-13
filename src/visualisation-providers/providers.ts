@@ -11,8 +11,8 @@ import { vegaMarksStyleInspectorProvider } from "./vega-marks";
 
 export const CODE_VISUALISATION_PROVIDERS: CodeVisualisationProvider[] = [
     hexadecimalColorCodeVisualisationProvider,
-    textualRgbColorConstructorVisualisationProvider,
-    // syntacticRgbColorConstructorVisualisationProvider,
+    // textualRgbColorConstructorVisualisationProvider,
+    syntacticRgbColorConstructorVisualisationProvider,
 
     tsxComponentVisualisationProvider,
 

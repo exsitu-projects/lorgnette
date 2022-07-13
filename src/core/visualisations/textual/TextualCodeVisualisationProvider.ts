@@ -4,8 +4,6 @@ import { Document } from "../../documents/Document";
 import { InputMapping } from "../../mappings/InputMapping";
 import { OutputMapping } from "../../mappings/OutputMapping";
 import { RendererProvider } from "../../renderers/RendererProvider";
-import { SiteProvider } from "../../sites/SiteProvider";
-import { TextualSite } from "../../sites/textual/TextualSite";
 import { UserInterfaceProvider } from "../../user-interfaces/UserInterfaceProvider";
 import { AbstractCodeVisualisationProvider } from "../AbstractCodeVisualisationProvider";
 import { CodeVisualisation } from "../CodeVisualisation";
@@ -21,30 +19,17 @@ export class TextualCodeVisualisationProvider extends AbstractCodeVisualisationP
         name: string,
         useContexts: CodeVisualisationUseContext,
         patternFinder: PatternFinder<CodeVisualisationType.Textual>,
-        siteProviders: SiteProvider<CodeVisualisationType.Textual>[],
         inputMapping: InputMapping<CodeVisualisationType.Textual>,
         outputMapping: OutputMapping<CodeVisualisationType.Textual> | null,
         userInterfaceProvider: UserInterfaceProvider,
         rendererProvider: RendererProvider
     ) {
-        super(name, useContexts, patternFinder, siteProviders, inputMapping, outputMapping, userInterfaceProvider, rendererProvider);
+        super(name, useContexts, patternFinder, inputMapping, outputMapping, userInterfaceProvider, rendererProvider);
         this.cachedCodeVisualisations = [];
     }
 
     get codeVisualisations(): TextualCodeVisualisation[] {
         return [...this.cachedCodeVisualisations];
-    }
-
-    provideSitesForPattern(pattern: TextualPattern): TextualSite[] {
-        const sites = [];
-        for (let siteProvider of this.siteProviders) {
-            const siteOrNothing = siteProvider.provideForPattern(pattern);
-            if (siteOrNothing) {
-                sites.push(siteOrNothing);
-            }
-        }
-
-        return sites;
     }
 
     updateFromDocument(document: Document): void {
@@ -59,13 +44,10 @@ export class TextualCodeVisualisationProvider extends AbstractCodeVisualisationP
 
         this.cachedCodeVisualisations = patternFinderResults
             .map(pattern => {
-                const sites = this.provideSitesForPattern(pattern);
-
                 return new TextualCodeVisualisation(
                     this,
                     document,
                     pattern,
-                    sites,
                     this.inputMapping,
                     this.outputMapping,
                     this.userInterfaceProvider,

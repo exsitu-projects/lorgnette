@@ -16,7 +16,6 @@ export const regexConstructorVisualisationProvider = new SyntacticCodeVisualisat
             && n.childNodes[3].childNodes[0].type === "StringLiteral",
         SKIP_MATCH_DESCENDANTS
     )),
-    [],
     new ProgrammableInputMapping(arg => {
         const document = arg.document;
         const pattern = arg.pattern as SyntacticPattern;

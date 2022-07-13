@@ -25,8 +25,6 @@ export const vegaMarksStyleInspectorProvider = new SyntacticCodeVisualisationPro
             && (n as PropertyNode).value.type === "Object",
         SKIP_MATCH_DESCENDANTS
     )),
-    [],
-    
     new ProgrammableInputMapping(arg => {
         const pattern = (arg.pattern as SyntacticPattern).node as PropertyNode;
         const mark = (pattern.value as ObjectNode);

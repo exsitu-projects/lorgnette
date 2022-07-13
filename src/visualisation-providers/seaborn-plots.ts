@@ -21,8 +21,6 @@ export const seabornBarplotStyleInspectorProvider = new SyntacticCodeVisualisati
             && (n as FunctionCallNode).callee.text === "barplot",
         SKIP_MATCH_DESCENDANTS
     )),
-    [],
-    
     new ProgrammableInputMapping(arg => {
         const barplotCallNode = (arg.pattern as SyntacticPattern).node as FunctionCallNode;
         const namedArguments = barplotCallNode.arguments.namedArguments;

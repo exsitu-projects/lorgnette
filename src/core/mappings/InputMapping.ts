@@ -1,6 +1,5 @@
 import { Pattern } from "../code-patterns/Pattern";
 import { Document } from "../documents/Document";
-import { Site } from "../sites/Site";
 import { UserInterfaceInput } from "../user-interfaces/UserInterface";
 import { CodeVisualisationType } from "../visualisations/CodeVisualisationType";
 
@@ -10,7 +9,6 @@ export interface InputMapping<
 > {
     mapToInput(
         document: Document,
-        pattern: Pattern<T>,
-        sites: Site<T>[]
+        pattern: Pattern<T>
     ): I;
 }

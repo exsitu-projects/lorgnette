@@ -1,7 +1,6 @@
 import { ProgrammableFunction } from "../../utilities/ProgrammableFunction";
 import { Pattern } from "../code-patterns/Pattern";
 import { Document } from "../documents/Document";
-import { Site } from "../sites/Site";
 import { UserInterfaceInput } from "../user-interfaces/UserInterface";
 import { CodeVisualisationType } from "../visualisations/CodeVisualisationType";
 import { InputMapping } from "./InputMapping";
@@ -9,8 +8,7 @@ import { InputMapping } from "./InputMapping";
 export type ProgrammableMappingFunction<T extends CodeVisualisationType> =
     ((arg: {
         document: Document,
-        pattern: Pattern<T>,
-        sites: Site<T>[]
+        pattern: Pattern<T>
     }) => UserInterfaceInput);
 
 export class ProgrammableInputMapping<T extends CodeVisualisationType = CodeVisualisationType> implements InputMapping {
@@ -25,14 +23,12 @@ export class ProgrammableInputMapping<T extends CodeVisualisationType = CodeVisu
     
     mapToInput(
         document: Document,
-        pattern: Pattern<T>,
-        sites: Site<T>[]
+        pattern: Pattern<T>
     ): UserInterfaceInput {
         try {
             return this.programmableFunction.call({
                 document: document,
-                pattern: pattern,
-                sites: sites
+                pattern: pattern
             });
         }
         catch (error) {

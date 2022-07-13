@@ -17,7 +17,6 @@ export const tsxComponentVisualisationProvider = new SyntacticCodeVisualisationP
         n => ["JsxElement", "JsxSelfClosingElement"].includes(n.type),
         SKIP_MATCH_DESCENDANTS
     )),
-    [],
     new ProgrammableInputMapping(arg => {
         const pattern = arg.pattern as SyntacticPattern;
         

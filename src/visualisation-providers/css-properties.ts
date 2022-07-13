@@ -24,7 +24,6 @@ export const cssPropertyStyleInspectorProvider = new SyntacticCodeVisualisationP
         n => n.type === "Rule",
         SKIP_MATCH_DESCENDANTS
     )),
-    [],
     new ProgrammableInputMapping(arg => {
         const blockNode = (arg.pattern as SyntacticPattern).node.childNodes[1];
         const blockCssNode = blockNode.parserNode as Block;

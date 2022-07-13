@@ -1,8 +1,6 @@
 import { TextualPattern } from "../../code-patterns/textual/TextualPattern";
 import { Range } from "../../documents/Range";
 import { CodeVisualisationType } from "../CodeVisualisationType";
-import { TextualSite } from "../../sites/textual/TextualSite";
-import { Site } from "../../sites/Site";
 import { AbstractCodeVisualisation } from "../AbstractCodeVisualisation";
 import { TextualCodeVisualisationProvider } from "./TextualCodeVisualisationProvider";
 import { InputMapping } from "../../mappings/InputMapping";
@@ -18,8 +16,7 @@ export class TextualCodeVisualisation extends AbstractCodeVisualisation<
 > {
     private currentCodeBinding: {
         document: Document,
-        pattern: TextualPattern,
-        sites: Site<CodeVisualisationType.Textual>[]
+        pattern: TextualPattern
     };
     readonly inputMapping: InputMapping<CodeVisualisationType.Textual>;
     readonly outputMapping: OutputMapping<CodeVisualisationType.Textual> | null;
@@ -30,7 +27,6 @@ export class TextualCodeVisualisation extends AbstractCodeVisualisation<
         provider: TextualCodeVisualisationProvider,
         document: Document,
         pattern: TextualPattern,
-        sites: TextualSite[],
         inputMapping: InputMapping<CodeVisualisationType.Textual>,
         outputMapping: OutputMapping<CodeVisualisationType.Textual> | null,
         userInterfaceProvider: UserInterfaceProvider,
@@ -40,8 +36,7 @@ export class TextualCodeVisualisation extends AbstractCodeVisualisation<
 
         this.currentCodeBinding = {
             document: document,
-            pattern: pattern,
-            sites: sites
+            pattern: pattern
         };
         
         this.inputMapping = inputMapping;
@@ -58,10 +53,6 @@ export class TextualCodeVisualisation extends AbstractCodeVisualisation<
 
     get pattern(): TextualPattern {
         return this.currentCodeBinding.pattern;
-    }
-
-    get sites(): Site<CodeVisualisationType.Textual>[] {
-        return this.currentCodeBinding.sites;
     }
 
     get range(): Range {

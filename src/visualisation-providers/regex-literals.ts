@@ -11,7 +11,6 @@ export const regexLiteralVisualisationProvider = new SyntacticCodeVisualisationP
     "Regulax expressions (literal)",
     { languages: ["typescript"] },
     new SyntacticPatternFinder(new SyntaxTreePattern(n => n.type === "RegularExpressionLiteral")),
-    [],
     new ProgrammableInputMapping(arg => {
         const regexAsString = arg.pattern.text;
         const lastRegexLiteralSlashIndex = regexAsString.lastIndexOf("/");

@@ -2,7 +2,6 @@ import { Pattern } from "../code-patterns/Pattern";
 import { Range } from "../documents/Range";
 import { InputMapping } from "../mappings/InputMapping";
 import { OutputMapping } from "../mappings/OutputMapping";
-import { Site } from "../sites/Site";
 import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../user-interfaces/UserInterface";
 import { CodeVisualisationProvider } from "./CodeVisualisationProvider";
 import { CodeVisualisationType } from "./CodeVisualisationType";
@@ -12,8 +11,7 @@ import { Renderer } from "../renderers/Renderer";
 import { ClassOf } from "../../utilities/types";
 
 export abstract class AbstractCodeVisualisation<
-    T extends CodeVisualisationType,
-    // S = NonNullable<ReturnType<SiteProvider<T>["provideForPattern"]>>
+    T extends CodeVisualisationType
 > {
     readonly provider: CodeVisualisationProvider<T>;
 
@@ -23,7 +21,6 @@ export abstract class AbstractCodeVisualisation<
     abstract get range(): Range;
 
     abstract get pattern(): Pattern<T>;
-    abstract get sites(): Site<T>[];
 
     abstract get inputMapping(): InputMapping<T>;
     abstract get outputMapping(): OutputMapping<T> | null;
@@ -54,12 +51,12 @@ export abstract class AbstractCodeVisualisation<
     }
 
     applyInputMapping(): UserInterfaceInput {
-        return this.inputMapping.mapToInput(this.document, this.pattern, this.sites);
+        return this.inputMapping.mapToInput(this.document, this.pattern);
     }
 
     applyOutputMapping(output: UserInterfaceOutput): void {
         if (this.outputMapping) {
-            this.outputMapping.processOutput(output, this.document, this.pattern, this.sites);
+            this.outputMapping.processOutput(output, this.document, this.pattern);
         }
     }
 }

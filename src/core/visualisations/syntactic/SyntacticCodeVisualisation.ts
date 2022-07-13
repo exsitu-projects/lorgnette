@@ -2,8 +2,6 @@ import { SyntacticPattern } from "../../code-patterns/syntactic/SyntacticPattern
 import { Range } from "../../documents/Range";
 import { InputMapping } from "../../mappings/InputMapping";
 import { OutputMapping } from "../../mappings/OutputMapping";
-import { Site } from "../../sites/Site";
-import { SyntacticSite } from "../../sites/syntactic/SyntacticSite";
 import { UserInterface } from "../../user-interfaces/UserInterface";
 import { AbstractCodeVisualisation } from "../AbstractCodeVisualisation";
 import { CodeVisualisationType } from "../CodeVisualisationType";
@@ -16,8 +14,7 @@ import { ClassOf } from "../../../utilities/types";
 export class SyntacticCodeVisualisation extends AbstractCodeVisualisation<CodeVisualisationType.Syntactic> {
     private currentCodeBinding: {
         document: Document,
-        pattern: SyntacticPattern,
-        sites: Site<CodeVisualisationType.Syntactic>[]
+        pattern: SyntacticPattern
     };
     readonly inputMapping: InputMapping<CodeVisualisationType.Syntactic>;
     readonly outputMapping: OutputMapping<CodeVisualisationType.Syntactic> | null;
@@ -28,7 +25,6 @@ export class SyntacticCodeVisualisation extends AbstractCodeVisualisation<CodeVi
         provider: SyntacticCodeVisualisationProvider,
         document: Document,
         pattern: SyntacticPattern,
-        sites: SyntacticSite[],
         inputMapping: InputMapping<CodeVisualisationType.Syntactic>,
         outputMapping: OutputMapping<CodeVisualisationType.Syntactic> | null,
         userInterfaceProvider: UserInterfaceProvider,
@@ -38,8 +34,7 @@ export class SyntacticCodeVisualisation extends AbstractCodeVisualisation<CodeVi
 
         this.currentCodeBinding = {
             document: document,
-            pattern: pattern,
-            sites: sites
+            pattern: pattern
         };
         this.inputMapping = inputMapping;
         this.outputMapping = outputMapping;
@@ -56,10 +51,6 @@ export class SyntacticCodeVisualisation extends AbstractCodeVisualisation<CodeVi
 
     get pattern(): SyntacticPattern {
         return this.currentCodeBinding.pattern;
-    }
-
-    get sites(): Site<CodeVisualisationType.Syntactic>[] {
-        return this.currentCodeBinding.sites;
     }
 
     get range(): Range {
