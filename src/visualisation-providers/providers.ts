@@ -7,7 +7,7 @@ import { regexLiteralVisualisationProvider } from "./regex-literals";
 import { syntacticRgbColorConstructorVisualisationProvider, textualRgbColorConstructorVisualisationProvider } from "./rgb-color-constructors";
 import { seabornBarplotStyleInspectorProvider } from "./seaborn-plots";
 import { tsxComponentVisualisationProvider } from "./tsx-components";
-import { vegaMarksStyleEditorProvider, vegaMarksStyleInspectorProvider } from "./vega-marks";
+import { vegaMarksStyleInspectorProvider } from "./vega-marks";
 
 export const CODE_VISUALISATION_PROVIDERS: CodeVisualisationProvider[] = [
     hexadecimalColorCodeVisualisationProvider,
@@ -19,7 +19,6 @@ export const CODE_VISUALISATION_PROVIDERS: CodeVisualisationProvider[] = [
     regexLiteralVisualisationProvider,
     regexConstructorVisualisationProvider,
 
-    // vegaMarksStyleEditorProvider,
     vegaMarksStyleInspectorProvider,
 
     cssPropertyStyleInspectorProvider,
