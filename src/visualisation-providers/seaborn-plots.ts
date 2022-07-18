@@ -1,4 +1,3 @@
-import { SyntacticPattern } from "../core/code-patterns/syntactic/SyntacticPattern";
 import { SyntacticPatternFinder } from "../core/code-patterns/syntactic/SyntacticPatternFinder";
 import { FunctionCallNode } from "../core/languages/python/nodes/FunctionCallNode";
 import { StringNode } from "../core/languages/python/nodes/StringNode";
@@ -8,7 +7,7 @@ import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMa
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
 import { isEnabledAndDefined } from "../core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
-import { Input, Output, StyleInspector } from "../core/user-interfaces/style-inspector/StyleInspector";
+import { Input, StyleInspector } from "../core/user-interfaces/style-inspector/StyleInspector";
 import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
 import { createNamedArgumentProcesser, convertColorFromExpression, createNamedArgumentModifyer } from "../utilities/languages/python";
 import { ValueWithUnit } from "../utilities/ValueWithUnit";
@@ -24,8 +23,8 @@ export const seabornBarplotStyleInspectorProvider = new SyntacticMonocleProvider
         SKIP_MATCH_DESCENDANTS
     )),
 
-    inputMapping: new ProgrammableInputMapping(arg => {
-        const barplotCallNode = (arg.pattern as SyntacticPattern).node as FunctionCallNode;
+    inputMapping: new ProgrammableInputMapping(({ pattern }) => {
+        const barplotCallNode = pattern.node as FunctionCallNode;
         const namedArguments = barplotCallNode.arguments.namedArguments;
 
         const background: Input["style"]["background"] = {};
@@ -91,14 +90,11 @@ export const seabornBarplotStyleInspectorProvider = new SyntacticMonocleProvider
         };
     }),
 
-    outputMapping: new ProgrammableOutputMapping(arg => {
-        const output = arg.output as Output;
-        const document = arg.document;
-        const editor = output.editor;
-        const styleChange = output.data.styleChange;
+    outputMapping: new ProgrammableOutputMapping(({ output, document, documentEditor, pattern }) => {
+        const styleChange = output.styleChange;
 
-        const barplotCallNode = (arg.pattern as SyntacticPattern).node as FunctionCallNode;
-        const modifyNamedArgument = createNamedArgumentModifyer(document, editor, barplotCallNode);
+        const barplotCallNode = pattern.node as FunctionCallNode;
+        const modifyNamedArgument = createNamedArgumentModifyer(document, documentEditor, barplotCallNode);
 
         const backgroundColorProperty = styleChange.background?.color;
         if (isEnabledAndDefined(backgroundColorProperty)) {
@@ -128,7 +124,7 @@ export const seabornBarplotStyleInspectorProvider = new SyntacticMonocleProvider
             );
         }
 
-        editor.applyEdits();
+        documentEditor.applyEdits();
     }),
 
     userInterfaceProvider: StyleInspector.makeProvider(),

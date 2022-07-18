@@ -1,4 +1,3 @@
-import { SyntacticPattern } from "../core/code-patterns/syntactic/SyntacticPattern";
 import { SyntacticPatternFinder } from "../core/code-patterns/syntactic/SyntacticPatternFinder";
 import { NumberNode } from "../core/languages/json/nodes/NumberNode";
 import { ObjectNode } from "../core/languages/json/nodes/ObjectNode";
@@ -27,10 +26,8 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
         SKIP_MATCH_DESCENDANTS
     )),
 
-    inputMapping: new ProgrammableInputMapping(arg => {
-        const pattern = (arg.pattern as SyntacticPattern).node as PropertyNode;
-        const mark = (pattern.value as ObjectNode);
-        // const markProperties = (pattern.value as ObjectNode).properties;
+    inputMapping: new ProgrammableInputMapping(({ pattern }) => {
+        const mark = (pattern.node as PropertyNode).value as ObjectNode;
         
         // Background style properties.
         const backgroundStyle: StyleInspectorInput["style"]["background"] = {};
@@ -188,12 +185,9 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
         };
     }),
 
-    outputMapping: new ProgrammableOutputMapping(arg => {
-        const document = arg.document;
-        const editor = arg.output.editor;
-        const pattern = (arg.pattern as SyntacticPattern).node as PropertyNode;
-        const mark = (pattern.value as ObjectNode);
-        const styleChange = arg.output.data.styleChange as Style;
+    outputMapping: new ProgrammableOutputMapping(({ output, document, documentEditor, pattern }) => {
+        const mark = (pattern.node as PropertyNode).value as ObjectNode;
+        const styleChange = output.styleChange as Style;
 
         // Background style properties.
         const backgroundChange = styleChange.background;
@@ -203,8 +197,8 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
                 processProperty(
                     mark,
                     ["fill", "color"],
-                    property => editor.replace(property.value.range, `"${newColor.css}"`),
-                    () => insertProperty(document, editor, mark, "fill", `"${newColor.css}"`)
+                    property => documentEditor.replace(property.value.range, `"${newColor.css}"`),
+                    () => insertProperty(document, documentEditor, mark, "fill", `"${newColor.css}"`)
                 );
             }
         }
@@ -215,14 +209,14 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
             const newThickness = borderChange.thickness;
             if (isEnabledAndDefined(newThickness)) {
                 if (newThickness.value === 0) {
-                    deleteProperty(editor, mark, "strokeWidth");
+                    deleteProperty(documentEditor, mark, "strokeWidth");
                 }
                 else {
                     processProperty(
                         mark,
                         "strokeWidth",
-                        property => editor.replace(property.value.range, newThickness.value.toString()),
-                        () => insertProperty(document, editor, mark, "strokeWidth", newThickness.value.toString())
+                        property => documentEditor.replace(property.value.range, newThickness.value.toString()),
+                        () => insertProperty(document, documentEditor, mark, "strokeWidth", newThickness.value.toString())
                     );
                 }
             }
@@ -230,7 +224,7 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
             const newType = borderChange.type;
             if (isEnabledAndDefined(newType)) {
                 if (newType === "solid") {
-                    deleteProperty(editor, mark, "strokeDash");
+                    deleteProperty(documentEditor, mark, "strokeDash");
                 }
                 else {
                     const newDashLengths =
@@ -242,8 +236,8 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
                     processProperty(
                         mark,
                         "strokeDash",
-                        property => editor.replace(property.value.range, newDashLengthsAsString),
-                        () => insertProperty(document, editor, mark, "strokeDash", newDashLengthsAsString)
+                        property => documentEditor.replace(property.value.range, newDashLengthsAsString),
+                        () => insertProperty(document, documentEditor, mark, "strokeDash", newDashLengthsAsString)
                     );
                 }
             }
@@ -253,8 +247,8 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
                 processProperty(
                     mark,
                     "stroke",
-                    property => editor.replace(property.value.range, `"${newColor.css}"`),
-                    () => insertProperty(document, editor, mark, "stroke", `"${newColor.css}"`)
+                    property => documentEditor.replace(property.value.range, `"${newColor.css}"`),
+                    () => insertProperty(document, documentEditor, mark, "stroke", `"${newColor.css}"`)
                 );
             }
         }
@@ -267,8 +261,8 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
                 processProperty(
                     mark,
                     "fontSize",
-                    property => editor.replace(property.value.range, newSize.value.toString()),
-                    () => insertProperty(document, editor, mark, "fontSize", newSize.value.toString())
+                    property => documentEditor.replace(property.value.range, newSize.value.toString()),
+                    () => insertProperty(document, documentEditor, mark, "fontSize", newSize.value.toString())
                 );
             }
 
@@ -277,8 +271,8 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
                 processProperty(
                     mark,
                     "fontWeight",
-                    property => editor.replace(property.value.range, newIsBold ? "true" : "false"),
-                    () => insertProperty(document, editor, mark, "fontWeight", newIsBold ? "true" : "false")
+                    property => documentEditor.replace(property.value.range, newIsBold ? "true" : "false"),
+                    () => insertProperty(document, documentEditor, mark, "fontWeight", newIsBold ? "true" : "false")
                 );
             }
 
@@ -287,13 +281,13 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
                 processProperty(
                     mark,
                     "fontStyle",
-                    property => editor.replace(property.value.range, newIsItalic ? "true" : "false"),
-                    () => insertProperty(document, editor, mark, "fontStyle", newIsItalic ? "true" : "false")
+                    property => documentEditor.replace(property.value.range, newIsItalic ? "true" : "false"),
+                    () => insertProperty(document, documentEditor, mark, "fontStyle", newIsItalic ? "true" : "false")
                 );
             }
         }
 
-        editor.applyEdits();
+        documentEditor.applyEdits();
     }),
 
     userInterfaceProvider: StyleInspector.makeProvider(),

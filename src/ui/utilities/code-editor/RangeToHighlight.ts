@@ -2,7 +2,6 @@ import { CodeEditorRanges } from "../../../context";
 import { Pattern } from "../../../core/code-patterns/Pattern";
 import { Range } from "../../../core/documents/Range";
 import { Monocle } from "../../../core/visualisations/Monocle";
-import { MonocleUid } from "../../../core/visualisations/MonocleUid";
 
 /* `start` and `end` use 0-based row and column indices. */
 export interface RangeToHighlight {

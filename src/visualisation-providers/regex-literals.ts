@@ -1,4 +1,3 @@
-import { SyntacticPattern } from "../core/code-patterns/syntactic/SyntacticPattern";
 import { SyntacticPatternFinder } from "../core/code-patterns/syntactic/SyntacticPatternFinder";
 import { SyntaxTreePattern } from "../core/languages/SyntaxTreePattern";
 import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapping";
@@ -14,8 +13,8 @@ export const regexLiteralMonocleProvider = new SyntacticMonocleProvider({
 
     patternFinder: new SyntacticPatternFinder(new SyntaxTreePattern(n => n.type === "RegularExpressionLiteral")),
 
-    inputMapping: new ProgrammableInputMapping(arg => {
-        const regexAsString = arg.pattern.text;
+    inputMapping: new ProgrammableInputMapping(({ pattern }) => {
+        const regexAsString = pattern.text;
         const lastRegexLiteralSlashIndex = regexAsString.lastIndexOf("/");
         
         const regexBody = regexAsString.slice(1, lastRegexLiteralSlashIndex);
@@ -24,7 +23,7 @@ export const regexLiteralMonocleProvider = new SyntacticMonocleProvider({
         try {
             return {
                 regex: new RegExp(regexBody, regexFlags),
-                range: arg.pattern.range
+                range: pattern.range
             };
         }
         catch (error) {
@@ -33,14 +32,12 @@ export const regexLiteralMonocleProvider = new SyntacticMonocleProvider({
         }
     }),
 
-    outputMapping: new ProgrammableOutputMapping(arg => {
-        const regex = arg.output.data.regex;
-        const editor = arg.output.editor;
-        const pattern = arg.pattern as SyntacticPattern;
+    outputMapping: new ProgrammableOutputMapping(({ output, documentEditor, pattern }) => {
+        const regex = output.regex;
         
         const regexRange = pattern.node.range;
-        editor.replace(regexRange, regex.toString());
-        editor.applyEdits();
+        documentEditor.replace(regexRange, regex.toString());
+        documentEditor.applyEdits();
     }),
 
     userInterfaceProvider: RegexEditor.makeProvider(),

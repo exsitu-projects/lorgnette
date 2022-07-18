@@ -1,7 +1,9 @@
 import { ClassOf } from "../../utilities/types";
 import { Pattern } from "../code-patterns/Pattern";
-import { Document } from "../documents/Document";
+import { Document, DocumentChangeOrigin } from "../documents/Document";
+import { DocumentEditor } from "../documents/DocumentEditor";
 import { Range } from "../documents/Range";
+import { TransientDocumentEditor } from "../documents/TransientDocumentEditor";
 import { InputMapping } from "../mappings/InputMapping";
 import { OutputMapping } from "../mappings/OutputMapping";
 import { Renderer } from "../renderers/Renderer";
@@ -10,6 +12,10 @@ import { UserInterfaceProvider } from "../user-interfaces/UserInterfaceProvider"
 import { CodeFragmentType } from "./CodeFragmentType";
 import { MonocleProvider } from "./MonocleProvider";
 import { getUnusedUid, MonocleUid } from "./MonocleUid";
+
+export type TransientMonocleState = {
+    editor: TransientDocumentEditor;
+};
 
 export abstract class Monocle<
     T extends CodeFragmentType = CodeFragmentType
@@ -30,6 +36,8 @@ export abstract class Monocle<
     
     readonly renderer: ClassOf<Renderer>;
 
+    private transientState: TransientMonocleState | null;
+
     constructor(
         document: Document,
         provider: MonocleProvider,
@@ -48,10 +56,29 @@ export abstract class Monocle<
         this.outputMapping = outputMapping;
         this.userInterface = userInterfaceProvider.provideForMonocle(this);
         this.renderer = renderer;
+
+        this.transientState = null;
     }
 
     get range(): Range {
         return this.pattern.range;
+    }
+
+    get isTransient(): boolean {
+        return this.transientState !== null;
+    }
+
+    get documentEditor(): DocumentEditor {
+        return this.isTransient
+            ? this.transientState!.editor
+            : new DocumentEditor(
+                this.document,
+                {
+                    origin: DocumentChangeOrigin.Monocle,
+                    monocle: this,
+                    isTransientChange: false
+                }
+            );
     }
 
     protected initialise(): void {
@@ -71,11 +98,54 @@ export abstract class Monocle<
         this.userInterface.updateModel(userInterfaceInput);
     }
 
+    beginTransientState(): void {
+        if (this.isTransient) {
+            return;
+        }
+
+        // Create a transient state, including a transient editor
+        // that can be reused until the transient state is ended.
+        this.transientState = {
+            editor: new TransientDocumentEditor(
+                this.document,
+                {
+                    origin: DocumentChangeOrigin.Monocle,
+                    monocle: this,
+                    isTransientChange: true
+                }
+            )
+        };
+    }
+
+    endTransientState(): void {
+        if (!this.isTransient) {
+            return;
+        }
+
+        // Restore the last non-transient content of the editor.
+        // This is needed to perform the next non-transient edit.
+        const transientEditor = this.transientState!.editor;
+        transientEditor.reset();
+        transientEditor.restoreInitialContent();
+
+        this.transientState = null;
+    }
+
     applyInputMapping(): UserInterfaceInput {
-        return this.inputMapping.mapToInput(this.document, this.pattern);
+        return this.inputMapping.processInput({
+            document: this.document,
+            pattern: this.pattern
+        });
     }
 
     applyOutputMapping(output: UserInterfaceOutput): void {
-        this.outputMapping.processOutput(output, this.document, this.pattern);
+        this.outputMapping.processOutput(
+            output,
+            {
+                document: this.document,
+                documentEditor: this.documentEditor,
+                pattern: this.pattern
+            }
+        );
     }
 }

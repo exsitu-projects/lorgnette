@@ -76,5 +76,7 @@ export class DocumentEditor {
             content,
             this.changeContext
         );
+
+        this.reset();
     }
 }

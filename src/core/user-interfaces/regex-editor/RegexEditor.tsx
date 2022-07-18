@@ -12,9 +12,7 @@ export interface Input extends UserInterfaceInput {
 };
 
 export interface Output extends UserInterfaceOutput {
-    data: {
-        regex: RegExp;
-    }
+    regex: RegExp;
 };
 
 export class RegexEditor extends UserInterface<Input, Output> {
@@ -54,10 +52,7 @@ export class RegexEditor extends UserInterface<Input, Output> {
 
     protected get modelOutput(): Output {
         return {
-            ...this.getPartialModelOutput(),
-            data: {
-                regex: this.regex
-            },
+            regex: this.regex
         };
     }
 

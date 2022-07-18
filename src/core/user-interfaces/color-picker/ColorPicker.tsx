@@ -9,7 +9,7 @@ import { UserInterfaceProvider } from "../UserInterfaceProvider";
 
 export interface Input extends Color {};
 export interface Output extends UserInterfaceOutput {
-    data: Color
+    color: Color
 };
 
 export class ColorPicker extends UserInterface<Input, Output> {
@@ -44,11 +44,11 @@ export class ColorPicker extends UserInterface<Input, Output> {
             onChange={onChange}
             onDragStart={() => {
                 // this.isCurrentlyUsed = true;
-                this.startTransientEdit();
+                this.beginTransientState();
             }}
             onDragEnd={() => {
                 // this.isCurrentlyUsed = false;
-                this.stopTransientEdit();
+                this.endTransientState();
                 this.declareModelChange(true);
             }}
         />;
@@ -56,8 +56,7 @@ export class ColorPicker extends UserInterface<Input, Output> {
 
     protected get modelOutput(): Output {
         return {
-            ...this.getPartialModelOutput(),
-            data: this.color
+            color: this.color
         };
     }
 

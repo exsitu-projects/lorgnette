@@ -12,10 +12,8 @@ export interface Input extends UserInterfaceInput {
 };
 
 export interface Output extends UserInterfaceOutput {
-    data: {
-        style: Style;
-        styleChange: Style;
-    }
+    style: Style;
+    styleChange: Style;
 };
 
 export class StyleInspector extends UserInterface<Input, Output> {
@@ -55,11 +53,11 @@ export class StyleInspector extends UserInterface<Input, Output> {
         };
 
         const onTransientChangeStart = () => {
-            this.startTransientEdit();
+            this.beginTransientState();
         };
 
         const onTransientChangeEnd = () => {
-            this.stopTransientEdit();
+            this.endTransientState();
             this.declareModelChange(true);
         };
 
@@ -74,11 +72,8 @@ export class StyleInspector extends UserInterface<Input, Output> {
 
     protected get modelOutput(): Output {
         return {
-            ...this.getPartialModelOutput(),
-            data: {
-                style: this.style,
-                styleChange: this.lastStyleChange
-            }
+            style: this.style,
+            styleChange: this.lastStyleChange
         };
     }
 

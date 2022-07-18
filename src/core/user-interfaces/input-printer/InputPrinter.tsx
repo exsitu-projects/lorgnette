@@ -28,10 +28,7 @@ export class InputPrinter extends UserInterface<Input, Output> {
     }
 
     protected get modelOutput(): Output {
-        return {
-            ...this.getPartialModelOutput(),
-            data: {}
-        };
+        return {};
     }
 
     updateModel(input: Input): void {

@@ -1,6 +1,6 @@
 import { MonocleProvider } from "../core/visualisations/MonocleProvider";
 import { cssPropertyStyleInspectorProvider } from "./css-properties";
-import { hexadecimalColorPickerProvider } from "./hexadecimal-colors";
+import { hexadecimalColorPickerProvider } from "./hexadecimal-color-codes";
 import { matplotlibTextPropertiesStyleInspectorProvider } from "./matplotlib-text-properties";
 import { regexConstructorVisualisationProvider } from "./regex-constructors";
 import { regexLiteralMonocleProvider } from "./regex-literals";

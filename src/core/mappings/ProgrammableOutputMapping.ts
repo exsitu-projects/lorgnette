@@ -1,47 +1,46 @@
-import { ProgrammableFunction } from "../../utilities/ProgrammableFunction";
+import { ProgrammableFunction, ProgrammableFunctionOf } from "../../utilities/ProgrammableFunction";
 import { Pattern } from "../code-patterns/Pattern";
 import { Document } from "../documents/Document";
+import { DocumentEditor } from "../documents/DocumentEditor";
 import { UserInterfaceOutput } from "../user-interfaces/UserInterface";
 import { CodeFragmentType } from "../visualisations/CodeFragmentType";
-import { OutputMapping } from "./OutputMapping";
+import { OutputMapping, OutputMappingContext } from "./OutputMapping";
 
-export type ProgrammableMappingFunction<T extends CodeFragmentType> =
-    ((arg: {
+export type MappingFunction<T extends CodeFragmentType> =
+    ((argument: {
         output: UserInterfaceOutput,
         document: Document,
+        documentEditor: DocumentEditor
         pattern: Pattern<T>
     }) => void);
 
-export class ProgrammableOutputMapping<T extends CodeFragmentType = CodeFragmentType> implements OutputMapping {
-    private programmableFunction: ProgrammableFunction<
-        Parameters<ProgrammableMappingFunction<T>>[0],
-        ReturnType<ProgrammableMappingFunction<T>>
-    >;
+export class ProgrammableOutputMapping<
+    T extends CodeFragmentType = CodeFragmentType
+> implements OutputMapping {
+    private programmableFunction: ProgrammableFunctionOf<MappingFunction<T>>;
 
-    constructor(functionBodyOrRef: string | ProgrammableMappingFunction<T>) {
-        this.programmableFunction = new ProgrammableFunction(functionBodyOrRef);
+    constructor(functionBodyOrRef: string | MappingFunction<T>) {
+        this.programmableFunction = new ProgrammableFunction(
+            functionBodyOrRef,
+            exception => {
+                console.error("An exception was caught in a programmable output mapping:", exception);
+            }
+        );
     }
 
-    // TODO: somehow move the editor back in here...?
     processOutput(
         output: UserInterfaceOutput,
-        document: Document,
-        pattern: Pattern<T>
+        context: OutputMappingContext<T>
     ): void {
         try {
             this.programmableFunction.call({
                 output: output,
-                document: document,
-                // documentEditor: document.createEditor({
-                //     origin: DocumentChangeOrigin.CodeVisualisationEdit,
-                //     isTransientChange: output.context.isTransientState,
-                //     visualisation: output.context.visualisation
-                // }),
-                pattern: pattern
+                document: context.document,
+                documentEditor: context.documentEditor,
+                pattern: context.pattern
             });
         }
         catch {
-            // TODO: deal with the error
             return;
         }
     }

@@ -19,10 +19,8 @@ export type TreeNodeWithRange<T = { data: Range; }> = TreeNode<T>;
 
 export type Input<T> = TreeNode<T>;
 export interface Output<T> extends UserInterfaceOutput {
-    data: {
-        rootNode: TreeNode<T> | null;
-        lastNodeMoveData: NodeMoveData<T> | null;
-    }
+    rootNode: TreeNode<T> | null;
+    lastNodeMoveData: NodeMoveData<T> | null;
 };
 
 export class Tree<T = any> extends UserInterface<Input<T>, Output<T>> {
@@ -64,11 +62,8 @@ export class Tree<T = any> extends UserInterface<Input<T>, Output<T>> {
         // })
 
         return {
-            ...this.getPartialModelOutput(),
-            data: {
-                rootNode: this.rootNode,
-                lastNodeMoveData: this.lastNodeMoveData
-            }
+            rootNode: this.rootNode,
+            lastNodeMoveData: this.lastNodeMoveData
         };
     }
 

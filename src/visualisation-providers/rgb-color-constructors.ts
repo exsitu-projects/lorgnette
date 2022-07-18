@@ -38,8 +38,8 @@ export const textualRgbConstructorColorPickerProvider = new TextualMonocleProvid
 
     patternFinder: new RegexPatternFinder("Color\\((\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\)"),
 
-    inputMapping: new ProgrammableInputMapping(arg => {
-        const rgbRegexMatches = getTextualColorConstructorRgbRegexMatches(arg.pattern as TextualPattern);
+    inputMapping: new ProgrammableInputMapping(({ pattern }) => {
+        const rgbRegexMatches = getTextualColorConstructorRgbRegexMatches(pattern as TextualPattern);
         return {
             r: parseInt(rgbRegexMatches.r.value),
             g: parseInt(rgbRegexMatches.g.value),
@@ -47,17 +47,14 @@ export const textualRgbConstructorColorPickerProvider = new TextualMonocleProvid
         };
     }),
 
-    outputMapping: new ProgrammableOutputMapping(arg => {
-        const data = arg.output.data;
-        const documentEditor = arg.output.editor;
-        const pattern = arg.pattern;
-        const rgbRegexMatches = getTextualColorConstructorRgbRegexMatches(arg.pattern as TextualPattern);
+    outputMapping: new ProgrammableOutputMapping(({ output, documentEditor, pattern }) => {
+        const rgbRegexMatches = getTextualColorConstructorRgbRegexMatches(pattern);
         
         const adaptRange = (range: Range) => range.relativeTo(pattern.range.start);
         
-        documentEditor.replace(adaptRange(rgbRegexMatches.r.range), data.r.toString());
-        documentEditor.replace(adaptRange(rgbRegexMatches.g.range) ,data.g.toString());
-        documentEditor.replace(adaptRange(rgbRegexMatches.b.range), data.b.toString());
+        documentEditor.replace(adaptRange(rgbRegexMatches.r.range), output.r.toString());
+        documentEditor.replace(adaptRange(rgbRegexMatches.g.range) ,output.g.toString());
+        documentEditor.replace(adaptRange(rgbRegexMatches.b.range), output.b.toString());
         
         documentEditor.applyEdits();
     }),
@@ -97,8 +94,8 @@ export const syntacticRgbConstructorColorPickerProvider = new SyntacticMonoclePr
         SKIP_MATCH_DESCENDANTS
     )),
 
-    inputMapping: new ProgrammableInputMapping(arg => {
-        const rgbNodes = getSyntacticColorConstructorRgbNodes(arg.pattern as SyntacticPattern);
+    inputMapping: new ProgrammableInputMapping(({ pattern }) => {
+        const rgbNodes = getSyntacticColorConstructorRgbNodes(pattern as SyntacticPattern);
         return {
             r: parseInt(rgbNodes.r.text),
             g: parseInt(rgbNodes.g.text),
@@ -106,15 +103,12 @@ export const syntacticRgbConstructorColorPickerProvider = new SyntacticMonoclePr
         };
     }),
 
-    outputMapping: new ProgrammableOutputMapping(arg => {
-        const data = arg.output.data;
-        const documentEditor = arg.output.editor;
-
-        const rgbNodes = getSyntacticColorConstructorRgbNodes(arg.pattern as SyntacticPattern);
+    outputMapping: new ProgrammableOutputMapping(({ output, documentEditor, pattern }) => {
+        const rgbNodes = getSyntacticColorConstructorRgbNodes(pattern);
         
-        documentEditor.replace(rgbNodes.r.range, data.r.toString());
-        documentEditor.replace(rgbNodes.g.range ,data.g.toString());
-        documentEditor.replace(rgbNodes.b.range, data.b.toString());
+        documentEditor.replace(rgbNodes.r.range, output.r.toString());
+        documentEditor.replace(rgbNodes.g.range ,output.g.toString());
+        documentEditor.replace(rgbNodes.b.range, output.b.toString());
         
         documentEditor.applyEdits();
     }),

@@ -1,20 +1,11 @@
 import React, { ReactElement } from "react";
 import { Observer } from "../../utilities/Observer";
 import { Throttler } from "../../utilities/Throttler";
-import { DocumentChangeOrigin } from "../documents/Document";
-import { DocumentEditor } from "../documents/DocumentEditor";
-import { TransientDocumentEditor } from "../documents/TransientDocumentEditor";
 import { Monocle } from "../visualisations/Monocle";
 
-export interface UserInterfaceInput {}
-export interface UserInterfaceOutput {
-    data: any,
-    context: {
-        monocle: Monocle;
-        isTransientState: boolean;
-    },
-    editor: DocumentEditor
-}
+export type UserInterfaceInput = {};
+
+export type UserInterfaceOutput = any;
 
 export type PartialUserInterfaceOutput =
     Omit<UserInterfaceOutput, "data">;
@@ -29,8 +20,6 @@ export abstract class UserInterface<
     private modelChangeObservers: Set<Observer<O>>;
     private modelChangeNotificationThrottler: Throttler;
 
-    protected transientEditor: TransientDocumentEditor | null;
-
     constructor(monocle: Monocle) {
         this.monocle = monocle;
 
@@ -39,60 +28,22 @@ export abstract class UserInterface<
             () => this.notifyModelChangeObservers(),
             this.minDelayBetweenModelChangeNotifications
         )
-
-        this.transientEditor = null;
     }
 
     protected abstract get modelOutput(): O;
     abstract createViewContent(): ReactElement;
     abstract updateModel(input: I): void;
 
-    protected startTransientEdit(): void {
-        this.transientEditor = new TransientDocumentEditor(
-            this.monocle.document,
-            {
-                origin: DocumentChangeOrigin.Monocle,
-                monocle: this.monocle,
-                isTransientChange: true
-            }
-        )
+    protected get isTransient(): boolean {
+        return this.monocle.isTransient;
     }
 
-    protected stopTransientEdit(): void {
-        if (this.transientEditor) {
-            this.transientEditor.reset();
-            this.transientEditor.restoreInitialContent();
-        }
-
-        this.transientEditor = null;
+    protected beginTransientState(): void {
+        this.monocle.beginTransientState();
     }
 
-    protected getAppropriateDocumentEditor(): DocumentEditor {
-        return this.transientEditor ?? new DocumentEditor(
-            this.monocle.document,
-            {
-                origin: DocumentChangeOrigin.Monocle,
-                monocle: this.monocle,
-                isTransientChange: false
-            }
-        );
-    }
-
-    protected isInTransientState(): boolean {
-        return this.transientEditor !== null;
-    }
-
-    protected getPartialModelOutput(): PartialUserInterfaceOutput {
-        const editor = this.getAppropriateDocumentEditor();
-        editor.reset();
-
-        return {
-            context: {
-                monocle: this.monocle,
-                isTransientState: this.isInTransientState()
-            },
-            editor: editor
-        };
+    protected endTransientState(): void {
+        this.monocle.endTransientState();
     }
 
     protected get minDelayBetweenModelChangeNotifications(): number {

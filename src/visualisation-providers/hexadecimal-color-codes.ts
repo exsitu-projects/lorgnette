@@ -1,5 +1,4 @@
 import { RegexPatternFinder } from "../core/code-patterns/textual/RegexPatternFinder";
-import { TextualPattern } from "../core/code-patterns/textual/TextualPattern";
 import { Position } from "../core/documents/Position";
 import { Range } from "../core/documents/Range";
 import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapping";
@@ -21,8 +20,7 @@ export const hexadecimalColorPickerProvider = new TextualMonocleProvider({
 
     patternFinder: new RegexPatternFinder("#([a-fA-F0-9]{6})"),
 
-    inputMapping: new ProgrammableInputMapping(arg => {
-        const pattern = (arg.pattern as TextualPattern);
+    inputMapping: new ProgrammableInputMapping(({ pattern }) => {
         const hexadecimalColorString = pattern.text;
 
         return {
@@ -32,19 +30,15 @@ export const hexadecimalColorPickerProvider = new TextualMonocleProvider({
         };
     }),
 
-    outputMapping: new ProgrammableOutputMapping(arg => {
-        const data = arg.output.data;
-        const editor = arg.output.editor;
-        const pattern = arg.pattern;
-
+    outputMapping: new ProgrammableOutputMapping(({ output, documentEditor, pattern }) => {
         const adaptRange = (range: Range) => range.relativeTo(pattern.range.start);
         const hexOfRgbValue = (n: number) => n.toString(16);
         
-        editor.replace(adaptRange(HEXADECIMAL_COLOR_STRING_RGB_RANGES.r), hexOfRgbValue(data.r));
-        editor.replace(adaptRange(HEXADECIMAL_COLOR_STRING_RGB_RANGES.g), hexOfRgbValue(data.g));
-        editor.replace(adaptRange(HEXADECIMAL_COLOR_STRING_RGB_RANGES.b), hexOfRgbValue(data.b));
+        documentEditor.replace(adaptRange(HEXADECIMAL_COLOR_STRING_RGB_RANGES.r), hexOfRgbValue(output.r));
+        documentEditor.replace(adaptRange(HEXADECIMAL_COLOR_STRING_RGB_RANGES.g), hexOfRgbValue(output.g));
+        documentEditor.replace(adaptRange(HEXADECIMAL_COLOR_STRING_RGB_RANGES.b), hexOfRgbValue(output.b));
         
-        editor.applyEdits();
+        documentEditor.applyEdits();
     }),
 
     userInterfaceProvider: ColorPicker.makeProvider(),

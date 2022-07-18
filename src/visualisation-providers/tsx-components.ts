@@ -1,4 +1,3 @@
-import { SyntacticPattern } from "../core/code-patterns/syntactic/SyntacticPattern";
 import { SyntacticPatternFinder } from "../core/code-patterns/syntactic/SyntacticPatternFinder";
 import { SyntaxTreeNode } from "../core/languages/SyntaxTreeNode";
 import { SyntaxTreePattern, SKIP_MATCH_DESCENDANTS } from "../core/languages/SyntaxTreePattern";
@@ -20,9 +19,7 @@ export const tsxComponentTreeProvider = new SyntacticMonocleProvider({
         SKIP_MATCH_DESCENDANTS
     )),
 
-    inputMapping: new ProgrammableInputMapping(arg => {
-        const pattern = arg.pattern as SyntacticPattern;
-        
+    inputMapping: new ProgrammableInputMapping(({ pattern }) => {
         const getJsxElementNameFromNode = (node: SyntaxTreeNode, defaultName: string): string => {
             const regex = /<\s*(\w+).*/;
             const regexMatch = regex.exec(node.parserNode.getFullText() as string);
@@ -80,9 +77,8 @@ export const tsxComponentTreeProvider = new SyntacticMonocleProvider({
         return findTsxTreeItems(pattern.node) as TreeNode;
     }),
 
-    outputMapping: new ProgrammableOutputMapping(arg => {
-        const output = arg.output;
-        NodeMoveProcesser.processTreeOutput(output, arg.document);
+    outputMapping: new ProgrammableOutputMapping(({ output, document }) => {
+        NodeMoveProcesser.processTreeOutput(output, document);
     }),
 
     userInterfaceProvider: Tree.makeProvider<SyntaxTreeNode>(),

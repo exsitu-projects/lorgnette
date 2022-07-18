@@ -12,7 +12,7 @@ import { ButtonPopoverRenderer } from "../core/renderers/popover/ButtonPopoverRe
 import { Margin } from "../core/user-interfaces/style-inspector/inspectors/MarginInspector";
 import { DISABLED_PROPERTY, isEnabledAndDefined } from "../core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
 import { Style } from "../core/user-interfaces/style-inspector/Style";
-import { Input, Output, StyleInspector } from "../core/user-interfaces/style-inspector/StyleInspector";
+import { Input, StyleInspector } from "../core/user-interfaces/style-inspector/StyleInspector";
 import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
 import { Color, BLACK } from "../utilities/Color";
 import { ValueWithUnit } from "../utilities/ValueWithUnit";
@@ -27,8 +27,8 @@ export const cssPropertyStyleInspectorProvider = new SyntacticMonocleProvider({
         SKIP_MATCH_DESCENDANTS
     )),
 
-    inputMapping: new ProgrammableInputMapping(arg => {
-        const blockNode = (arg.pattern as SyntacticPattern).node.childNodes[1];
+    inputMapping: new ProgrammableInputMapping(({ pattern }) => {
+        const blockNode = pattern.node.childNodes[1];
         const blockCssNode = blockNode.parserNode as Block;
 
         const propertyNamesToValues = new Map(
@@ -191,16 +191,13 @@ export const cssPropertyStyleInspectorProvider = new SyntacticMonocleProvider({
         return input;
     }),
 
-    outputMapping: new ProgrammableOutputMapping(arg => {
-        const output = arg.output as Output;
-        const document = arg.document;
-        const editor = output.editor;
-        const styleChange = output.data.styleChange;
+    outputMapping: new ProgrammableOutputMapping(({ output, document, documentEditor, pattern }) => {
+        const styleChange = output.styleChange as Style;
 
         console.log(styleChange)
 
         // Get the current properties of the CSS rule.
-        const blockNode = (arg.pattern as SyntacticPattern).node.childNodes[1];
+        const blockNode = (pattern as SyntacticPattern).node.childNodes[1];
         // const blockCssNode = blockNode.parserNode as Block;
 
         const cssProperties = blockNode.childNodes.filter(node => node.parserNode.type === "Declaration");
@@ -225,7 +222,7 @@ export const cssPropertyStyleInspectorProvider = new SyntacticMonocleProvider({
 
             const cssPropertyAstNode = cssPropertyNamesToAstNodes.get(cssPropertyName);
             if (cssPropertyAstNode) {
-                editor.replace(
+                documentEditor.replace(
                     cssPropertyAstNode.childNodes[0].range,
                     newValue
                 );
@@ -337,13 +334,13 @@ export const cssPropertyStyleInspectorProvider = new SyntacticMonocleProvider({
 
             const cssRuleHasExistingProperties = cssProperties.length > 0;
             if (cssRuleHasExistingProperties) {
-                editor.insert(
+                documentEditor.insert(
                     cssProperties[cssProperties.length - 1].range.end.shiftBy(0, 1, 1),
                     `${concatenatedPropertiesToInsert}`
                 );
             }
             else {
-                editor.replace(
+                documentEditor.replace(
                     blockNode.range,
                     `{${concatenatedPropertiesToInsert}\n}`
                 );
@@ -389,11 +386,11 @@ export const cssPropertyStyleInspectorProvider = new SyntacticMonocleProvider({
                     rangeToDelete = rangeToDelete.with({ end: rangeAfterPropertyInLastPropertyLine.end });
                 }
 
-                editor.delete(rangeToDelete);
+                documentEditor.delete(rangeToDelete);
             }
         }
 
-        editor.applyEdits();
+        documentEditor.applyEdits();
     }),
 
     userInterfaceProvider: StyleInspector.makeProvider(),

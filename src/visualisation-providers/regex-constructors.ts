@@ -1,4 +1,3 @@
-import { SyntacticPattern } from "../core/code-patterns/syntactic/SyntacticPattern";
 import { SyntacticPatternFinder } from "../core/code-patterns/syntactic/SyntacticPatternFinder";
 import { SyntaxTreePattern, SKIP_MATCH_DESCENDANTS } from "../core/languages/SyntaxTreePattern";
 import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapping";
@@ -19,10 +18,7 @@ export const regexConstructorVisualisationProvider = new SyntacticMonocleProvide
         SKIP_MATCH_DESCENDANTS
     )),
 
-    inputMapping: new ProgrammableInputMapping(arg => {
-        const document = arg.document;
-        const pattern = arg.pattern as SyntacticPattern;
-        
+    inputMapping: new ProgrammableInputMapping(({ document, pattern }) => {
         const regexBodyRange = pattern.node.childNodes[3].childNodes[0].range;
         const hasLiteralRegexFlags = pattern.node.childNodes[3].childNodes[2]?.type === "StringLiteral";
         const regexFlagsRange = hasLiteralRegexFlags
@@ -50,10 +46,8 @@ export const regexConstructorVisualisationProvider = new SyntacticMonocleProvide
         }
     }),
 
-    outputMapping: new ProgrammableOutputMapping(arg => {
-        const regex = arg.output.data.regex;
-        const editor = arg.output.editor;
-        const pattern = arg.pattern as SyntacticPattern;
+    outputMapping: new ProgrammableOutputMapping(({ output, documentEditor, pattern }) => {
+        const regex = output.regex;
         
         // Extract the body and the flags of the regex
         const regexAsString = regex.toString() as string;
@@ -69,8 +63,8 @@ export const regexConstructorVisualisationProvider = new SyntacticMonocleProvide
         ? `"${regexBody}", "${regexFlags}"`
         : `"${regexBody}"`;
         
-        editor.replace(regexArgumentsRange, newRegexArguments);
-        editor.applyEdits();
+        documentEditor.replace(regexArgumentsRange, newRegexArguments);
+        documentEditor.applyEdits();
     }),
 
     userInterfaceProvider: RegexEditor.makeProvider(),
