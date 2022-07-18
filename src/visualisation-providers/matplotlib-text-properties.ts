@@ -9,14 +9,16 @@ import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
 import { isEnabledAndDefined, DISABLED_PROPERTY } from "../core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
 import { Input, Output, StyleInspector } from "../core/user-interfaces/style-inspector/StyleInspector";
-import { SyntacticCodeVisualisationProvider } from "../core/visualisations/syntactic/SyntacticCodeVisualisationProvider";
+import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
 import { createNamedArgumentProcesser, convertColorFromExpression, createNamedArgumentModifyer } from "../utilities/languages/python";
 import { ValueWithUnit } from "../utilities/ValueWithUnit";
 
-export const matplotlibTextPropertySetterStyleInspectorProvider = new SyntacticCodeVisualisationProvider(
-    "Seaborn style (text properties)",
-    { languages: ["python"] },
-    new SyntacticPatternFinder(new SyntaxTreePattern(n =>
+export const matplotlibTextPropertiesStyleInspectorProvider = new SyntacticMonocleProvider({
+    name: "Seaborn style (text properties)",
+
+    usageRequirements: { languages: ["python"] },
+
+    patternFinder: new SyntacticPatternFinder(new SyntaxTreePattern(n =>
         n.type === "FunctionCall"
             && [
                 "set_title",
@@ -27,8 +29,8 @@ export const matplotlibTextPropertySetterStyleInspectorProvider = new SyntacticC
             ].some(functionName => (n as FunctionCallNode).callee.text.endsWith(functionName)),
         SKIP_MATCH_DESCENDANTS
     )),
-    
-    new ProgrammableInputMapping(arg => {
+
+    inputMapping: new ProgrammableInputMapping(arg => {
         const functionCallNode = (arg.pattern as SyntacticPattern).node as FunctionCallNode;
         const namedArguments = functionCallNode.arguments.namedArguments;
 
@@ -110,7 +112,8 @@ export const matplotlibTextPropertySetterStyleInspectorProvider = new SyntacticC
             }
         };
     }),
-    new ProgrammableOutputMapping(arg => {
+
+    outputMapping: new ProgrammableOutputMapping(arg => {
         const output = arg.output as Output;
         const document = arg.document;
         const editor = output.editor;
@@ -167,15 +170,15 @@ export const matplotlibTextPropertySetterStyleInspectorProvider = new SyntacticC
 
         editor.applyEdits();
     }),
+
+    userInterfaceProvider: StyleInspector.makeProvider(),
     
-    StyleInspector.makeProvider(),
-    // InputPrinter.makeProvider(),
-    // ButtonPopoverRenderer.makeProvider({
-    //     buttonContent: "🎨 Font"
-    // })
-    AsideRenderer.makeProvider({
+    rendererProvider: AsideRenderer.makeProvider({
         onlyShowWhenCursorIsInRange: true,
         position: AsideRendererPosition.RightSideOfCode,
         positionOffset: 150
-    })
-);
+    }),
+    // rendererProvider: ButtonPopoverRenderer.makeProvider({
+    //     buttonContent: "🎨 Font"
+    // }),
+});

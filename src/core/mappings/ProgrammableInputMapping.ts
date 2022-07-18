@@ -2,16 +2,16 @@ import { ProgrammableFunction } from "../../utilities/ProgrammableFunction";
 import { Pattern } from "../code-patterns/Pattern";
 import { Document } from "../documents/Document";
 import { UserInterfaceInput } from "../user-interfaces/UserInterface";
-import { CodeVisualisationType } from "../visualisations/CodeVisualisationType";
+import { CodeFragmentType } from "../visualisations/CodeFragmentType";
 import { InputMapping } from "./InputMapping";
 
-export type ProgrammableMappingFunction<T extends CodeVisualisationType> =
+export type ProgrammableMappingFunction<T extends CodeFragmentType> =
     ((arg: {
         document: Document,
         pattern: Pattern<T>
     }) => UserInterfaceInput);
 
-export class ProgrammableInputMapping<T extends CodeVisualisationType = CodeVisualisationType> implements InputMapping {
+export class ProgrammableInputMapping<T extends CodeFragmentType = CodeFragmentType> implements InputMapping {
     private programmableFunction: ProgrammableFunction<
         Parameters<ProgrammableMappingFunction<T>>[0],
         ReturnType<ProgrammableMappingFunction<T>>

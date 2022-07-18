@@ -1,5 +1,5 @@
 import React from "react";
-import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
+import { Monocle } from "../../visualisations/Monocle";
 import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../UserInterface";
 import { UserInterfaceProvider } from "../UserInterfaceProvider";
 import { Style } from "./Style";
@@ -26,8 +26,8 @@ export class StyleInspector extends UserInterface<Input, Output> {
 
     private settings: StyleInspectorSettings;
 
-    constructor(visualisation: CodeVisualisation) {
-        super(visualisation);
+    constructor(monocle: Monocle) {
+        super(monocle);
 
         this.style = {};
         this.lastStyleChange = {};
@@ -89,8 +89,8 @@ export class StyleInspector extends UserInterface<Input, Output> {
 
     static makeProvider(): UserInterfaceProvider {
         return {
-            provide: (visualisation: CodeVisualisation): UserInterface<Input, Output> => {
-                return new StyleInspector(visualisation);
+            provideForMonocle: (monocle: Monocle): UserInterface<Input, Output> => {
+                return new StyleInspector(monocle);
             }
         };
     }

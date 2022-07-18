@@ -9,19 +9,22 @@ import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
 import { isEnabledAndDefined } from "../core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
 import { Input, Output, StyleInspector } from "../core/user-interfaces/style-inspector/StyleInspector";
-import { SyntacticCodeVisualisationProvider } from "../core/visualisations/syntactic/SyntacticCodeVisualisationProvider";
+import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
 import { createNamedArgumentProcesser, convertColorFromExpression, createNamedArgumentModifyer } from "../utilities/languages/python";
 import { ValueWithUnit } from "../utilities/ValueWithUnit";
 
-export const seabornBarplotStyleInspectorProvider = new SyntacticCodeVisualisationProvider(
-    "Seaborn style (barplots)",
-    { languages: ["python"] },
-    new SyntacticPatternFinder(new SyntaxTreePattern(n =>
+export const seabornBarplotStyleInspectorProvider = new SyntacticMonocleProvider({
+    name: "Seaborn style (barplots)",
+
+    usageRequirements: { languages: ["python"] },
+
+    patternFinder: new SyntacticPatternFinder(new SyntaxTreePattern(n =>
         n.type === "FunctionCall"
             && (n as FunctionCallNode).callee.text === "barplot",
         SKIP_MATCH_DESCENDANTS
     )),
-    new ProgrammableInputMapping(arg => {
+
+    inputMapping: new ProgrammableInputMapping(arg => {
         const barplotCallNode = (arg.pattern as SyntacticPattern).node as FunctionCallNode;
         const namedArguments = barplotCallNode.arguments.namedArguments;
 
@@ -87,7 +90,8 @@ export const seabornBarplotStyleInspectorProvider = new SyntacticCodeVisualisati
             }
         };
     }),
-    new ProgrammableOutputMapping(arg => {
+
+    outputMapping: new ProgrammableOutputMapping(arg => {
         const output = arg.output as Output;
         const document = arg.document;
         const editor = output.editor;
@@ -126,15 +130,12 @@ export const seabornBarplotStyleInspectorProvider = new SyntacticCodeVisualisati
 
         editor.applyEdits();
     }),
+
+    userInterfaceProvider: StyleInspector.makeProvider(),
     
-    StyleInspector.makeProvider(),
-    // InputPrinter.makeProvider(),
-    // ButtonPopoverRenderer.makeProvider({
-    //     buttonContent: "🎨 Style"
-    // })
-    AsideRenderer.makeProvider({
+    rendererProvider: AsideRenderer.makeProvider({
         onlyShowWhenCursorIsInRange: true,
         position: AsideRendererPosition.RightSideOfCode,
         positionOffset: 150
     })
-);
+});

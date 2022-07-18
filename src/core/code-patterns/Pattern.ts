@@ -1,8 +1,8 @@
-import { CodeVisualisationType } from "../visualisations/CodeVisualisationType";
+import { CodeFragmentType } from "../visualisations/CodeFragmentType";
 import { SyntacticPattern } from "./syntactic/SyntacticPattern";
 import { TextualPattern } from "./textual/TextualPattern";
 
-export type Pattern<T extends CodeVisualisationType = CodeVisualisationType> =
-    T extends CodeVisualisationType.Textual ? TextualPattern :
-    T extends CodeVisualisationType.Syntactic ? SyntacticPattern :
+export type Pattern<T extends CodeFragmentType = CodeFragmentType> =
+    T extends CodeFragmentType.Textual ? TextualPattern :
+    T extends CodeFragmentType.Syntactic ? SyntacticPattern :
     never;

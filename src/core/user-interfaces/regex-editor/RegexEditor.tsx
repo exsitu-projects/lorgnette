@@ -1,6 +1,6 @@
 import React from "react";
 import { Range } from "../../documents/Range";
-import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
+import { Monocle } from "../../visualisations/Monocle";
 import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../UserInterface";
 import { UserInterfaceProvider } from "../UserInterfaceProvider";
 import { RegexEditorComponent } from "./RegexEditorComponent";
@@ -24,8 +24,8 @@ export class RegexEditor extends UserInterface<Input, Output> {
     private regexRange: Range | null;
     private withPopup: boolean;
 
-    constructor(visualisation: CodeVisualisation, withPopup: boolean = false) {
-        super(visualisation);
+    constructor(monocle: Monocle, withPopup: boolean = false) {
+        super(monocle);
 
         this.regex = RegExp("");
         this.regexRange = null;
@@ -68,8 +68,8 @@ export class RegexEditor extends UserInterface<Input, Output> {
 
     static makeProvider(withPopup: boolean = false): UserInterfaceProvider {
         return {
-            provide: (visualisation: CodeVisualisation): UserInterface<Input, Output> => {
-                return new RegexEditor(visualisation, withPopup);
+            provideForMonocle: (monocle: Monocle): UserInterface<Input, Output> => {
+                return new RegexEditor(monocle, withPopup);
             }
         };
     }

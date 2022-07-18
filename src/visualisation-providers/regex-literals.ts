@@ -5,13 +5,16 @@ import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapp
 import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMapping";
 import { ButtonPopupRenderer } from "../core/renderers/popup/ButtonPopupRenderer";
 import { RegexEditor } from "../core/user-interfaces/regex-editor/RegexEditor";
-import { SyntacticCodeVisualisationProvider } from "../core/visualisations/syntactic/SyntacticCodeVisualisationProvider";
+import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
 
-export const regexLiteralVisualisationProvider = new SyntacticCodeVisualisationProvider(
-    "Regulax expressions (literal)",
-    { languages: ["typescript"] },
-    new SyntacticPatternFinder(new SyntaxTreePattern(n => n.type === "RegularExpressionLiteral")),
-    new ProgrammableInputMapping(arg => {
+export const regexLiteralMonocleProvider = new SyntacticMonocleProvider({
+    name: "Regulax expressions (literal)",
+
+    usageRequirements: { languages: ["typescript"] },
+
+    patternFinder: new SyntacticPatternFinder(new SyntaxTreePattern(n => n.type === "RegularExpressionLiteral")),
+
+    inputMapping: new ProgrammableInputMapping(arg => {
         const regexAsString = arg.pattern.text;
         const lastRegexLiteralSlashIndex = regexAsString.lastIndexOf("/");
         
@@ -29,7 +32,8 @@ export const regexLiteralVisualisationProvider = new SyntacticCodeVisualisationP
             return { regex: new RegExp("") };
         }
     }),
-    new ProgrammableOutputMapping(arg => {
+
+    outputMapping: new ProgrammableOutputMapping(arg => {
         const regex = arg.output.data.regex;
         const editor = arg.output.editor;
         const pattern = arg.pattern as SyntacticPattern;
@@ -38,6 +42,8 @@ export const regexLiteralVisualisationProvider = new SyntacticCodeVisualisationP
         editor.replace(regexRange, regex.toString());
         editor.applyEdits();
     }),
-    RegexEditor.makeProvider(),
-    ButtonPopupRenderer.makeProvider()
-);
+
+    userInterfaceProvider: RegexEditor.makeProvider(),
+    
+    rendererProvider: ButtonPopupRenderer.makeProvider()
+});

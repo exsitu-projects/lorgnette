@@ -1,7 +1,7 @@
 import React from "react";
 import { BLACK, Color } from "../../../utilities/Color";
 import { RgbColorPicker } from "../../../utilities/components/color-pickers/RgbColorPicker";
-import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
+import { Monocle } from "../../visualisations/Monocle";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
 import { UserInterfaceProvider } from "../UserInterfaceProvider";
 
@@ -18,8 +18,8 @@ export class ColorPicker extends UserInterface<Input, Output> {
     private color: Color;
     // private isCurrentlyUsed: boolean;
 
-    constructor(visualisation: CodeVisualisation, color: Color = BLACK) {
-        super(visualisation);
+    constructor(monocle: Monocle, color: Color = BLACK) {
+        super(monocle);
 
         this.color = color;
         // this.isCurrentlyUsed = false;
@@ -68,8 +68,8 @@ export class ColorPicker extends UserInterface<Input, Output> {
 
     static makeProvider(): UserInterfaceProvider {
         return {
-            provide: (visualisation: CodeVisualisation): UserInterface<Input, Output> => {
-                return new ColorPicker(visualisation);
+            provideForMonocle: (monocle: Monocle): UserInterface<Input, Output> => {
+                return new ColorPicker(monocle);
             }
         };
     }

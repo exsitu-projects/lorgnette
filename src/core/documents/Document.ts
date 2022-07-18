@@ -1,12 +1,12 @@
 import { Observer } from "../../utilities/Observer";
 import { SyntaxTree } from "../languages/SyntaxTree";
 import { Language } from "../languages/Language";
-import { CodeVisualisation } from "../visualisations/CodeVisualisation";
 import { DocumentEditor } from "./DocumentEditor";
 import { DocumentPosition } from "./DocumentPosition";
 import { DocumentRange } from "./DocumentRange";
 import { Position } from "./Position";
 import { Range } from "./Range";
+import { Monocle } from "../visualisations/Monocle";
 
 function splitTextByLine(text: string): string[] {
     return text.split("\n");
@@ -14,14 +14,14 @@ function splitTextByLine(text: string): string[] {
 
 export enum DocumentChangeOrigin {
     UserEdit = "User edit",
-    CodeVisualisationEdit = "Code visualisation edit"
+    Monocle = "Monocle"
 }
 
 export type DocumentChangeContext = {
     origin: DocumentChangeOrigin.UserEdit;
 } | {
-    origin: DocumentChangeOrigin.CodeVisualisationEdit;
-    visualisation: CodeVisualisation;
+    origin: DocumentChangeOrigin.Monocle;
+    monocle: Monocle;
     isTransientChange: boolean;
 };
 

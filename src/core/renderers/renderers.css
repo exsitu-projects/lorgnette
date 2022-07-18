@@ -1,14 +1,14 @@
 /* Popover renderers */
 
-.code-visualisation-popover-wrapper {
+.monocle-popover-wrapper {
     position: absolute;
     /* z-index: 200; */
 }
 
-.code-visualisation-popover-wrapper > button.bp4-button,
-.code-visualisation-popover-wrapper > button.bp4-button:active,
-.code-visualisation-popover-wrapper > button.bp4-button.bp4-active,
-.code-visualisation-popover-wrapper > button.bp4-button:hover {
+.monocle-popover-wrapper > button.bp4-button,
+.monocle-popover-wrapper > button.bp4-button:active,
+.monocle-popover-wrapper > button.bp4-button.bp4-active,
+.monocle-popover-wrapper > button.bp4-button:hover {
     display: block;
     min-width: auto;
     min-height: auto;
@@ -23,19 +23,19 @@
     font-size: 0.9em;
 }
 
-.code-visualisation-popover-wrapper > button.bp4-button > span {
+.monocle-popover-wrapper > button.bp4-button > span {
     display: inline-block;
 }
 
-.code-visualisation-popover-wrapper > button.bp4-button:hover,
-.code-visualisation-popover-wrapper > button.bp4-button:active,
-.code-visualisation-popover-wrapper > button.bp4-button.bp4-active {
+.monocle-popover-wrapper > button.bp4-button:hover,
+.monocle-popover-wrapper > button.bp4-button:active,
+.monocle-popover-wrapper > button.bp4-button.bp4-active {
     background: #eee;
     border: 1px solid #888;
     color: #666;
 }
 
-.code-visualisation-popover-content-wrapper {
+.monocle-popover-content-wrapper {
     padding: 10px;
     background-color: #FAFAFA;
     border: 1px solid #CCC;
@@ -49,15 +49,15 @@
 /* Popup renderers */
 
 
-.code-visualisation-popup-wrapper {
+.monocle-popup-wrapper {
     position: absolute;
     /* z-index: 200; */
 }
 
-.code-visualisation-popup-wrapper > button.bp4-button,
-.code-visualisation-popup-wrapper > button.bp4-button:active,
-.code-visualisation-popup-wrapper > button.bp4-button.bp4-active,
-.code-visualisation-popup-wrapper > button.bp4-button:hover {
+.monocle-popup-wrapper > button.bp4-button,
+.monocle-popup-wrapper > button.bp4-button:active,
+.monocle-popup-wrapper > button.bp4-button.bp4-active,
+.monocle-popup-wrapper > button.bp4-button:hover {
     display: block;
     min-width: auto;
     min-height: auto;
@@ -72,19 +72,19 @@
     font-size: 0.9em;
 }
 
-.code-visualisation-popup-wrapper > button.bp4-button > span {
+.monocle-popup-wrapper > button.bp4-button > span {
     display: inline-block;
 }
 
-.code-visualisation-popup-wrapper > button.bp4-button:hover,
-.code-visualisation-popup-wrapper > button.bp4-button:active,
-.code-visualisation-popup-wrapper > button.bp4-button.bp4-active {
+.monocle-popup-wrapper > button.bp4-button:hover,
+.monocle-popup-wrapper > button.bp4-button:active,
+.monocle-popup-wrapper > button.bp4-button.bp4-active {
     background: #eee;
     border: 1px solid #888;
     color: #666;
 }
 
-.code-visualisation-popup-content-wrapper {
+.monocle-popup-content-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -93,7 +93,7 @@
     z-index: 800;
 }
 
-.code-visualisation-popup-content-panel {
+.monocle-popup-content-panel {
     max-width: calc(100vw - 50px);
     max-height: calc(100vh - 50px);
     padding: 2em;
@@ -104,20 +104,20 @@
     z-index: 1000;
 }
 
-.code-visualisation-popup-content-panel * {
+.monocle-popup-content-panel * {
     z-index: 1000;
 }
 
 
 /* Aside renderers */
 
-.code-visualisation-aside-wrapper {
+.monocle-aside-wrapper {
     position: absolute;
     background-color: rgba(255, 255, 255, 0.8);
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
     z-index: 500;
 }
 
-.code-visualisation-aside-wrapper.hidden {
+.monocle-aside-wrapper.hidden {
     display: none;
 }

@@ -13,18 +13,21 @@ import { Margin } from "../core/user-interfaces/style-inspector/inspectors/Margi
 import { DISABLED_PROPERTY, isEnabledAndDefined } from "../core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
 import { Style } from "../core/user-interfaces/style-inspector/Style";
 import { Input, Output, StyleInspector } from "../core/user-interfaces/style-inspector/StyleInspector";
-import { SyntacticCodeVisualisationProvider } from "../core/visualisations/syntactic/SyntacticCodeVisualisationProvider";
+import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
 import { Color, BLACK } from "../utilities/Color";
 import { ValueWithUnit } from "../utilities/ValueWithUnit";
 
-export const cssPropertyStyleInspectorProvider = new SyntacticCodeVisualisationProvider(
-    "CSS style editor",
-    { languages: ["css"] },
-    new SyntacticPatternFinder(new SyntaxTreePattern(
+export const cssPropertyStyleInspectorProvider = new SyntacticMonocleProvider({
+    name: "CSS style editor",
+
+    usageRequirements: { languages: ["css"] },
+
+    patternFinder: new SyntacticPatternFinder(new SyntaxTreePattern(
         n => n.type === "Rule",
         SKIP_MATCH_DESCENDANTS
     )),
-    new ProgrammableInputMapping(arg => {
+
+    inputMapping: new ProgrammableInputMapping(arg => {
         const blockNode = (arg.pattern as SyntacticPattern).node.childNodes[1];
         const blockCssNode = blockNode.parserNode as Block;
 
@@ -187,7 +190,8 @@ export const cssPropertyStyleInspectorProvider = new SyntacticCodeVisualisationP
 
         return input;
     }),
-    new ProgrammableOutputMapping(arg => {
+
+    outputMapping: new ProgrammableOutputMapping(arg => {
         const output = arg.output as Output;
         const document = arg.document;
         const editor = output.editor;
@@ -391,13 +395,15 @@ export const cssPropertyStyleInspectorProvider = new SyntacticCodeVisualisationP
 
         editor.applyEdits();
     }),
-    StyleInspector.makeProvider(),
-    ButtonPopoverRenderer.makeProvider({
+
+    userInterfaceProvider: StyleInspector.makeProvider(),
+    
+    rendererProvider: ButtonPopoverRenderer.makeProvider({
         buttonContent: "Inspect 🎨",
-    })
-    // AsideRenderer.makeProvider({
+    }),
+    // rendererProvider: AsideRenderer.makeProvider({
     //     onlyShowWhenCursorIsInRange: true,
     //     position: AsideRendererPosition.RightSideOfCode,
     //     positionOffset: 50
-    // })
-);
+    // }),
+});

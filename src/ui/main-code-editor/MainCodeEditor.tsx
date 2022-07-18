@@ -1,9 +1,9 @@
 import React, { ReactElement } from "react";
 import "./main-code-editor.css";
 import { GlobalContext } from "../../context";
-import { CodeVisualisation } from "../../core/visualisations/CodeVisualisation";
 import { CodeEditor, getCursorPositionInEditor } from "../utilities/code-editor/CodeEditor";
-import { createRangesToHighlightForCodeVisualisations, createRangesToHighlightFromGlobalCodeEditorRanges } from "../utilities/code-editor/RangeToHighlight";
+import { createRangesToHighlightForMonocles, createRangesToHighlightFromGlobalCodeEditorRanges } from "../utilities/code-editor/RangeToHighlight";
+import { Monocle } from "../../core/visualisations/Monocle";
 
 export type Props = {
 
@@ -11,25 +11,25 @@ export type Props = {
 
 export class MainCodeEditor extends React.PureComponent<Props> {
     private codeEditorRef: React.RefObject<CodeEditor>;
-    private codeVisualisationContainerRef: React.RefObject<HTMLDivElement>;
+    private monocleContainerRef: React.RefObject<HTMLDivElement>;
 
     constructor(props: Props) {
         super(props);
 
         this.codeEditorRef = React.createRef();
-        this.codeVisualisationContainerRef = React.createRef();
+        this.monocleContainerRef = React.createRef();
     }
 
-    private renderLocalCodeVisualisations(codeVisualisations: CodeVisualisation[]): ReactElement {
-        const renderedLocalCodeVisualisations = codeVisualisations.map(
-            visualisation => <visualisation.renderer
-                codeVisualisation={visualisation}
+    private renderEmbeddedMonocles(monocles: Monocle[]): ReactElement {
+        const renderedMonocles = monocles.map(
+            monocle => <monocle.renderer
+                monocle={monocle}
                 codeEditorRef={this.codeEditorRef}
             />
         );
 
         return <>
-            {renderedLocalCodeVisualisations}
+            {renderedMonocles}
         </>;
     }
 
@@ -44,16 +44,16 @@ export class MainCodeEditor extends React.PureComponent<Props> {
                         context.updateCodeEditorCursorPosition(getCursorPositionInEditor(aceEditor, context.document))
                     }
                     rangesToHighlight={[
-                        ...createRangesToHighlightForCodeVisualisations(context.codeVisualisations),
+                        ...createRangesToHighlightForMonocles(context.monocles),
                         ...createRangesToHighlightFromGlobalCodeEditorRanges(context.codeEditorRanges)
                     ]}
                     ref={this.codeEditorRef}
                 />
                 <div
-                    className="code-visualisations"
-                    ref={this.codeVisualisationContainerRef}
+                    className="monocles"
+                    ref={this.monocleContainerRef}
                 >
-                    {this.renderLocalCodeVisualisations(context.codeVisualisations)}
+                    {this.renderEmbeddedMonocles(context.monocles)}
                 </div>
             </div>
         )}</GlobalContext.Consumer>

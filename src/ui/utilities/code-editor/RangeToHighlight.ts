@@ -1,8 +1,8 @@
 import { CodeEditorRanges } from "../../../context";
 import { Pattern } from "../../../core/code-patterns/Pattern";
 import { Range } from "../../../core/documents/Range";
-import { CodeVisualisation } from "../../../core/visualisations/CodeVisualisation";
-import { CodeVisualisationId } from "../../../core/visualisations/CodeVisualisationId";
+import { Monocle } from "../../../core/visualisations/Monocle";
+import { MonocleUid } from "../../../core/visualisations/MonocleUid";
 
 /* `start` and `end` use 0-based row and column indices. */
 export interface RangeToHighlight {
@@ -26,16 +26,17 @@ export function createRangeToHighlight(range: Range, className: string, id?: num
     return rangeToHighlight;
 }
 
-function createRangeToHiglightForPattern(pattern: Pattern, id: CodeVisualisationId): RangeToHighlight {
+function createRangeToHiglightForPattern(pattern: Pattern, id?: number): RangeToHighlight {
     return createRangeToHighlight(pattern.range, "highlight pattern", id);
 }
 
-export function createRangesToHighlightForCodeVisualisations(visualisations: CodeVisualisation[]): RangeToHighlight[] {
+export function createRangesToHighlightForMonocles(monocles: Monocle[]): RangeToHighlight[] {
     const rangesToHiglight: RangeToHighlight[] = [];
 
-    for (let visualisation of visualisations) {
-        const pattern = visualisation.pattern;
-        rangesToHiglight.push(createRangeToHiglightForPattern(pattern, visualisation.id));
+    for (let monocle of monocles) {
+        rangesToHiglight.push(
+            createRangeToHiglightForPattern(monocle.pattern, monocle.uid)
+        );
     }
 
     return rangesToHiglight;
@@ -44,12 +45,12 @@ export function createRangesToHighlightForCodeVisualisations(visualisations: Cod
 export function createRangesToHighlightFromGlobalCodeEditorRanges(ranges: CodeEditorRanges): RangeToHighlight[] {
     const rangesToHiglight: RangeToHighlight[] = [];
 
-    // Ranges to highlight on mouse hover
+    // Ranges to highlight on mouse hover.
     for (let range of ranges.hovered) {
         rangesToHiglight.push(createRangeToHighlight(range, "highlight hovered"));
     }
 
-    // Ranges to highlight on selection
+    // Ranges to highlight on selection.
     for (let range of ranges.selected) {
         rangesToHiglight.push(createRangeToHighlight(range, "highlight selected"));
     }

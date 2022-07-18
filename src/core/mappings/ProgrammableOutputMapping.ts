@@ -1,19 +1,18 @@
 import { ProgrammableFunction } from "../../utilities/ProgrammableFunction";
 import { Pattern } from "../code-patterns/Pattern";
-import { Document, DocumentChangeOrigin } from "../documents/Document";
-import { UserInterfaceInput, UserInterfaceOutput } from "../user-interfaces/UserInterface";
-import { CodeVisualisationType } from "../visualisations/CodeVisualisationType";
-import { InputMapping } from "./InputMapping";
+import { Document } from "../documents/Document";
+import { UserInterfaceOutput } from "../user-interfaces/UserInterface";
+import { CodeFragmentType } from "../visualisations/CodeFragmentType";
 import { OutputMapping } from "./OutputMapping";
 
-export type ProgrammableMappingFunction<T extends CodeVisualisationType> =
+export type ProgrammableMappingFunction<T extends CodeFragmentType> =
     ((arg: {
         output: UserInterfaceOutput,
         document: Document,
         pattern: Pattern<T>
     }) => void);
 
-export class ProgrammableOutputMapping<T extends CodeVisualisationType = CodeVisualisationType> implements OutputMapping {
+export class ProgrammableOutputMapping<T extends CodeFragmentType = CodeFragmentType> implements OutputMapping {
     private programmableFunction: ProgrammableFunction<
         Parameters<ProgrammableMappingFunction<T>>[0],
         ReturnType<ProgrammableMappingFunction<T>>

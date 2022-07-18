@@ -10,22 +10,24 @@ import { ButtonPopoverRenderer } from "../core/renderers/popover/ButtonPopoverRe
 import { DISABLED_PROPERTY, isEnabledAndDefined } from "../core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
 import { Style } from "../core/user-interfaces/style-inspector/Style";
 import { StyleInspector, Input as StyleInspectorInput } from "../core/user-interfaces/style-inspector/StyleInspector";
-import { SyntacticCodeVisualisationProvider } from "../core/visualisations/syntactic/SyntacticCodeVisualisationProvider";
+import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
 import { Color } from "../utilities/Color";
 import { processProperty, insertProperty, deleteProperty } from "../utilities/languages/json";
 import { ValueWithUnit } from "../utilities/ValueWithUnit";
 
+export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
+    name: "Vega marks",
 
-export const vegaMarksStyleInspectorProvider = new SyntacticCodeVisualisationProvider(
-    "Vega marks",
-    { languages: ["json"] },
-    new SyntacticPatternFinder(new SyntaxTreePattern(n =>
+    usageRequirements: { languages: ["json"] },
+
+    patternFinder: new SyntacticPatternFinder(new SyntaxTreePattern(n =>
         n.type === "Property"
             && (n as PropertyNode).key.value === "mark"
             && (n as PropertyNode).value.type === "Object",
         SKIP_MATCH_DESCENDANTS
     )),
-    new ProgrammableInputMapping(arg => {
+
+    inputMapping: new ProgrammableInputMapping(arg => {
         const pattern = (arg.pattern as SyntacticPattern).node as PropertyNode;
         const mark = (pattern.value as ObjectNode);
         // const markProperties = (pattern.value as ObjectNode).properties;
@@ -185,7 +187,8 @@ export const vegaMarksStyleInspectorProvider = new SyntacticCodeVisualisationPro
             }
         };
     }),
-    new ProgrammableOutputMapping(arg => {
+
+    outputMapping: new ProgrammableOutputMapping(arg => {
         const document = arg.document;
         const editor = arg.output.editor;
         const pattern = (arg.pattern as SyntacticPattern).node as PropertyNode;
@@ -292,8 +295,10 @@ export const vegaMarksStyleInspectorProvider = new SyntacticCodeVisualisationPro
 
         editor.applyEdits();
     }),
-    StyleInspector.makeProvider(),
-    ButtonPopoverRenderer.makeProvider({
+
+    userInterfaceProvider: StyleInspector.makeProvider(),
+    
+    rendererProvider: ButtonPopoverRenderer.makeProvider({
         buttonContent: "🎨 edit style"
     })
-);
+});

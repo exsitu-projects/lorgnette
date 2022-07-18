@@ -1,22 +1,22 @@
-import { CodeVisualisationProvider } from "../core/visualisations/CodeVisualisationProvider";
+import { MonocleProvider } from "../core/visualisations/MonocleProvider";
 import { cssPropertyStyleInspectorProvider } from "./css-properties";
-import { hexadecimalColorCodeVisualisationProvider } from "./hexadecimal-color-codes";
-import { matplotlibTextPropertySetterStyleInspectorProvider } from "./matplotlib-text-properties";
+import { hexadecimalColorPickerProvider } from "./hexadecimal-colors";
+import { matplotlibTextPropertiesStyleInspectorProvider } from "./matplotlib-text-properties";
 import { regexConstructorVisualisationProvider } from "./regex-constructors";
-import { regexLiteralVisualisationProvider } from "./regex-literals";
-import { syntacticRgbColorConstructorVisualisationProvider, textualRgbColorConstructorVisualisationProvider } from "./rgb-color-constructors";
+import { regexLiteralMonocleProvider } from "./regex-literals";
+import { syntacticRgbConstructorColorPickerProvider, textualRgbConstructorColorPickerProvider } from "./rgb-color-constructors";
 import { seabornBarplotStyleInspectorProvider } from "./seaborn-plots";
-import { tsxComponentVisualisationProvider } from "./tsx-components";
+import { tsxComponentTreeProvider } from "./tsx-components";
 import { vegaMarksStyleInspectorProvider } from "./vega-marks";
 
-export const CODE_VISUALISATION_PROVIDERS: CodeVisualisationProvider[] = [
-    hexadecimalColorCodeVisualisationProvider,
+export const MONOCLE_PROVIDERS: MonocleProvider[] = [
+    hexadecimalColorPickerProvider,
     // textualRgbColorConstructorVisualisationProvider,
-    syntacticRgbColorConstructorVisualisationProvider,
+    syntacticRgbConstructorColorPickerProvider,
 
-    tsxComponentVisualisationProvider,
+    tsxComponentTreeProvider,
 
-    regexLiteralVisualisationProvider,
+    regexLiteralMonocleProvider,
     regexConstructorVisualisationProvider,
 
     vegaMarksStyleInspectorProvider,
@@ -24,5 +24,5 @@ export const CODE_VISUALISATION_PROVIDERS: CodeVisualisationProvider[] = [
     cssPropertyStyleInspectorProvider,
 
     seabornBarplotStyleInspectorProvider,
-    matplotlibTextPropertySetterStyleInspectorProvider
+    matplotlibTextPropertiesStyleInspectorProvider
 ];

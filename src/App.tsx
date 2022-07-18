@@ -1,13 +1,13 @@
 import React from "react";
 import "./App.css";
-import { defaultCodeEditorRanges, GlobalContext, GlobalContextContent } from "./context";
 import { Language } from "./core/languages/Language";
-import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
 import { Document, DocumentChangeOrigin } from "./core/documents/Document";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "./core/documents/Position";
 import { DEFAULT_EXAMPLE } from "./ui/main-code-editor/code-examples/Example";
 import { MonocleUI } from "./ui/MonocleUI";
-import { CODE_VISUALISATION_PROVIDERS } from "./visualisation-providers/providers";
+import { MONOCLE_PROVIDERS } from "./visualisation-providers/providers";
+import { defaultCodeEditorRanges, GlobalContext, GlobalContextContent } from "./context";
+import { Monocle } from "./core/visualisations/Monocle";
 
 type Props = {};
 type State = GlobalContextContent;
@@ -37,32 +37,31 @@ export default class App extends React.Component<Props, State> {
       document: this.createDocument(DEFAULT_EXAMPLE.language, DEFAULT_EXAMPLE.content),
       updateDocument: (language: Language, content: string) => {
         const newDocument = this.createDocument(language, content);
-        const newCodeVisualisations = this.createNewCodeVisualisationsForDocument(newDocument);
+        const newMonocles = this.createMonoclesForDocument(newDocument);
 
         this.setState({
           document: newDocument,
-          codeVisualisations: newCodeVisualisations
+          monocles: newMonocles
         });        
       },
       updateDocumentContent: newContent => {
         this.state.updateDocument(this.state.document.language, newContent);
       },
 
-      codeVisualisationProviders: CODE_VISUALISATION_PROVIDERS,
-      codeVisualisations: [],
+      monocleProviders: MONOCLE_PROVIDERS,
+      monocles: [],
 
-      declareCodeVisualisationMutation: () => {
-        const newCodeVisualisations = this.createNewCodeVisualisationsForDocument(this.state.document);
-
+      declareMonocleMutation: () => {
+        const newMonocles = this.createMonoclesForDocument(this.state.document);
         this.setState({
-          codeVisualisations: newCodeVisualisations
+          monocles: newMonocles
         });
       }
     };
   }
   
   // Create a new document in the given language, with the given content,
-  // with a change observer that updates the document and the code visualisations
+  // with a change observer that updates the document and the monocles
   // in the state of whenever the document is modified.
   private createDocument(language: Language, content: string): Document {
     const document = new Document(language, content);
@@ -71,19 +70,19 @@ export default class App extends React.Component<Props, State> {
         const newDocument = this.createDocument(this.state.document.language, event.document.content);
 
         // Case 1: if the change originates from a manual edit operation
-        // performed by the user, update the code visualisations.
+        // performed by the user, update the monocles.
         if (event.changeContext.origin === DocumentChangeOrigin.UserEdit) {
-          const newCodeVisualisations = this.createNewCodeVisualisationsForDocument(newDocument);
+          const newMonocles = this.createMonoclesForDocument(newDocument);
 
           this.setState({
             document: newDocument,
-            codeVisualisations: newCodeVisualisations
+            monocles: newMonocles
           });
         }
 
         // Case 2: if the change originates from a code visualisation,
-        // only update the code visualisations if the change is not transient.
-        else if (event.changeContext.origin === DocumentChangeOrigin.CodeVisualisationEdit) {
+        // only update the monocles if the change is not transient.
+        else if (event.changeContext.origin === DocumentChangeOrigin.Monocle) {
           if (event.changeContext.isTransientChange) {
             console.info("** TRANSIENT change **");
 
@@ -94,10 +93,10 @@ export default class App extends React.Component<Props, State> {
           else {
             console.warn("** NON-TRANSIENT change **");
 
-            const newCodeVisualisations = this.createNewCodeVisualisationsForDocument(newDocument);
+            const newMonocles = this.createMonoclesForDocument(newDocument);
             this.setState({
               document: newDocument,
-              codeVisualisations: newCodeVisualisations
+              monocles: newMonocles
             });
           }
         }
@@ -107,29 +106,28 @@ export default class App extends React.Component<Props, State> {
     return document;
   }
 
-  // Create new code visualisations for the given document.
-  private createNewCodeVisualisationsForDocument(document: Document): CodeVisualisation[] {
-    const codeVisualisations: CodeVisualisation[] = [];
-    for (let codeVisualisationProvider of this.state.codeVisualisationProviders) {
-      codeVisualisationProvider.updateFromDocument(document);
-      codeVisualisations.push(...codeVisualisationProvider.codeVisualisations);
+  // Create new monocles for the given document.
+  private createMonoclesForDocument(document: Document): Monocle[] {
+    const monocles: Monocle[] = [];
+    for (let monocleProvider of this.state.monocleProviders) {
+      monocles.push(...monocleProvider.provideForDocument(document));
     }
 
-    console.log("new code visualisations:", codeVisualisations);
+    console.log("[ New monocles ]", monocles);
 
-    return codeVisualisations;
+    return monocles;
   }
 
-  // Update the code visualisations in the current document (current state).
-  private updateCodeVisualisations(): void {
+  // Update the monocles in the current document (current state).
+  private updateMonocles(): void {
     this.setState({
-      codeVisualisations: this.createNewCodeVisualisationsForDocument(this.state.document)
+      monocles: this.createMonoclesForDocument(this.state.document)
     });
   }
 
   componentDidMount(): void {
     // When the main app is created, visualisations must be created for the first time.
-    this.updateCodeVisualisations();
+    this.updateMonocles();
   }
 
   render() {

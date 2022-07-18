@@ -1,10 +1,10 @@
 import { Document } from "../../documents/Document";
 import { SyntaxTreePattern } from "../../languages/SyntaxTreePattern";
-import { CodeVisualisationType } from "../../visualisations/CodeVisualisationType";
+import { CodeFragmentType } from "../../visualisations/CodeFragmentType";
 import { PatternFinder } from "../PatternFinder";
 import { SyntacticPattern } from "./SyntacticPattern";
 
-export class SyntacticPatternFinder implements PatternFinder<CodeVisualisationType.Syntactic> {
+export class SyntacticPatternFinder implements PatternFinder<CodeFragmentType.Syntactic> {
     readonly type = "Syntactic pattern finder";
     private searchPattern: SyntaxTreePattern;
 

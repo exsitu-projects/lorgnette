@@ -8,16 +8,19 @@ import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
 import { Tree, TreeNode } from "../core/user-interfaces/tree/Tree";
 import { NodeMoveProcesser } from "../core/user-interfaces/tree/utilities/NodeMoveProcesser";
-import { SyntacticCodeVisualisationProvider } from "../core/visualisations/syntactic/SyntacticCodeVisualisationProvider";
+import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
 
-export const tsxComponentVisualisationProvider = new SyntacticCodeVisualisationProvider(
-    "TSX elements",
-    { languages: ["typescript"] },
-    new SyntacticPatternFinder(new SyntaxTreePattern(
+export const tsxComponentTreeProvider = new SyntacticMonocleProvider({
+    name: "TSX elements",
+
+    usageRequirements: { languages: ["typescript"] },
+
+    patternFinder: new SyntacticPatternFinder(new SyntaxTreePattern(
         n => ["JsxElement", "JsxSelfClosingElement"].includes(n.type),
         SKIP_MATCH_DESCENDANTS
     )),
-    new ProgrammableInputMapping(arg => {
+
+    inputMapping: new ProgrammableInputMapping(arg => {
         const pattern = arg.pattern as SyntacticPattern;
         
         const getJsxElementNameFromNode = (node: SyntaxTreeNode, defaultName: string): string => {
@@ -76,13 +79,16 @@ export const tsxComponentVisualisationProvider = new SyntacticCodeVisualisationP
         
         return findTsxTreeItems(pattern.node) as TreeNode;
     }),
-    new ProgrammableOutputMapping(arg => {
+
+    outputMapping: new ProgrammableOutputMapping(arg => {
         const output = arg.output;
         NodeMoveProcesser.processTreeOutput(output, arg.document);
     }),
-    Tree.makeProvider<SyntaxTreeNode>(),
-    AsideRenderer.makeProvider({
+
+    userInterfaceProvider: Tree.makeProvider<SyntaxTreeNode>(),
+    
+    rendererProvider: AsideRenderer.makeProvider({
         onlyShowWhenCursorIsInRange: true,
         position: AsideRendererPosition.RightSideOfEditor
     })
-);
+});

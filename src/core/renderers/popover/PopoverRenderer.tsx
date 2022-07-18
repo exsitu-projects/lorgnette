@@ -28,7 +28,7 @@ export abstract class PopoverRenderer extends Renderer {
             // (i.e., the areas in the code editor that correspond to this visualisation).
             // If the set is empty, possibly because there has been an update and they have not been redrawn yet,
             // simply skip the repositioning instead of drawing them at an arbitrary position scuh as (0, 0).
-            const id = this.props.codeVisualisation.id;
+            const id = this.props.monocle.uid;
             const markerSet = codeEditorRef.getMarkerSetWithId(id);
             if (markerSet.size === 0) {
                 return;
@@ -38,7 +38,6 @@ export abstract class PopoverRenderer extends Renderer {
 
             // Position the wrapper next to the markers' bounding box.
             const top = visualisedCodeBoundingBox.top;
-            // const top = visualisedCodeBoundingBox.top - (codeVisualisationBoundingBox.height / 2);
             const left = visualisedCodeBoundingBox.right + 10;
 
             wrapperRef.style.top = `${top}px`;
@@ -52,7 +51,7 @@ export abstract class PopoverRenderer extends Renderer {
 
     componentDidUpdate(oldProps: RendererProps) {
         if (oldProps.codeEditorRef === this.props.codeEditorRef
-        &&  oldProps.codeVisualisation === this.props.codeVisualisation) {
+        &&  oldProps.monocle === this.props.monocle) {
             return;
         }
 
@@ -75,16 +74,16 @@ export abstract class PopoverRenderer extends Renderer {
 
     protected renderPopoverContent(): ReactElement {
         return <div
-            className="code-visualisation-popover-content-wrapper"
+            className="monocle-popover-content-wrapper"
             {...this.popoverContentWrapperProps}
         >
-            {this.props.codeVisualisation.userInterface.createView()}
+            {this.props.monocle.userInterface.createView()}
         </div>;
     }
 
     render() {
         return <div
-            className="code-visualisation-popover-wrapper"
+            className="monocle-popover-wrapper"
             ref={this.popoverWrapperRef}
         >
             <Popover2

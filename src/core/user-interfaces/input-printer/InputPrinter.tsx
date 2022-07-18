@@ -1,5 +1,5 @@
 import React from "react";
-import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
+import { Monocle } from "../../visualisations/Monocle";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
 import { UserInterfaceProvider } from "../UserInterfaceProvider";
 import { InputPrinterComponent } from "./InputPrinterComponent";
@@ -11,8 +11,8 @@ export class InputPrinter extends UserInterface<Input, Output> {
     readonly className = "input-printer";
     private input: any;
 
-    constructor(visualisation: CodeVisualisation) {
-        super(visualisation);
+    constructor(monocle: Monocle) {
+        super(monocle);
 
         this.input = "";
     }
@@ -41,8 +41,8 @@ export class InputPrinter extends UserInterface<Input, Output> {
 
     static makeProvider(): UserInterfaceProvider {
         return {
-            provide: (visualisation: CodeVisualisation): UserInterface<Input, Output> => {
-                return new InputPrinter(visualisation);
+            provideForMonocle: (monocle: Monocle): UserInterface<Input, Output> => {
+                return new InputPrinter(monocle);
             }
         };
     }

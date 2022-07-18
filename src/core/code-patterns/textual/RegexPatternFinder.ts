@@ -1,10 +1,10 @@
 import { RegexMatcher } from "../../../utilities/RegexMatcher";
 import { Document } from "../../documents/Document";
-import { CodeVisualisationType } from "../../visualisations/CodeVisualisationType";
+import { CodeFragmentType } from "../../visualisations/CodeFragmentType";
 import { PatternFinder } from "../PatternFinder";
 import { TextualPattern } from "./TextualPattern";
 
-export class RegexPatternFinder implements PatternFinder<CodeVisualisationType.Textual> {
+export class RegexPatternFinder implements PatternFinder<CodeFragmentType.Textual> {
     readonly type = "Regex pattern finder";
     readonly regexMatcher: RegexMatcher;
 

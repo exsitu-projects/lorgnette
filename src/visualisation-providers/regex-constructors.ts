@@ -5,18 +5,21 @@ import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapp
 import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMapping";
 import { ButtonPopupRenderer } from "../core/renderers/popup/ButtonPopupRenderer";
 import { RegexEditor } from "../core/user-interfaces/regex-editor/RegexEditor";
-import { SyntacticCodeVisualisationProvider } from "../core/visualisations/syntactic/SyntacticCodeVisualisationProvider";
+import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
 
-export const regexConstructorVisualisationProvider = new SyntacticCodeVisualisationProvider(
-    "Regulax expressions (constructor)",
-    { languages: ["typescript"] },
-    new SyntacticPatternFinder(new SyntaxTreePattern(n => 
+export const regexConstructorVisualisationProvider = new SyntacticMonocleProvider({
+    name: "Regulax expressions (constructor)",
+
+    usageRequirements: { languages: ["typescript"] },
+
+    patternFinder: new SyntacticPatternFinder(new SyntaxTreePattern(n => 
         n.type === "NewExpression"
             && n.childNodes[1].parserNode.escapedText === "RegExp"
             && n.childNodes[3].childNodes[0].type === "StringLiteral",
         SKIP_MATCH_DESCENDANTS
     )),
-    new ProgrammableInputMapping(arg => {
+
+    inputMapping: new ProgrammableInputMapping(arg => {
         const document = arg.document;
         const pattern = arg.pattern as SyntacticPattern;
         
@@ -46,7 +49,8 @@ export const regexConstructorVisualisationProvider = new SyntacticCodeVisualisat
             return { regex: new RegExp("") };
         }
     }),
-    new ProgrammableOutputMapping(arg => {
+
+    outputMapping: new ProgrammableOutputMapping(arg => {
         const regex = arg.output.data.regex;
         const editor = arg.output.editor;
         const pattern = arg.pattern as SyntacticPattern;
@@ -68,6 +72,8 @@ export const regexConstructorVisualisationProvider = new SyntacticCodeVisualisat
         editor.replace(regexArgumentsRange, newRegexArguments);
         editor.applyEdits();
     }),
-    RegexEditor.makeProvider(),
-    ButtonPopupRenderer.makeProvider()
-);
+
+    userInterfaceProvider: RegexEditor.makeProvider(),
+    
+    rendererProvider: ButtonPopupRenderer.makeProvider()
+});

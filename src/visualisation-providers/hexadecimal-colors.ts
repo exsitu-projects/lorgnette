@@ -6,7 +6,7 @@ import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapp
 import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMapping";
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { ColorPicker } from "../core/user-interfaces/color-picker/ColorPicker";
-import { TextualCodeVisualisationProvider } from "../core/visualisations/textual/TextualCodeVisualisationProvider";
+import { TextualMonocleProvider } from "../core/visualisations/textual/TextualMonocleProvider";
 
 const HEXADECIMAL_COLOR_STRING_RGB_RANGES = {
     r: new Range(new Position(1, 0, 1), new Position(3, 0, 3)),
@@ -14,11 +14,14 @@ const HEXADECIMAL_COLOR_STRING_RGB_RANGES = {
     b: new Range(new Position(5, 0, 5), new Position(7, 0, 7))
 };
 
-export const hexadecimalColorCodeVisualisationProvider = new TextualCodeVisualisationProvider(
-    "Hexadecimal color code",
-    {},
-    new RegexPatternFinder("#([a-fA-F0-9]{6})"),
-    new ProgrammableInputMapping(arg => {
+export const hexadecimalColorPickerProvider = new TextualMonocleProvider({
+    name: "Hexadecimal color code",
+
+    usageRequirements: {},
+
+    patternFinder: new RegexPatternFinder("#([a-fA-F0-9]{6})"),
+
+    inputMapping: new ProgrammableInputMapping(arg => {
         const pattern = (arg.pattern as TextualPattern);
         const hexadecimalColorString = pattern.text;
 
@@ -28,7 +31,8 @@ export const hexadecimalColorCodeVisualisationProvider = new TextualCodeVisualis
             b: parseInt(hexadecimalColorString.substring(5, 7), 16)
         };
     }),
-    new ProgrammableOutputMapping(arg => {
+
+    outputMapping: new ProgrammableOutputMapping(arg => {
         const data = arg.output.data;
         const editor = arg.output.editor;
         const pattern = arg.pattern;
@@ -42,8 +46,10 @@ export const hexadecimalColorCodeVisualisationProvider = new TextualCodeVisualis
         
         editor.applyEdits();
     }),
-    ColorPicker.makeProvider(),
-    AsideRenderer.makeProvider({
+
+    userInterfaceProvider: ColorPicker.makeProvider(),
+    
+    rendererProvider: AsideRenderer.makeProvider({
         onlyShowWhenCursorIsInRange: true
     })
-);
+});

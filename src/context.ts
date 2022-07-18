@@ -3,8 +3,8 @@ import { Document } from "./core/documents/Document";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "./core/documents/Position";
 import { Range } from "./core/documents/Range";
 import { Language, SUPPORTED_LANGUAGES } from "./core/languages/Language";
-import { CodeVisualisation } from "./core/visualisations/CodeVisualisation";
-import { CodeVisualisationProvider } from "./core/visualisations/CodeVisualisationProvider";
+import { Monocle } from "./core/visualisations/Monocle";
+import { MonocleProvider } from "./core/visualisations/MonocleProvider";
 
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[0];
 
@@ -29,11 +29,10 @@ export const defaultGlobalContext = {
   updateDocument: (language: Language, content: string) => {},
   updateDocumentContent: (newContent: string) => {},
   
-  codeVisualisationProviders: [] as CodeVisualisationProvider[],
-  codeVisualisations: [] as CodeVisualisation[],
-  // updateCodeVisualisations: (newVisualisations: []) => {},
+  monocleProviders: [] as MonocleProvider[],
+  monocles: [] as Monocle[],
 
-  declareCodeVisualisationMutation: () => {}
+  declareMonocleMutation: () => {}
 };
 
 export type GlobalContextContent = typeof defaultGlobalContext;

@@ -1,4 +1,4 @@
-export enum CodeVisualisationType {
+export enum CodeFragmentType {
     Textual = "Textual",
     Syntactic = "Syntactic"
 }

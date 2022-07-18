@@ -1,6 +1,6 @@
 import React from "react";
 import { Range } from "../../documents/Range";
-import { CodeVisualisation } from "../../visualisations/CodeVisualisation";
+import { Monocle } from "../../visualisations/Monocle";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
 import { UserInterfaceProvider } from "../UserInterfaceProvider";
 import { NodeMoveData, TreeComponent } from "./TreeComponent";
@@ -31,8 +31,8 @@ export class Tree<T = any> extends UserInterface<Input<T>, Output<T>> {
     private rootNode: TreeNode<T> | null;
     private lastNodeMoveData: NodeMoveData<T> | null;
 
-    constructor(visualisation: CodeVisualisation) {
-        super(visualisation);
+    constructor(monocle: Monocle) {
+        super(monocle);
 
         this.rootNode = null;
         this.lastNodeMoveData = null;
@@ -79,8 +79,8 @@ export class Tree<T = any> extends UserInterface<Input<T>, Output<T>> {
 
     static makeProvider<T = any>(): UserInterfaceProvider {
         return {
-            provide: (visualisation: CodeVisualisation): UserInterface<Input<T>, Output<T>> => {
-                return new Tree<T>(visualisation);
+            provideForMonocle: (monocle: Monocle): UserInterface<Input<T>, Output<T>> => {
+                return new Tree<T>(monocle);
             }
         };
     }

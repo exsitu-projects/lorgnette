@@ -4,13 +4,13 @@ import { Throttler } from "../../utilities/Throttler";
 import { DocumentChangeOrigin } from "../documents/Document";
 import { DocumentEditor } from "../documents/DocumentEditor";
 import { TransientDocumentEditor } from "../documents/TransientDocumentEditor";
-import { CodeVisualisation } from "../visualisations/CodeVisualisation";
+import { Monocle } from "../visualisations/Monocle";
 
 export interface UserInterfaceInput {}
 export interface UserInterfaceOutput {
     data: any,
     context: {
-        visualisation: CodeVisualisation;
+        monocle: Monocle;
         isTransientState: boolean;
     },
     editor: DocumentEditor
@@ -24,15 +24,15 @@ export abstract class UserInterface<
     O extends UserInterfaceOutput = UserInterfaceOutput
 > {
     abstract readonly className: string;
-    protected visualisation: CodeVisualisation;
+    protected monocle: Monocle;
     
     private modelChangeObservers: Set<Observer<O>>;
     private modelChangeNotificationThrottler: Throttler;
 
     protected transientEditor: TransientDocumentEditor | null;
 
-    constructor(visualisation: CodeVisualisation) {
-        this.visualisation = visualisation;
+    constructor(monocle: Monocle) {
+        this.monocle = monocle;
 
         this.modelChangeObservers = new Set();
         this.modelChangeNotificationThrottler = new Throttler(
@@ -49,10 +49,10 @@ export abstract class UserInterface<
 
     protected startTransientEdit(): void {
         this.transientEditor = new TransientDocumentEditor(
-            this.visualisation.document,
+            this.monocle.document,
             {
-                origin: DocumentChangeOrigin.CodeVisualisationEdit,
-                visualisation: this.visualisation,
+                origin: DocumentChangeOrigin.Monocle,
+                monocle: this.monocle,
                 isTransientChange: true
             }
         )
@@ -69,10 +69,10 @@ export abstract class UserInterface<
 
     protected getAppropriateDocumentEditor(): DocumentEditor {
         return this.transientEditor ?? new DocumentEditor(
-            this.visualisation.document,
+            this.monocle.document,
             {
-                origin: DocumentChangeOrigin.CodeVisualisationEdit,
-                visualisation: this.visualisation,
+                origin: DocumentChangeOrigin.Monocle,
+                monocle: this.monocle,
                 isTransientChange: false
             }
         );
@@ -88,7 +88,7 @@ export abstract class UserInterface<
 
         return {
             context: {
-                visualisation: this.visualisation,
+                monocle: this.monocle,
                 isTransientState: this.isInTransientState()
             },
             editor: editor
@@ -126,7 +126,7 @@ export abstract class UserInterface<
     createView(uiContainerProps: React.ComponentProps<"div"> = {}): ReactElement {
         return <div
             className={`ui ${this.className}`}
-            data-code-visualisation-id={this.visualisation.id}
+            data-monocle-uid={this.monocle.uid}
             {...uiContainerProps}
         >
             {this.createViewContent()}

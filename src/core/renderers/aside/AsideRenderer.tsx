@@ -39,7 +39,7 @@ export class AsideRenderer extends Renderer {
             // (i.e., the areas in the code editor that correspond to this visualisation).
             // If the set is empty, possibly because there has been an update and they have not been redrawn yet,
             // simply skip the repositioning instead of drawing them at an arbitrary position scuh as (0, 0).
-            const id = this.props.codeVisualisation.id;
+            const id = this.props.monocle.uid;
             const markerSet = codeEditorRef.getMarkerSetWithId(id);
             if (markerSet.size === 0) {
                 return;
@@ -73,7 +73,7 @@ export class AsideRenderer extends Renderer {
 
     componentDidUpdate(oldProps: RendererProps) {
         if (oldProps.codeEditorRef === this.props.codeEditorRef
-        &&  oldProps.codeVisualisation === this.props.codeVisualisation) {
+        &&  oldProps.monocle === this.props.monocle) {
             return;
         }
 
@@ -83,15 +83,15 @@ export class AsideRenderer extends Renderer {
     render() {
         const isHiddenWithCursorAt = (cursorPosition: Position) => {
             return this.settings.onlyShowWhenCursorIsInRange
-                && !(this.props.codeVisualisation.range.contains(cursorPosition));
+                && !(this.props.monocle.range.contains(cursorPosition));
         };
 
         return <GlobalContext.Consumer>{ context => (
             <div
-                className={`code-visualisation-aside-wrapper ${isHiddenWithCursorAt(context.codeEditorCursorPosition) && "hidden"}`}
+                className={`monocle-aside-wrapper ${isHiddenWithCursorAt(context.codeEditorCursorPosition) && "hidden"}`}
                 ref={this.asideWrapperRef}
             >
-                {this.props.codeVisualisation.userInterface.createView()}
+                {this.props.monocle.userInterface.createView()}
             </div>
         )}</GlobalContext.Consumer>;
     }

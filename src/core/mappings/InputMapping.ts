@@ -1,10 +1,10 @@
 import { Pattern } from "../code-patterns/Pattern";
 import { Document } from "../documents/Document";
 import { UserInterfaceInput } from "../user-interfaces/UserInterface";
-import { CodeVisualisationType } from "../visualisations/CodeVisualisationType";
+import { CodeFragmentType } from "../visualisations/CodeFragmentType";
 
 export interface InputMapping<
-    T extends CodeVisualisationType = CodeVisualisationType,
+    T extends CodeFragmentType = CodeFragmentType,
     I extends UserInterfaceInput = UserInterfaceInput
 > {
     mapToInput(

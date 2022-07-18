@@ -36,7 +36,7 @@ export abstract class PopupRenderer extends Renderer<RendererProps, PopupRendere
             // (i.e., the areas in the code editor that correspond to this visualisation).
             // If the set is empty, possibly because there has been an update and they have not been redrawn yet,
             // simply skip the repositioning instead of drawing them at an arbitrary position scuh as (0, 0).
-            const id = this.props.codeVisualisation.id;
+            const id = this.props.monocle.uid;
             const markerSet = codeEditorRef.getMarkerSetWithId(id);
             if (markerSet.size === 0) {
                 return;
@@ -59,7 +59,7 @@ export abstract class PopupRenderer extends Renderer<RendererProps, PopupRendere
 
     componentDidUpdate(oldProps: RendererProps) {
         if (oldProps.codeEditorRef === this.props.codeEditorRef
-        &&  oldProps.codeVisualisation === this.props.codeVisualisation) {
+        &&  oldProps.monocle === this.props.monocle) {
             return;
         }
 
@@ -78,21 +78,21 @@ export abstract class PopupRenderer extends Renderer<RendererProps, PopupRendere
 
     protected renderPopupContent(): ReactElement {
         return <div
-            className="code-visualisation-popup-content-wrapper"
+            className="monocle-popup-content-wrapper"
             onClick={() => this.setState({ isPopupOpen: false })}
         >
             <div
-                className="code-visualisation-popup-content-panel"
+                className="monocle-popup-content-panel"
                 onClick={event => event.stopPropagation()}
             >
-                {this.props.codeVisualisation.userInterface.createView()}
+                {this.props.monocle.userInterface.createView()}
             </div>
         </div>;
     }
 
     render() {
         return <div
-            className="code-visualisation-popup-wrapper"
+            className="monocle-popup-wrapper"
             ref={this.popupWrapperRef}
         >
             {this.renderPopupToggle()}

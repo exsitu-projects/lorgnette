@@ -1,10 +1,14 @@
 import { Pattern } from "../code-patterns/Pattern";
 import { Document } from "../documents/Document";
 import { UserInterfaceOutput } from "../user-interfaces/UserInterface";
-import { CodeVisualisationType } from "../visualisations/CodeVisualisationType";
+import { CodeFragmentType } from "../visualisations/CodeFragmentType";
+
+export const EMPTY_OUTPUT_MAPPING: OutputMapping = {
+    processOutput() {}
+}
 
 export interface OutputMapping<
-    T extends CodeVisualisationType = CodeVisualisationType,
+    T extends CodeFragmentType = CodeFragmentType,
     O extends UserInterfaceOutput = UserInterfaceOutput,
 > {
     processOutput(

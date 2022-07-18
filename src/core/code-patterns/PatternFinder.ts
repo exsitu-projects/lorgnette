@@ -1,9 +1,9 @@
 import { Document } from "../documents/Document";
-import { CodeVisualisationType } from "../visualisations/CodeVisualisationType";
+import { CodeFragmentType } from "../visualisations/CodeFragmentType";
 import { Pattern } from "./Pattern";
 
 export interface PatternFinder<
-    T extends CodeVisualisationType,
+    T extends CodeFragmentType,
     P = Pattern<T>
 > {
     type: string;

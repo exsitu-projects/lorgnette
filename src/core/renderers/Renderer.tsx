@@ -1,9 +1,9 @@
 import React, { ReactElement } from "react";
-import { CodeVisualisation } from "../visualisations/CodeVisualisation";
 import { CodeEditor } from "../../ui/utilities/code-editor/CodeEditor";
+import { Monocle } from "../visualisations/Monocle";
 
 export interface RendererProps {
-    codeVisualisation: CodeVisualisation;
+    monocle: Monocle;
     codeEditorRef: React.RefObject<CodeEditor>;
 };
 
