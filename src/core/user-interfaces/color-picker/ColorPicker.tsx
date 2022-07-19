@@ -1,7 +1,7 @@
 import React from "react";
 import { BLACK, Color } from "../../../utilities/Color";
 import { RgbColorPicker } from "../../../utilities/components/color-pickers/RgbColorPicker";
-import { Monocle } from "../../visualisations/Monocle";
+import { Monocle } from "../../monocles/Monocle";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
 import { UserInterfaceProvider } from "../UserInterfaceProvider";
 

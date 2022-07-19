@@ -1,5 +1,5 @@
 import React from "react";
-import { Monocle } from "../../visualisations/Monocle";
+import { Monocle } from "../../monocles/Monocle";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
 import { UserInterfaceProvider } from "../UserInterfaceProvider";
 import { InputPrinterComponent } from "./InputPrinterComponent";

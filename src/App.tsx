@@ -7,7 +7,7 @@ import { DEFAULT_EXAMPLE } from "./ui/main-code-editor/code-examples/Example";
 import { MonocleUI } from "./ui/MonocleUI";
 import { MONOCLE_PROVIDERS } from "./monocle-providers/providers";
 import { defaultCodeEditorRanges, GlobalContext, GlobalContextContent } from "./context";
-import { Monocle } from "./core/visualisations/Monocle";
+import { Monocle } from "./core/monocles/Monocle";
 
 type Props = {};
 type State = GlobalContextContent;

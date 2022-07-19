@@ -3,7 +3,7 @@ import "./main-code-editor.css";
 import { GlobalContext } from "../../context";
 import { CodeEditor, getCursorPositionInEditor } from "../utilities/code-editor/CodeEditor";
 import { createRangesToHighlightForMonocles, createRangesToHighlightFromGlobalCodeEditorRanges } from "../utilities/code-editor/RangeToHighlight";
-import { Monocle } from "../../core/visualisations/Monocle";
+import { Monocle } from "../../core/monocles/Monocle";
 
 export type Props = {
 

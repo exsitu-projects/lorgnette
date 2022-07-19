@@ -4,7 +4,7 @@ import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapp
 import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMapping";
 import { ButtonPopupRenderer } from "../core/renderers/popup/ButtonPopupRenderer";
 import { RegexEditor } from "../core/user-interfaces/regex-editor/RegexEditor";
-import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
+import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMonocleProvider";
 
 export const regexConstructorVisualisationProvider = new SyntacticMonocleProvider({
     name: "Regulax expressions (constructor)",

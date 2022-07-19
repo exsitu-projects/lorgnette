@@ -12,7 +12,7 @@ import { Margin } from "../core/user-interfaces/style-inspector/inspectors/Margi
 import { DISABLED_PROPERTY, isEnabledAndDefined } from "../core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
 import { Style } from "../core/user-interfaces/style-inspector/Style";
 import { Input, StyleInspector } from "../core/user-interfaces/style-inspector/StyleInspector";
-import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
+import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMonocleProvider";
 import { Color, BLACK } from "../utilities/Color";
 import { ValueWithUnit } from "../utilities/ValueWithUnit";
 

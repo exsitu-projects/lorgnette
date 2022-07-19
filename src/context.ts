@@ -3,8 +3,8 @@ import { Document } from "./core/documents/Document";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "./core/documents/Position";
 import { Range } from "./core/documents/Range";
 import { Language, SUPPORTED_LANGUAGES } from "./core/languages/Language";
-import { Monocle } from "./core/visualisations/Monocle";
-import { MonocleProvider } from "./core/visualisations/MonocleProvider";
+import { Monocle } from "./core/monocles/Monocle";
+import { MonocleProvider } from "./core/monocles/MonocleProvider";
 
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[0];
 

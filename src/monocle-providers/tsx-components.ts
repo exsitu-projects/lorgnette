@@ -7,7 +7,7 @@ import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
 import { Tree, TreeNode } from "../core/user-interfaces/tree/Tree";
 import { NodeMoveProcesser } from "../core/user-interfaces/tree/utilities/NodeMoveProcesser";
-import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
+import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMonocleProvider";
 
 export const tsxComponentTreeProvider = new SyntacticMonocleProvider({
     name: "TSX elements",

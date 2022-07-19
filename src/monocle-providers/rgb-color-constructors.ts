@@ -9,8 +9,8 @@ import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapp
 import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMapping";
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { ColorPicker } from "../core/user-interfaces/color-picker/ColorPicker";
-import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
-import { TextualMonocleProvider } from "../core/visualisations/textual/TextualMonocleProvider";
+import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMonocleProvider";
+import { TextualMonocleProvider } from "../core/monocles/textual/TextualMonocleProvider";
 import { RegexMatcher, RegexMatch } from "../utilities/RegexMatcher"
 
 // Textual version.

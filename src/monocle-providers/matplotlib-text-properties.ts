@@ -8,7 +8,7 @@ import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
 import { isEnabledAndDefined, DISABLED_PROPERTY } from "../core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
 import { Input, StyleInspector } from "../core/user-interfaces/style-inspector/StyleInspector";
-import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
+import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMonocleProvider";
 import { createNamedArgumentProcesser, convertColorFromExpression, createNamedArgumentModifyer } from "../utilities/languages/python";
 import { ValueWithUnit } from "../utilities/ValueWithUnit";
 

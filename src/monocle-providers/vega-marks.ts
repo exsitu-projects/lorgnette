@@ -9,7 +9,7 @@ import { ButtonPopoverRenderer } from "../core/renderers/popover/ButtonPopoverRe
 import { DISABLED_PROPERTY, isEnabledAndDefined } from "../core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
 import { Style } from "../core/user-interfaces/style-inspector/Style";
 import { StyleInspector, Input as StyleInspectorInput } from "../core/user-interfaces/style-inspector/StyleInspector";
-import { SyntacticMonocleProvider } from "../core/visualisations/syntactic/SyntacticMonocleProvider";
+import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMonocleProvider";
 import { Color } from "../utilities/Color";
 import { processProperty, insertProperty, deleteProperty } from "../utilities/languages/json";
 import { ValueWithUnit } from "../utilities/ValueWithUnit";

@@ -1,6 +1,6 @@
 import React from "react";
 import { Range } from "../../documents/Range";
-import { Monocle } from "../../visualisations/Monocle";
+import { Monocle } from "../../monocles/Monocle";
 import { UserInterface, UserInterfaceOutput } from "../UserInterface";
 import { UserInterfaceProvider } from "../UserInterfaceProvider";
 import { NodeMoveData, TreeComponent } from "./TreeComponent";

@@ -5,7 +5,7 @@ import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapp
 import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMapping";
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { ColorPicker } from "../core/user-interfaces/color-picker/ColorPicker";
-import { TextualMonocleProvider } from "../core/visualisations/textual/TextualMonocleProvider";
+import { TextualMonocleProvider } from "../core/monocles/textual/TextualMonocleProvider";
 
 const HEXADECIMAL_COLOR_STRING_RGB_RANGES = {
     r: new Range(new Position(1, 0, 1), new Position(3, 0, 3)),

@@ -1,4 +1,4 @@
-import { Monocle } from "../visualisations/Monocle";
+import { Monocle } from "../monocles/Monocle";
 import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "./UserInterface";
 
 export interface UserInterfaceProvider<

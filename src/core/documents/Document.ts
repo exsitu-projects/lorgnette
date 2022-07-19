@@ -6,7 +6,7 @@ import { DocumentPosition } from "./DocumentPosition";
 import { DocumentRange } from "./DocumentRange";
 import { Position } from "./Position";
 import { Range } from "./Range";
-import { Monocle } from "../visualisations/Monocle";
+import { Monocle } from "../monocles/Monocle";
 
 function splitTextByLine(text: string): string[] {
     return text.split("\n");

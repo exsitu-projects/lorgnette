@@ -1,4 +1,4 @@
-import { MonocleProvider } from "../core/visualisations/MonocleProvider";
+import { MonocleProvider } from "../core/monocles/MonocleProvider";
 import { cssPropertyStyleInspectorProvider } from "./css-properties";
 import { hexadecimalColorPickerProvider } from "./hexadecimal-color-codes";
 import { matplotlibTextPropertiesStyleInspectorProvider } from "./matplotlib-text-properties";

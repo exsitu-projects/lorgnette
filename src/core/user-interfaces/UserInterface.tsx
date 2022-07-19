@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { Observer } from "../../utilities/Observer";
 import { Throttler } from "../../utilities/Throttler";
-import { Monocle } from "../visualisations/Monocle";
+import { Monocle } from "../monocles/Monocle";
 
 export type UserInterfaceInput = {};
 
