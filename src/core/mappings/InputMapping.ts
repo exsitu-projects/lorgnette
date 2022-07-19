@@ -1,18 +1,15 @@
-import { Pattern } from "../code-patterns/Pattern";
 import { Document } from "../documents/Document";
+import { Fragment } from "../fragments/Fragment";
 import { UserInterfaceInput } from "../user-interfaces/UserInterface";
-import { CodeFragmentType } from "../visualisations/CodeFragmentType";
 
-export interface InputMappingContext<
-    T extends CodeFragmentType = CodeFragmentType
-> {
+export interface InputMappingContext<F extends Fragment = Fragment> {
+    fragment: F;
     document: Document;
-    pattern: Pattern<T>;
 }
 
 export interface InputMapping<
-    T extends CodeFragmentType = CodeFragmentType,
+    F extends Fragment = Fragment,
     I extends UserInterfaceInput = UserInterfaceInput
 > {
-    processInput(context: InputMappingContext<T>): I;
+    processInput(context: InputMappingContext<F>): I;
 }

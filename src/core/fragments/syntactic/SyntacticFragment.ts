@@ -1,20 +1,20 @@
 import { SyntaxTreeNode } from "../../languages/SyntaxTreeNode";
-import { AbstractPatern } from "../AbstractPattern";
+import { Fragment } from "../Fragment";
 import { DocumentRange } from "../../documents/DocumentRange";
 import { Document } from "../../documents/Document";
+import { FragmentType } from "../FragmentType";
 
-export class SyntacticPattern extends AbstractPatern {
+export class SyntacticFragment implements Fragment {
+    readonly type = FragmentType.Syntactic;
+    
+    private document: Document;
     readonly node: SyntaxTreeNode;
-    readonly document: Document;
+    readonly range: DocumentRange;
 
     constructor(node: SyntaxTreeNode, document: Document) {
-        super();
-        this.node = node;
         this.document = document;
-    }
-
-    get range(): DocumentRange {
-        return DocumentRange.fromRange(this.node.range, this.document);
+        this.node = node;
+        this.range = DocumentRange.fromRange(this.node.range, this.document);
     }
 
     get text(): string {

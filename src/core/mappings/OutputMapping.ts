@@ -1,22 +1,19 @@
-import { Pattern } from "../code-patterns/Pattern";
 import { Document } from "../documents/Document";
 import { DocumentEditor } from "../documents/DocumentEditor";
+import { Fragment } from "../fragments/Fragment";
 import { UserInterfaceOutput } from "../user-interfaces/UserInterface";
-import { CodeFragmentType } from "../visualisations/CodeFragmentType";
 
-export interface OutputMappingContext<
-    T extends CodeFragmentType = CodeFragmentType
-> {
+export interface OutputMappingContext<F extends Fragment = Fragment> {
+    fragment: F;
     document: Document;
     documentEditor: DocumentEditor;
-    pattern: Pattern<T>;
 }
 
 export interface OutputMapping<
-    T extends CodeFragmentType = CodeFragmentType,
+    F extends Fragment = Fragment,
     O extends UserInterfaceOutput = UserInterfaceOutput,
 > {
-    processOutput(output: O, context: OutputMappingContext<T>): void;
+    processOutput(output: O, context: OutputMappingContext<F>): void;
 }
 
 export const EMPTY_OUTPUT_MAPPING: OutputMapping = {

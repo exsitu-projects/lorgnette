@@ -1,25 +1,24 @@
 import { ProgrammableFunction } from "../../utilities/ProgrammableFunction";
-import { Pattern } from "../code-patterns/Pattern";
 import { Document } from "../documents/Document";
+import { Fragment } from "../fragments/Fragment";
 import { UserInterfaceInput } from "../user-interfaces/UserInterface";
-import { CodeFragmentType } from "../visualisations/CodeFragmentType";
 import { InputMapping, InputMappingContext } from "./InputMapping";
 
-export type ProgrammableMappingFunction<T extends CodeFragmentType> =
+export type ProgrammableMappingFunction<F extends Fragment = Fragment> =
     ((argument: {
         document: Document,
-        pattern: Pattern<T>
+        fragment: F
     }) => UserInterfaceInput);
 
 export class ProgrammableInputMapping<
-    T extends CodeFragmentType = CodeFragmentType
+    F extends Fragment = Fragment
 > implements InputMapping {
     private programmableFunction: ProgrammableFunction<
-        Parameters<ProgrammableMappingFunction<T>>[0],
-        ReturnType<ProgrammableMappingFunction<T>>
+        Parameters<ProgrammableMappingFunction<F>>[0],
+        ReturnType<ProgrammableMappingFunction<F>>
     >;
 
-    constructor(functionBodyOrRef: string | ProgrammableMappingFunction<T>) {
+    constructor(functionBodyOrRef: string | ProgrammableMappingFunction<F>) {
         this.programmableFunction = new ProgrammableFunction(
             functionBodyOrRef,
             exception => {
@@ -28,11 +27,11 @@ export class ProgrammableInputMapping<
         );
     }
     
-    processInput(context: InputMappingContext<T>): UserInterfaceInput {
+    processInput(context: InputMappingContext<F>): UserInterfaceInput {
         try {
             return this.programmableFunction.call({
                 document: context.document,
-                pattern: context.pattern
+                fragment: context.fragment
             });
         }
         catch (error) {

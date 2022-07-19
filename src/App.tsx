@@ -5,7 +5,7 @@ import { Document, DocumentChangeOrigin } from "./core/documents/Document";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "./core/documents/Position";
 import { DEFAULT_EXAMPLE } from "./ui/main-code-editor/code-examples/Example";
 import { MonocleUI } from "./ui/MonocleUI";
-import { MONOCLE_PROVIDERS } from "./visualisation-providers/providers";
+import { MONOCLE_PROVIDERS } from "./monocle-providers/providers";
 import { defaultCodeEditorRanges, GlobalContext, GlobalContextContent } from "./context";
 import { Monocle } from "./core/visualisations/Monocle";
 

@@ -1,12 +1,12 @@
 import { RegexMatcher } from "../../../utilities/RegexMatcher";
 import { Document } from "../../documents/Document";
-import { CodeFragmentType } from "../../visualisations/CodeFragmentType";
-import { PatternFinder } from "../PatternFinder";
-import { TextualPattern } from "./TextualPattern";
+import { FragmentProvider } from "../FragmentProvider";
+import { FragmentType } from "../FragmentType";
+import { TextualFragment } from "./TextualFragment";
 
-export class RegexPatternFinder implements PatternFinder<CodeFragmentType.Textual> {
-    readonly type = "Regex pattern finder";
-    readonly regexMatcher: RegexMatcher;
+export class RegexPatternFinder implements FragmentProvider<TextualFragment> {
+    readonly type = FragmentType.Textual;
+    private regexMatcher: RegexMatcher;
 
     constructor(pattern: string) {
         this.regexMatcher = new RegexMatcher(pattern);
@@ -20,7 +20,7 @@ export class RegexPatternFinder implements PatternFinder<CodeFragmentType.Textua
         this.regexMatcher.pattern = newPattern;
     }
 
-    applyInDocument(document: Document): TextualPattern[] {
+    provideForDocument(document: Document): TextualFragment[] {
         // If the document is empty, there is nothing to do.
         if (document.isEmpty) {
             return [];
@@ -28,6 +28,6 @@ export class RegexPatternFinder implements PatternFinder<CodeFragmentType.Textua
 
         return this.regexMatcher
             .matchAll(document.content)
-            .map(match => TextualPattern.fromRegexMatch(match, document));
+            .map(match => TextualFragment.fromRegexMatch(match, document));
     }
 }

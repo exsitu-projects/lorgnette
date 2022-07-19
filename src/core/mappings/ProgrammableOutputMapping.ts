@@ -1,25 +1,24 @@
 import { ProgrammableFunction, ProgrammableFunctionOf } from "../../utilities/ProgrammableFunction";
-import { Pattern } from "../code-patterns/Pattern";
 import { Document } from "../documents/Document";
 import { DocumentEditor } from "../documents/DocumentEditor";
+import { Fragment } from "../fragments/Fragment";
 import { UserInterfaceOutput } from "../user-interfaces/UserInterface";
-import { CodeFragmentType } from "../visualisations/CodeFragmentType";
 import { OutputMapping, OutputMappingContext } from "./OutputMapping";
 
-export type MappingFunction<T extends CodeFragmentType> =
+export type MappingFunction<F extends Fragment = Fragment> =
     ((argument: {
         output: UserInterfaceOutput,
         document: Document,
         documentEditor: DocumentEditor
-        pattern: Pattern<T>
+        fragment: F
     }) => void);
 
 export class ProgrammableOutputMapping<
-    T extends CodeFragmentType = CodeFragmentType
+F extends Fragment = Fragment
 > implements OutputMapping {
-    private programmableFunction: ProgrammableFunctionOf<MappingFunction<T>>;
+    private programmableFunction: ProgrammableFunctionOf<MappingFunction<F>>;
 
-    constructor(functionBodyOrRef: string | MappingFunction<T>) {
+    constructor(functionBodyOrRef: string | MappingFunction<F>) {
         this.programmableFunction = new ProgrammableFunction(
             functionBodyOrRef,
             exception => {
@@ -30,14 +29,14 @@ export class ProgrammableOutputMapping<
 
     processOutput(
         output: UserInterfaceOutput,
-        context: OutputMappingContext<T>
+        context: OutputMappingContext<F>
     ): void {
         try {
             this.programmableFunction.call({
                 output: output,
                 document: context.document,
                 documentEditor: context.documentEditor,
-                pattern: context.pattern
+                fragment: context.fragment
             });
         }
         catch {

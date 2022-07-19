@@ -1,4 +1,4 @@
-import { SyntacticPatternFinder } from "../core/code-patterns/syntactic/SyntacticPatternFinder";
+import { TreePatternFinder } from "../core/fragments/syntactic/TreePatternFinder";
 import { SyntaxTreePattern } from "../core/languages/SyntaxTreePattern";
 import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapping";
 import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMapping";
@@ -11,10 +11,10 @@ export const regexLiteralMonocleProvider = new SyntacticMonocleProvider({
 
     usageRequirements: { languages: ["typescript"] },
 
-    patternFinder: new SyntacticPatternFinder(new SyntaxTreePattern(n => n.type === "RegularExpressionLiteral")),
+    fragmentProvider: new TreePatternFinder(new SyntaxTreePattern(n => n.type === "RegularExpressionLiteral")),
 
-    inputMapping: new ProgrammableInputMapping(({ pattern }) => {
-        const regexAsString = pattern.text;
+    inputMapping: new ProgrammableInputMapping(({ fragment }) => {
+        const regexAsString = fragment.text;
         const lastRegexLiteralSlashIndex = regexAsString.lastIndexOf("/");
         
         const regexBody = regexAsString.slice(1, lastRegexLiteralSlashIndex);
@@ -23,7 +23,7 @@ export const regexLiteralMonocleProvider = new SyntacticMonocleProvider({
         try {
             return {
                 regex: new RegExp(regexBody, regexFlags),
-                range: pattern.range
+                range: fragment.range
             };
         }
         catch (error) {
@@ -32,10 +32,10 @@ export const regexLiteralMonocleProvider = new SyntacticMonocleProvider({
         }
     }),
 
-    outputMapping: new ProgrammableOutputMapping(({ output, documentEditor, pattern }) => {
+    outputMapping: new ProgrammableOutputMapping(({ output, documentEditor, fragment  }) => {
         const regex = output.regex;
         
-        const regexRange = pattern.node.range;
+        const regexRange = fragment.node.range;
         documentEditor.replace(regexRange, regex.toString());
         documentEditor.applyEdits();
     }),

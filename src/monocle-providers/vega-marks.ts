@@ -1,4 +1,4 @@
-import { SyntacticPatternFinder } from "../core/code-patterns/syntactic/SyntacticPatternFinder";
+import { TreePatternFinder } from "../core/fragments/syntactic/TreePatternFinder";
 import { NumberNode } from "../core/languages/json/nodes/NumberNode";
 import { ObjectNode } from "../core/languages/json/nodes/ObjectNode";
 import { PropertyNode } from "../core/languages/json/nodes/PropertyNode";
@@ -19,15 +19,15 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
 
     usageRequirements: { languages: ["json"] },
 
-    patternFinder: new SyntacticPatternFinder(new SyntaxTreePattern(n =>
+    fragmentProvider: new TreePatternFinder(new SyntaxTreePattern(n =>
         n.type === "Property"
             && (n as PropertyNode).key.value === "mark"
             && (n as PropertyNode).value.type === "Object",
         SKIP_MATCH_DESCENDANTS
     )),
 
-    inputMapping: new ProgrammableInputMapping(({ pattern }) => {
-        const mark = (pattern.node as PropertyNode).value as ObjectNode;
+    inputMapping: new ProgrammableInputMapping(({ fragment }) => {
+        const mark = (fragment.node as PropertyNode).value as ObjectNode;
         
         // Background style properties.
         const backgroundStyle: StyleInspectorInput["style"]["background"] = {};
@@ -185,8 +185,8 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
         };
     }),
 
-    outputMapping: new ProgrammableOutputMapping(({ output, document, documentEditor, pattern }) => {
-        const mark = (pattern.node as PropertyNode).value as ObjectNode;
+    outputMapping: new ProgrammableOutputMapping(({ output, document, documentEditor, fragment }) => {
+        const mark = (fragment.node as PropertyNode).value as ObjectNode;
         const styleChange = output.styleChange as Style;
 
         // Background style properties.

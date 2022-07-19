@@ -1,24 +1,25 @@
-import { PatternFinder } from "../../code-patterns/PatternFinder";
+import { FragmentProvider } from "../../fragments/FragmentProvider";
 import { Document } from "../../documents/Document";
 import { InputMapping } from "../../mappings/InputMapping";
 import { EMPTY_OUTPUT_MAPPING, OutputMapping } from "../../mappings/OutputMapping";
 import { RendererProvider } from "../../renderers/RendererProvider";
 import { UserInterfaceProvider } from "../../user-interfaces/UserInterfaceProvider";
-import { CodeFragmentType } from "../CodeFragmentType";
 import { MonocleProvider } from "../MonocleProvider";
 import { MonocleProviderUsageRequirements } from "../MonocleUsageRequirements";
 import { SyntacticMonocle } from "./SyntacticMonocle";
+import { FragmentType } from "../../fragments/FragmentType";
+import { SyntacticFragment } from "../../fragments/syntactic/SyntacticFragment";
 
 export interface SyntacticMonocleProviderSpecification {
     name: string;
 
     usageRequirements: MonocleProviderUsageRequirements;
 
-    patternFinder: PatternFinder<CodeFragmentType.Syntactic>,
+    fragmentProvider: FragmentProvider<SyntacticFragment>,
 
-    inputMapping: InputMapping<CodeFragmentType.Syntactic>;
+    inputMapping: InputMapping<SyntacticFragment>;
 
-    outputMapping?: OutputMapping<CodeFragmentType.Syntactic>;
+    outputMapping?: OutputMapping<SyntacticFragment>;
 
     userInterfaceProvider: UserInterfaceProvider;
     
@@ -26,22 +27,22 @@ export interface SyntacticMonocleProviderSpecification {
 }
 
 export class SyntacticMonocleProvider implements MonocleProvider {
-    static readonly type = CodeFragmentType.Syntactic;
+    static readonly type = FragmentType.Syntactic;
     readonly type = SyntacticMonocleProvider.type;
 
     name: string;
     usageRequirements: MonocleProviderUsageRequirements;
 
-    private patternFinder: PatternFinder<CodeFragmentType.Syntactic>;
-    private inputMapping: InputMapping<CodeFragmentType.Syntactic>;
-    private outputMapping: OutputMapping<CodeFragmentType.Syntactic>;
+    private fragmentProvider: FragmentProvider<SyntacticFragment>;
+    private inputMapping: InputMapping<SyntacticFragment>;
+    private outputMapping: OutputMapping<SyntacticFragment>;
     private userInterfaceProvider: UserInterfaceProvider;
     private rendererProvider: RendererProvider;
 
     constructor(specification: SyntacticMonocleProviderSpecification) {
         this.name = specification.name;
         this.usageRequirements = specification.usageRequirements;
-        this.patternFinder = specification.patternFinder;
+        this.fragmentProvider = specification.fragmentProvider;
         this.inputMapping = specification.inputMapping;
         this.outputMapping = specification.outputMapping ?? EMPTY_OUTPUT_MAPPING;
         this.userInterfaceProvider = specification.userInterfaceProvider;
@@ -49,13 +50,13 @@ export class SyntacticMonocleProvider implements MonocleProvider {
     }
  
     provideForDocument(document: Document): SyntacticMonocle[] {
-        return this.patternFinder
-            .applyInDocument(document)
-            .map(pattern => {
+        return this.fragmentProvider
+            .provideForDocument(document)
+            .map(fragment => {
                 return new SyntacticMonocle(
                     this,
                     document,
-                    pattern,
+                    fragment,
                     this.inputMapping,
                     this.outputMapping,
                     this.userInterfaceProvider,

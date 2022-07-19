@@ -2,27 +2,26 @@ import { ClassOf } from "../../../utilities/types";
 import { InputMapping } from "../../mappings/InputMapping";
 import { OutputMapping } from "../../mappings/OutputMapping";
 import { UserInterfaceProvider } from "../../user-interfaces/UserInterfaceProvider";
-import { CodeFragmentType } from "../CodeFragmentType";
 import { Monocle } from "../Monocle";
 import { TextualMonocleProvider } from "./TextualMonocleProvider";
 import { Renderer } from "../../renderers/Renderer";
 import { Document } from "../../documents/Document";
-import { TextualPattern } from "../../code-patterns/textual/TextualPattern";
+import { TextualFragment } from "../../fragments/textual/TextualFragment";
 
-export class TextualMonocle extends Monocle<CodeFragmentType.Textual> {
+export class TextualMonocle extends Monocle<TextualFragment> {
     constructor(
         provider: TextualMonocleProvider,
         document: Document,
-        pattern: TextualPattern,
-        inputMapping: InputMapping<CodeFragmentType.Textual>,
-        outputMapping: OutputMapping<CodeFragmentType.Textual>,
+        fragment: TextualFragment,
+        inputMapping: InputMapping<TextualFragment>,
+        outputMapping: OutputMapping<TextualFragment>,
         userInterfaceProvider: UserInterfaceProvider,
         renderer: ClassOf<Renderer>
     ) {
         super(
             document,
             provider,
-            pattern,
+            fragment,
             inputMapping,
             outputMapping,
             userInterfaceProvider,

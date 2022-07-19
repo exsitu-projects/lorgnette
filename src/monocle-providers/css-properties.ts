@@ -1,6 +1,5 @@
 import { Block, Declaration, Raw } from "css-tree";
-import { SyntacticPattern } from "../core/code-patterns/syntactic/SyntacticPattern";
-import { SyntacticPatternFinder } from "../core/code-patterns/syntactic/SyntacticPatternFinder";
+import { TreePatternFinder } from "../core/fragments/syntactic/TreePatternFinder";
 import { Position } from "../core/documents/Position";
 import { Range } from "../core/documents/Range";
 import { SyntaxTreePattern, SKIP_MATCH_DESCENDANTS } from "../core/languages/SyntaxTreePattern";
@@ -22,13 +21,13 @@ export const cssPropertyStyleInspectorProvider = new SyntacticMonocleProvider({
 
     usageRequirements: { languages: ["css"] },
 
-    patternFinder: new SyntacticPatternFinder(new SyntaxTreePattern(
+    fragmentProvider: new TreePatternFinder(new SyntaxTreePattern(
         n => n.type === "Rule",
         SKIP_MATCH_DESCENDANTS
     )),
 
-    inputMapping: new ProgrammableInputMapping(({ pattern }) => {
-        const blockNode = pattern.node.childNodes[1];
+    inputMapping: new ProgrammableInputMapping(({ fragment }) => {
+        const blockNode = fragment.node.childNodes[1];
         const blockCssNode = blockNode.parserNode as Block;
 
         const propertyNamesToValues = new Map(
@@ -191,13 +190,13 @@ export const cssPropertyStyleInspectorProvider = new SyntacticMonocleProvider({
         return input;
     }),
 
-    outputMapping: new ProgrammableOutputMapping(({ output, document, documentEditor, pattern }) => {
+    outputMapping: new ProgrammableOutputMapping(({ output, document, documentEditor, fragment }) => {
         const styleChange = output.styleChange as Style;
 
         console.log(styleChange)
 
         // Get the current properties of the CSS rule.
-        const blockNode = (pattern as SyntacticPattern).node.childNodes[1];
+        const blockNode = fragment.node.childNodes[1];
         // const blockCssNode = blockNode.parserNode as Block;
 
         const cssProperties = blockNode.childNodes.filter(node => node.parserNode.type === "Declaration");

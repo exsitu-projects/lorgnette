@@ -1,4 +1,4 @@
-import { SyntacticPatternFinder } from "../core/code-patterns/syntactic/SyntacticPatternFinder";
+import { TreePatternFinder } from "../core/fragments/syntactic/TreePatternFinder";
 import { SyntaxTreePattern, SKIP_MATCH_DESCENDANTS } from "../core/languages/SyntaxTreePattern";
 import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapping";
 import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMapping";
@@ -11,18 +11,18 @@ export const regexConstructorVisualisationProvider = new SyntacticMonocleProvide
 
     usageRequirements: { languages: ["typescript"] },
 
-    patternFinder: new SyntacticPatternFinder(new SyntaxTreePattern(n => 
+    fragmentProvider: new TreePatternFinder(new SyntaxTreePattern(n => 
         n.type === "NewExpression"
             && n.childNodes[1].parserNode.escapedText === "RegExp"
             && n.childNodes[3].childNodes[0].type === "StringLiteral",
         SKIP_MATCH_DESCENDANTS
     )),
 
-    inputMapping: new ProgrammableInputMapping(({ document, pattern }) => {
-        const regexBodyRange = pattern.node.childNodes[3].childNodes[0].range;
-        const hasLiteralRegexFlags = pattern.node.childNodes[3].childNodes[2]?.type === "StringLiteral";
+    inputMapping: new ProgrammableInputMapping(({ document, fragment }) => {
+        const regexBodyRange = fragment.node.childNodes[3].childNodes[0].range;
+        const hasLiteralRegexFlags = fragment.node.childNodes[3].childNodes[2]?.type === "StringLiteral";
         const regexFlagsRange = hasLiteralRegexFlags
-        ? pattern.node.childNodes[3].childNodes[2].range
+        ? fragment.node.childNodes[3].childNodes[2].range
         : undefined;
         
         const regexBodyWithQuotes = document.getContentInRange(regexBodyRange);
@@ -36,7 +36,7 @@ export const regexConstructorVisualisationProvider = new SyntacticMonocleProvide
         try {
             return {
                 regex: new RegExp(regexBody, regexFlags),
-                range: pattern.node.childNodes[3].range
+                range: fragment.node.childNodes[3].range
             
             };
         }
@@ -46,7 +46,7 @@ export const regexConstructorVisualisationProvider = new SyntacticMonocleProvide
         }
     }),
 
-    outputMapping: new ProgrammableOutputMapping(({ output, documentEditor, pattern }) => {
+    outputMapping: new ProgrammableOutputMapping(({ output, documentEditor, fragment }) => {
         const regex = output.regex;
         
         // Extract the body and the flags of the regex
@@ -58,7 +58,7 @@ export const regexConstructorVisualisationProvider = new SyntacticMonocleProvide
         const hasRegexFlags = regexFlags.length > 0;
         
         // Replace the arguments with the new body and flags (if any)
-        const regexArgumentsRange = pattern.node.childNodes[3].range;
+        const regexArgumentsRange = fragment.node.childNodes[3].range;
         const newRegexArguments = hasRegexFlags
         ? `"${regexBody}", "${regexFlags}"`
         : `"${regexBody}"`;

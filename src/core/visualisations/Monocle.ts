@@ -1,15 +1,14 @@
 import { ClassOf } from "../../utilities/types";
-import { Pattern } from "../code-patterns/Pattern";
 import { Document, DocumentChangeOrigin } from "../documents/Document";
 import { DocumentEditor } from "../documents/DocumentEditor";
 import { Range } from "../documents/Range";
 import { TransientDocumentEditor } from "../documents/TransientDocumentEditor";
+import { Fragment } from "../fragments/Fragment";
 import { InputMapping } from "../mappings/InputMapping";
 import { OutputMapping } from "../mappings/OutputMapping";
 import { Renderer } from "../renderers/Renderer";
 import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../user-interfaces/UserInterface";
 import { UserInterfaceProvider } from "../user-interfaces/UserInterfaceProvider";
-import { CodeFragmentType } from "./CodeFragmentType";
 import { MonocleProvider } from "./MonocleProvider";
 import { getUnusedUid, MonocleUid } from "./MonocleUid";
 
@@ -18,7 +17,7 @@ export type TransientMonocleState = {
 };
 
 export abstract class Monocle<
-    T extends CodeFragmentType = CodeFragmentType
+    F extends Fragment = Fragment
 > {
     readonly uid: MonocleUid;
 
@@ -26,9 +25,9 @@ export abstract class Monocle<
     
     readonly provider: MonocleProvider;
 
-    readonly pattern: Pattern<T>;
+    readonly fragment: F;
 
-    readonly inputMapping: InputMapping<T>;
+    readonly inputMapping: InputMapping<F>;
 
     readonly outputMapping: OutputMapping;
 
@@ -41,7 +40,7 @@ export abstract class Monocle<
     constructor(
         document: Document,
         provider: MonocleProvider,
-        pattern: Pattern<T>,
+        fragment: F,
         inputMapping: InputMapping,
         outputMapping: OutputMapping,
         userInterfaceProvider: UserInterfaceProvider,
@@ -51,7 +50,7 @@ export abstract class Monocle<
 
         this.document = document;
         this.provider = provider;
-        this.pattern = pattern;
+        this.fragment = fragment;
         this.inputMapping = inputMapping;
         this.outputMapping = outputMapping;
         this.userInterface = userInterfaceProvider.provideForMonocle(this);
@@ -61,7 +60,7 @@ export abstract class Monocle<
     }
 
     get range(): Range {
-        return this.pattern.range;
+        return this.fragment.range;
     }
 
     get isTransient(): boolean {
@@ -134,7 +133,7 @@ export abstract class Monocle<
     applyInputMapping(): UserInterfaceInput {
         return this.inputMapping.processInput({
             document: this.document,
-            pattern: this.pattern
+            fragment: this.fragment
         });
     }
 
@@ -144,7 +143,7 @@ export abstract class Monocle<
             {
                 document: this.document,
                 documentEditor: this.documentEditor,
-                pattern: this.pattern
+                fragment: this.fragment
             }
         );
     }

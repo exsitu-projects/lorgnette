@@ -1,4 +1,4 @@
-import { SyntacticPatternFinder } from "../core/code-patterns/syntactic/SyntacticPatternFinder";
+import { TreePatternFinder } from "../core/fragments/syntactic/TreePatternFinder";
 import { FunctionCallNode } from "../core/languages/python/nodes/FunctionCallNode";
 import { StringNode } from "../core/languages/python/nodes/StringNode";
 import { SyntaxTreePattern, SKIP_MATCH_DESCENDANTS } from "../core/languages/SyntaxTreePattern";
@@ -17,14 +17,14 @@ export const seabornBarplotStyleInspectorProvider = new SyntacticMonocleProvider
 
     usageRequirements: { languages: ["python"] },
 
-    patternFinder: new SyntacticPatternFinder(new SyntaxTreePattern(n =>
+    fragmentProvider: new TreePatternFinder(new SyntaxTreePattern(n =>
         n.type === "FunctionCall"
             && (n as FunctionCallNode).callee.text === "barplot",
         SKIP_MATCH_DESCENDANTS
     )),
 
-    inputMapping: new ProgrammableInputMapping(({ pattern }) => {
-        const barplotCallNode = pattern.node as FunctionCallNode;
+    inputMapping: new ProgrammableInputMapping(({ fragment }) => {
+        const barplotCallNode = fragment.node as FunctionCallNode;
         const namedArguments = barplotCallNode.arguments.namedArguments;
 
         const background: Input["style"]["background"] = {};
@@ -90,10 +90,10 @@ export const seabornBarplotStyleInspectorProvider = new SyntacticMonocleProvider
         };
     }),
 
-    outputMapping: new ProgrammableOutputMapping(({ output, document, documentEditor, pattern }) => {
+    outputMapping: new ProgrammableOutputMapping(({ output, document, documentEditor, fragment }) => {
         const styleChange = output.styleChange;
 
-        const barplotCallNode = pattern.node as FunctionCallNode;
+        const barplotCallNode = fragment.node as FunctionCallNode;
         const modifyNamedArgument = createNamedArgumentModifyer(document, documentEditor, barplotCallNode);
 
         const backgroundColorProperty = styleChange.background?.color;

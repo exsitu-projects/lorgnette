@@ -1,4 +1,4 @@
-import { RegexPatternFinder } from "../core/code-patterns/textual/RegexPatternFinder";
+import { RegexPatternFinder } from "../core/fragments/textual/RegexPatternFinder";
 import { Position } from "../core/documents/Position";
 import { Range } from "../core/documents/Range";
 import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapping";
@@ -18,10 +18,10 @@ export const hexadecimalColorPickerProvider = new TextualMonocleProvider({
 
     usageRequirements: {},
 
-    patternFinder: new RegexPatternFinder("#([a-fA-F0-9]{6})"),
+    fragmentProvider: new RegexPatternFinder("#([a-fA-F0-9]{6})"),
 
-    inputMapping: new ProgrammableInputMapping(({ pattern }) => {
-        const hexadecimalColorString = pattern.text;
+    inputMapping: new ProgrammableInputMapping(({ fragment }) => {
+        const hexadecimalColorString = fragment.text;
 
         return {
             r: parseInt(hexadecimalColorString.substring(1, 3), 16),
@@ -30,8 +30,8 @@ export const hexadecimalColorPickerProvider = new TextualMonocleProvider({
         };
     }),
 
-    outputMapping: new ProgrammableOutputMapping(({ output, documentEditor, pattern }) => {
-        const adaptRange = (range: Range) => range.relativeTo(pattern.range.start);
+    outputMapping: new ProgrammableOutputMapping(({ output, documentEditor, fragment }) => {
+        const adaptRange = (range: Range) => range.relativeTo(fragment.range.start);
         const hexOfRgbValue = (n: number) => n.toString(16);
         
         documentEditor.replace(adaptRange(HEXADECIMAL_COLOR_STRING_RGB_RANGES.r), hexOfRgbValue(output.r));

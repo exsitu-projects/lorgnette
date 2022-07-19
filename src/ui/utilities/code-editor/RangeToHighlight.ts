@@ -1,6 +1,6 @@
 import { CodeEditorRanges } from "../../../context";
-import { Pattern } from "../../../core/code-patterns/Pattern";
 import { Range } from "../../../core/documents/Range";
+import { Fragment } from "../../../core/fragments/Fragment";
 import { Monocle } from "../../../core/visualisations/Monocle";
 
 /* `start` and `end` use 0-based row and column indices. */
@@ -25,8 +25,8 @@ export function createRangeToHighlight(range: Range, className: string, id?: num
     return rangeToHighlight;
 }
 
-function createRangeToHiglightForPattern(pattern: Pattern, id?: number): RangeToHighlight {
-    return createRangeToHighlight(pattern.range, "highlight pattern", id);
+function createRangeToHiglightForFragment(fragment: Fragment, id?: number): RangeToHighlight {
+    return createRangeToHighlight(fragment.range, "highlight fragment", id);
 }
 
 export function createRangesToHighlightForMonocles(monocles: Monocle[]): RangeToHighlight[] {
@@ -34,7 +34,7 @@ export function createRangesToHighlightForMonocles(monocles: Monocle[]): RangeTo
 
     for (let monocle of monocles) {
         rangesToHiglight.push(
-            createRangeToHiglightForPattern(monocle.pattern, monocle.uid)
+            createRangeToHiglightForFragment(monocle.fragment, monocle.uid)
         );
     }
 

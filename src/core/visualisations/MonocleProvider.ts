@@ -1,10 +1,10 @@
 import { Document } from "../documents/Document";
-import { CodeFragmentType } from "./CodeFragmentType";
+import { FragmentType } from "../fragments/FragmentType";
 import { Monocle } from "./Monocle";
 import { MonocleProviderUsageRequirements } from "./MonocleUsageRequirements";
 
 export interface MonocleProvider {
-    readonly type: CodeFragmentType;
+    readonly type: FragmentType;
     
     name: string;
 

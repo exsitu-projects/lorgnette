@@ -42,6 +42,7 @@ export class RegexMatcher {
         // Attempt to convert the pattern to a regex,
         // and catch the exception if it is invalid.
         try {
+            // eslint-disable-next-line
             const _ = this.regex;
         }
         catch (error) {
