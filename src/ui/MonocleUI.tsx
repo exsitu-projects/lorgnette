@@ -1,7 +1,7 @@
 import React from "react";
 import "./monocle-ui.css";
 import { Tab, Tabs } from "@blueprintjs/core";
-import { MainCodeEditorPanel } from "./main-code-editor/MainCodeEditorPanel";
+import { Playground } from "./playground/Playground";
 
 export class MonocleUI extends React.PureComponent {
     render() {
@@ -12,7 +12,7 @@ export class MonocleUI extends React.PureComponent {
             <Tab
               className="monocle-ui-main-tab"
               title="Code editor"
-              panel={<MainCodeEditorPanel/>}
+              panel={<Playground/>}
             />
           </Tabs>
     }

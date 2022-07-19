@@ -1,21 +1,21 @@
 import React, { ReactElement } from "react";
-import "./main-code-editor-panel.css";
+import Split from "react-split";
+import { Popover2 } from "@blueprintjs/popover2";
 import { ItemRenderer, Select } from "@blueprintjs/select";
 import { Button, Label, Menu, MenuItem } from "@blueprintjs/core";
+import "./playground.css";
 import { GlobalContext, GlobalContextContent } from "../../context";
 import { Language, SUPPORTED_LANGUAGES } from "../../core/languages/Language";
 import { SyntaxTree } from "./syntax-tree/SyntaxTree";
-import { MainCodeEditor } from "./MainCodeEditor";
-import { DEFAULT_EXAMPLE, Example, EXAMPLES } from "./code-examples/Example";
-import { Popover2 } from "@blueprintjs/popover2";
-import Split from "react-split";
+import { PlaygroundEditor } from "./PlaygroudEditor";
+import { DEFAULT_EXAMPLE, Example, EXAMPLES } from "./examples/Example";
 
 type Props = {};
 type State = {
     currentExample: Example;
 };
 
-export class MainCodeEditorPanel extends React.Component<Props, State> {
+export class Playground extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -101,11 +101,11 @@ export class MainCodeEditorPanel extends React.Component<Props, State> {
         return (
             <GlobalContext.Consumer>{ context => (
                 <Split
-                    className="monocle-ui-main-panel main-code-editor"
+                    className="playground"
                     sizes={[70, 30]}
                     minSize={250}
                 >
-                    <div className="editor-with-menu">
+                    <div className="code-editor-panel">
                         <div className="menu-bar">
                             <Label className="bp4-inline" style={{ margin: 0 }}>
                                 Language:
@@ -113,9 +113,9 @@ export class MainCodeEditorPanel extends React.Component<Props, State> {
                             </Label>
                             {this.renderExampleSelector(context)}
                         </div>
-                        <MainCodeEditor/>
+                        <PlaygroundEditor/>
                     </div>
-                    <div className="syntax-tree">
+                    <div className="syntax-tree-panel">
                         {this.renderSyntaxTree(context)}
                     </div>
                 </Split>

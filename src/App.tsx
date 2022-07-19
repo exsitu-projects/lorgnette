@@ -3,11 +3,12 @@ import "./App.css";
 import { Language } from "./core/languages/Language";
 import { Document, DocumentChangeOrigin } from "./core/documents/Document";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "./core/documents/Position";
-import { DEFAULT_EXAMPLE } from "./ui/main-code-editor/code-examples/Example";
+import { DEFAULT_EXAMPLE } from "./ui/playground/examples/Example";
 import { MonocleUI } from "./ui/MonocleUI";
 import { MONOCLE_PROVIDERS } from "./monocle-providers/providers";
 import { defaultCodeEditorRanges, GlobalContext, GlobalContextContent } from "./context";
 import { Monocle } from "./core/monocles/Monocle";
+import { Playground } from "./ui/playground/Playground";
 
 type Props = {};
 type State = GlobalContextContent;
@@ -132,9 +133,9 @@ export default class App extends React.Component<Props, State> {
 
   render() {
     return (
-      <section id="MonocleApp" style={{ height: "100vh", width: "100vw" }}>
+      <section id="monocle-playground-app">
         <GlobalContext.Provider value={this.state}>
-          <MonocleUI />
+          <Playground />
         </GlobalContext.Provider>
       </section>
     );

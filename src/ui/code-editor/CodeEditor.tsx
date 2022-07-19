@@ -9,12 +9,12 @@ import "ace-builds/src-min-noconflict/mode-css";
 import "ace-builds/src-min-noconflict/mode-python";
 import "ace-builds/src-min-noconflict/theme-tomorrow";
 
-import { Language } from "../../../core/languages/Language";
-import { Range } from "../../../core/documents/Range";
-import { Document } from "../../../core/documents/Document";
+import { Language } from "../../core/languages/Language";
+import { Range } from "../../core/documents/Range";
+import { Document } from "../../core/documents/Document";
 import { MarkerSet } from "./MarkerSet";
 import { RangeToHighlight } from "./RangeToHighlight";
-import { Position } from "../../../core/documents/Position";
+import { Position } from "../../core/documents/Position";
 
 export function getCursorPositionInEditor(aceEditor: any, document: Document): Position {
   const cursorLine = aceEditor.cursor.row;

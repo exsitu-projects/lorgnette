@@ -1,35 +1,41 @@
-.monocle-ui-main-panel.main-code-editor {
+.playground {
     display: flex;
     flex-direction: row;
     height: 100%;
     width: 100%;
+    padding: 1em;
     align-content: space-between;
 }
 
-.monocle-ui-main-panel.main-code-editor > .editor-with-menu {
+.playground > .code-editor-panel {
     /* grid-area: editor; */
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
-.monocle-ui-main-panel.main-code-editor > .editor-with-menu .menu-bar {
+.playground > .code-editor-panel .playground-editor-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.playground > .code-editor-panel .menu-bar {
     display: flex;
     justify-content: space-between;
     margin: 0 0 1ex 0;
 }
-
-.monocle-ui-main-panel.main-code-editor > .syntax-tree {
+.playground > .syntax-tree-panel {
     /* grid-area: syntax-tree; */
     overflow-y: auto;
 }
 
-.monocle-ui-main-panel.main-code-editor .gutter {
+.playground .gutter {
     background-repeat: no-repeat;
     background-position: 50%;
 }
 
-.monocle-ui-main-panel.main-code-editor .gutter.gutter-horizontal {
+.playground .gutter.gutter-horizontal {
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==");
     cursor: col-resize;
 }

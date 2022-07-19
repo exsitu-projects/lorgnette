@@ -1,0 +1,14 @@
+/* Imports required to use the Blueprint UI library. */
+@import "~normalize.css";
+@import "~@blueprintjs/core/lib/css/blueprint.css";
+@import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
+
+body {
+    background-color: #FAFAFA;
+    font-family: "Roboto", sans-serif;
+}
+
+#monocle-playground-app {
+    width: 100vw;
+    height: 100vh;
+}

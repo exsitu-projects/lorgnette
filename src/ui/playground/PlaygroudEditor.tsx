@@ -1,15 +1,15 @@
 import React, { ReactElement } from "react";
-import "./main-code-editor.css";
+import "./playground.css";
 import { GlobalContext } from "../../context";
-import { CodeEditor, getCursorPositionInEditor } from "../utilities/code-editor/CodeEditor";
-import { createRangesToHighlightForMonocles, createRangesToHighlightFromGlobalCodeEditorRanges } from "../utilities/code-editor/RangeToHighlight";
+import { CodeEditor, getCursorPositionInEditor } from "../code-editor/CodeEditor";
+import { createRangesToHighlightForMonocles, createRangesToHighlightFromGlobalCodeEditorRanges } from "../code-editor/RangeToHighlight";
 import { Monocle } from "../../core/monocles/Monocle";
 
 export type Props = {
 
 };
 
-export class MainCodeEditor extends React.PureComponent<Props> {
+export class PlaygroundEditor extends React.PureComponent<Props> {
     private codeEditorRef: React.RefObject<CodeEditor>;
     private monocleContainerRef: React.RefObject<HTMLDivElement>;
 
@@ -35,7 +35,7 @@ export class MainCodeEditor extends React.PureComponent<Props> {
 
     render() {
         return <GlobalContext.Consumer>{ context => (
-            <div className="main-code-editor-wrapper">
+            <div className="playground-editor-wrapper">
                 <CodeEditor
                     language={context.document.language}
                     initialContent={context.document.content}

@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { CodeEditor } from "../../ui/utilities/code-editor/CodeEditor";
+import { CodeEditor } from "../../ui/code-editor/CodeEditor";
 import { Monocle } from "../monocles/Monocle";
 
 export interface RendererProps {
