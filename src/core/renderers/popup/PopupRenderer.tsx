@@ -32,21 +32,26 @@ export abstract class PopupRenderer extends Renderer<RendererProps, PopupRendere
                 return;
             }
 
+            const codeEditorBoundingBox = codeEditorRef.getEditorBoundingBox();
+
             // Get the bounding box of the set of markers associated with the code visualisations
             // (i.e., the areas in the code editor that correspond to this visualisation).
             // If the set is empty, possibly because there has been an update and they have not been redrawn yet,
             // simply skip the repositioning instead of drawing them at an arbitrary position scuh as (0, 0).
             const id = this.props.monocle.uid;
-            const markerSet = codeEditorRef.getMarkerSetWithId(id);
-            if (markerSet.size === 0) {
+
+            let fragmentBoundingBox = new DOMRect(0, 0, 0, 0);
+            try {
+                fragmentBoundingBox = codeEditorRef.getDecorationBoundingBoxWithId(id);
+            }
+            catch (exception) {
+                this.repositionWrapper();
                 return;
             }
 
-            const visualisedCodeBoundingBox = markerSet.boundingBox;
-
             // Position the wrapper next to the markers' bounding box.
-            const top = visualisedCodeBoundingBox.top;
-            const left = visualisedCodeBoundingBox.right + 10;
+            const top = fragmentBoundingBox.top - codeEditorBoundingBox.top;
+            const left = fragmentBoundingBox.right + 10 - codeEditorBoundingBox.left;
 
             wrapperRef.style.top = `${top}px`;
             wrapperRef.style.left = `${left}px`;

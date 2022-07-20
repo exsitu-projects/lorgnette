@@ -33,37 +33,42 @@ export class AsideRenderer extends Renderer {
             }
 
             // Get the bounding box of the code editor.
-            const codeEditorBoundingBox = codeEditorRef.getEditorBoundingRect();
+            const codeEditorBoundingBox = codeEditorRef.getEditorBoundingBox();
 
             // Get the bounding box of the set of markers associated with the code visualisations
             // (i.e., the areas in the code editor that correspond to this visualisation).
             // If the set is empty, possibly because there has been an update and they have not been redrawn yet,
             // simply skip the repositioning instead of drawing them at an arbitrary position scuh as (0, 0).
             const id = this.props.monocle.uid;
-            const markerSet = codeEditorRef.getMarkerSetWithId(id);
-            if (markerSet.size === 0) {
+            
+            let fragmentBoundingBox = new DOMRect(0, 0, 0, 0);
+            try {
+                fragmentBoundingBox = codeEditorRef.getDecorationBoundingBoxWithId(id);
+            }
+            catch (exception) {
+                this.repositionWrapper();
                 return;
             }
 
-            const visualisedCodeBoundingBox = markerSet.boundingBox;
-
             // Position the wrapper according to the settings.
-            const top = visualisedCodeBoundingBox.top;
+            const top = fragmentBoundingBox.top - codeEditorBoundingBox.top;
             wrapperRef.style.top = `${top}px`;
 
             switch (this.settings.position) {
                 case AsideRendererPosition.RightSideOfCode:
-                    const left = visualisedCodeBoundingBox.right + this.settings.positionOffset;
+                    const left = fragmentBoundingBox.right - codeEditorBoundingBox.left + this.settings.positionOffset;
                     wrapperRef.style.left = `${left}px`;
                     wrapperRef.style.removeProperty("right");
                     break;
 
                 case AsideRendererPosition.RightSideOfEditor:
-                    const right = (window.innerWidth - codeEditorBoundingBox.right) + this.settings.positionOffset;
-                    wrapperRef.style.removeProperty("left");
+                    const right = this.settings.positionOffset + 120;
                     wrapperRef.style.right = `${right}px`;
+                    wrapperRef.style.removeProperty("left");
                     break;
             }
+
+            console.info("repositioned wrapper")
         });
     }
 
@@ -88,7 +93,7 @@ export class AsideRenderer extends Renderer {
 
         return <GlobalContext.Consumer>{ context => (
             <div
-                className={`monocle-aside-wrapper ${isHiddenWithCursorAt(context.codeEditorCursorPosition) && "hidden"}`}
+                className={`monocle-aside-wrapper ${isHiddenWithCursorAt(context.codeEditorCursorPosition) ? "hidden" : ""}`}
                 ref={this.asideWrapperRef}
             >
                 {this.props.monocle.userInterface.createView()}
