@@ -1,12 +1,12 @@
 import React from "react";
 import * as monaco from "monaco-editor";
 import Editor, { Monaco, loader } from "@monaco-editor/react";
-import "./code-editor.css";
 import { Position } from "../../core/documents/Position";
 import { Language } from "../../core/languages/Language";
-import { DecoratedRange, DecoratedRangeId } from "./DecoratedRange";
+import { DecoratedRange, DecoratedRangeId } from "../code-editor/DecoratedRange";
 import { Document } from "../../core/documents/Document";
 import { Range } from "../../core/documents/Range";
+import { CodeEditor } from "../code-editor/CodeEditor";
 
 // Use local files (?) to setup the Monaco editor instead of downloading them from a CDN. 
 // Assumption: the files are packaged by Webpack in a CRA-compliant way?
@@ -17,14 +17,14 @@ export type MonacoPosition = monaco.Position;
 export type MonacoRange = monaco.Range;
 export type MonacoSelection = monaco.Selection;
 
-// Convert a Monaco editor position to a standard position object.
+// Convert a Monaco editor position to a standard position.
 export function convertMonacoPosition(position: MonacoPosition, document: Document): Position {
     const cursorLine = position.lineNumber - 1;
     const cursorColumn = position.column - 1;
     return document.getPositionAtLineAndColumn(cursorLine, cursorColumn);
 }
 
-// Convert a Monaco editor selection to a standard range object.
+// Convert a Monaco editor selection to a standard range.
 export function convertMonacoSelection(selection: MonacoSelection, document: Document): Range {
     const startLine = selection.startLineNumber - 1;
     const startColumn = selection.startColumn - 1;
@@ -37,6 +37,7 @@ export function convertMonacoSelection(selection: MonacoSelection, document: Doc
     return Range.fromUnsortedPositions(startPosition, endPosition);
 }
 
+// Convert a standard range to a Monaco editor range.
 export function convertRangeToMonacoRange(range: Range): MonacoRange {
     return new monaco.Range(
         range.start.row + 1,
@@ -46,6 +47,7 @@ export function convertRangeToMonacoRange(range: Range): MonacoRange {
     );  
 }
 
+// Convert a standard range to a Monaco editor selection.
 export function convertRangeToMonacoSelection(range: Range): MonacoSelection {
     return new monaco.Selection(
         range.start.row + 1,
@@ -74,10 +76,7 @@ type State = {
     theme: string;
 }
 
-export class CodeEditor extends React.Component<Props, State> {
-    // React ref to the wrapper around the Monaco editor.
-    private editorWrapperRef: React.RefObject<HTMLDivElement>;
-
+export class MonacoEditor extends CodeEditor<Props, State> {
     // References to objects provided by the Monaco editor.
     private monaco: Monaco | null;
     private editor: monaco.editor.IStandaloneCodeEditor | null;
@@ -87,8 +86,6 @@ export class CodeEditor extends React.Component<Props, State> {
     
     constructor(props: Props) {
         super(props);
-
-        this.editorWrapperRef = React.createRef();
         
         this.monaco = null;
         this.editor = null;
@@ -195,36 +192,17 @@ export class CodeEditor extends React.Component<Props, State> {
         return this.editorElement.getBoundingClientRect();
     }
 
-    getDecorationElementsWithId(id: DecoratedRangeId): Element[] {
-        return [...this.editorElement.getElementsByClassName(`${DecoratedRange.className} ${DecoratedRange.classNameForId(id)}`)];
-    }
-
-    getDecorationBoundingBoxWithId(id: DecoratedRangeId): DOMRect {
-        const elements = this.getDecorationElementsWithId(id);
-        const nbElements = elements.length;
-
-        if (nbElements === 0) {
-            throw Error("The decoration bounding box cannot be computed: there is no element for the given ID.");
+    getEditorTextAreaBoundingBox(): DOMRect {
+        const textAreaElement = this.editorElement.querySelector(".view-lines");
+        if (!textAreaElement) {
+            throw Error("The text area bounding box cannot be computed: the element does not exist.");
         }
 
-        const elementBoundingBoxes = elements.map(element => element.getBoundingClientRect());
-    
-        const markersSortedByTop = elementBoundingBoxes.sort((box1, box2) => box2.top - box1.top);
-        const minMarkerTop = markersSortedByTop[0].top;
-        const maxMarkerTop = markersSortedByTop[nbElements - 1].top;
+        return textAreaElement.getBoundingClientRect();
+    }
 
-        const markersSortedByLeft = elementBoundingBoxes.sort((box1, box2) => box2.left - box1.left);
-        const minMarkerLeft = markersSortedByLeft[0].left;
-
-        const markersSortedByRight = elementBoundingBoxes.sort((box1, box2) => box2.right - box1.right);
-        const maxMarkerRight = markersSortedByRight[0].right;
-    
-        return new DOMRect(
-            minMarkerLeft,
-            minMarkerTop,
-            maxMarkerRight - minMarkerLeft,
-            maxMarkerTop - minMarkerTop
-        );
+    getDecorationElementsWithId(id: DecoratedRangeId): Element[] {
+        return [...this.editorElement.getElementsByClassName(`${DecoratedRange.className} ${DecoratedRange.classNameForId(id)}`)];
     }
 
     componentDidUpdate() {
@@ -248,24 +226,20 @@ export class CodeEditor extends React.Component<Props, State> {
         this.updateDecorations();
     }
     
-    render() {
-        return (
-            <div className="code-editor-wrapper" ref={this.editorWrapperRef}>
-                <Editor
-                    className="code-editor"
-                    value={this.props.content}
-                    language={this.props.language.codeEditorLanguageId}
-                    theme={this.state.theme}
-                    onMount={(editor, monaco) => {
-                        this.onEditorDidMount(editor, monaco);
-                    }}
-                    onChange={(value, event) => {
-                        value !== undefined &&
-                        this.props.onContentChange &&
-                        this.props.onContentChange(value)
-                    }}
-                />
-            </div>
-        );
+    renderEditor() {
+        return <Editor
+            className="code-editor"
+            value={this.props.content}
+            language={this.props.language.codeEditorLanguageId}
+            theme={this.state.theme}
+            onMount={(editor, monaco) => {
+                this.onEditorDidMount(editor, monaco);
+            }}
+            onChange={(value, event) => {
+                value !== undefined &&
+                this.props.onContentChange &&
+                this.props.onContentChange(value)
+            }}
+        />;
     }
 };

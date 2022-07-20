@@ -1,10 +1,9 @@
 import React, { ReactElement } from "react";
 import "./playground.css";
 import { GlobalContext } from "../../context";
-import { CodeEditor, getCursorPositionInEditor } from "../code-editor/CodeEditor";
-import { CodeEditor as MonacoCodeEditor, convertMonacoPosition, convertMonacoSelection } from "../monaco-code-editor/CodeEditor";
+import { MonacoEditor as MonacoCodeEditor, convertMonacoPosition, convertMonacoSelection } from "../monaco-code-editor/MonacoEditor";
 import { Monocle } from "../../core/monocles/Monocle";
-import { DecoratedRange } from "../monaco-code-editor/DecoratedRange";
+import { DecoratedRange } from "../code-editor/DecoratedRange";
 import { Range } from "../../core/documents/Range";
 import { Position } from "../../core/documents/Position";
 

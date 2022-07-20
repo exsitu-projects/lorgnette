@@ -1,5 +1,4 @@
 import { Range } from "../../core/documents/Range";
-import { Fragment } from "../../core/fragments/Fragment";
 import { Monocle } from "../../core/monocles/Monocle";
 
 export type DecoratedRangeId = number;
