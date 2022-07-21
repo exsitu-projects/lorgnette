@@ -56,7 +56,8 @@ export class PlaygroundEditor extends React.PureComponent<Props> {
         return <GlobalContext.Consumer>{ context => (
             <div className="playground-editor-wrapper">
                 <MonacoCodeEditor
-                    language={context.document.language}
+                    document={context.document}
+                    // language={context.document.language}
                     content={context.document.content}
                     // selections={context.codeEditorRanges.selected}
                     decorations={this.createDecoratedRanges(
