@@ -11,17 +11,17 @@ interface HasRange {
 
 export class NodeMoveProcesser<T extends HasRange> {
     private readonly document: Document;
-    private readonly editor: DocumentEditor;
+    private readonly documentEditor: DocumentEditor;
     private readonly treeRoot: TreeNodeWithRange<T>;
     private readonly flattenedTree: TreeNodeWithRange<T>[];
     
     constructor(
+        treeRoot: TreeNodeWithRange<T>,
         document: Document, 
-        editor: DocumentEditor, 
-        treeRoot: TreeNodeWithRange<T>, 
+        documentEditor: DocumentEditor, 
     ) {
         this.document = document;
-        this.editor = editor;
+        this.documentEditor = documentEditor;
         this.treeRoot = treeRoot;
         this.flattenedTree = this.flattenTree();
     }
@@ -77,15 +77,19 @@ export class NodeMoveProcesser<T extends HasRange> {
                 ? `${movedNodeContent.trim()}\n${leadingWhitespace}`
                 : `\n${leadingWhitespace}${movedNodeContent.trim()}`;
 
-            this.editor.delete(movedNode.range);
-            this.editor.insert(insertPosition, movedNodeContent);
-            this.editor.applyEdits();
+            this.documentEditor.delete(movedNode.range);
+            this.documentEditor.insert(insertPosition, movedNodeContent);
+            this.documentEditor.applyEdits();
         }
     }
 
-    static processTreeOutput<T extends HasRange>(output: Output<T>, document: Document): void {
-        const rootNode = output.data.rootNode;
-        const nodeMoveData = output.data.lastNodeMoveData;
+    static processTreeOutput<T extends HasRange>(
+        output: Output<T>,
+        document: Document,
+        documentEditor: DocumentEditor
+    ): void {
+        const rootNode = output.rootNode;
+        const nodeMoveData = output.lastNodeMoveData;
 
         if (!rootNode || !nodeMoveData) {
             console.log("No root node or move data: there is nothing to do in the output mapping of this tree.")
@@ -93,9 +97,9 @@ export class NodeMoveProcesser<T extends HasRange> {
         }
 
         const nodeMoveProcesser = new NodeMoveProcesser(
+            rootNode,
             document,
-            output.editor,
-            rootNode
+            documentEditor,
         );
 
         nodeMoveProcesser.processNodeMove(nodeMoveData);

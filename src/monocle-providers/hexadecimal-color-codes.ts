@@ -34,9 +34,9 @@ export const hexadecimalColorPickerProvider = new TextualMonocleProvider({
         const adaptRange = (range: Range) => range.relativeTo(fragment.range.start);
         const hexOfRgbValue = (n: number) => n.toString(16);
         
-        documentEditor.replace(adaptRange(HEXADECIMAL_COLOR_STRING_RGB_RANGES.r), hexOfRgbValue(output.r));
-        documentEditor.replace(adaptRange(HEXADECIMAL_COLOR_STRING_RGB_RANGES.g), hexOfRgbValue(output.g));
-        documentEditor.replace(adaptRange(HEXADECIMAL_COLOR_STRING_RGB_RANGES.b), hexOfRgbValue(output.b));
+        documentEditor.replace(adaptRange(HEXADECIMAL_COLOR_STRING_RGB_RANGES.r), hexOfRgbValue(output.color.r));
+        documentEditor.replace(adaptRange(HEXADECIMAL_COLOR_STRING_RGB_RANGES.g), hexOfRgbValue(output.color.g));
+        documentEditor.replace(adaptRange(HEXADECIMAL_COLOR_STRING_RGB_RANGES.b), hexOfRgbValue(output.color.b));
         
         documentEditor.applyEdits();
     }),

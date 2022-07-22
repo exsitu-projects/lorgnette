@@ -106,9 +106,9 @@ export const syntacticRgbConstructorColorPickerProvider = new SyntacticMonoclePr
     outputMapping: new ProgrammableOutputMapping(({ output, documentEditor, fragment }) => {
         const rgbNodes = getSyntacticColorConstructorRgbNodes(fragment);
         
-        documentEditor.replace(rgbNodes.r.range, output.r.toString());
-        documentEditor.replace(rgbNodes.g.range ,output.g.toString());
-        documentEditor.replace(rgbNodes.b.range, output.b.toString());
+        documentEditor.replace(rgbNodes.r.range, output.color.r.toString());
+        documentEditor.replace(rgbNodes.g.range ,output.color.g.toString());
+        documentEditor.replace(rgbNodes.b.range, output.color.b.toString());
         
         documentEditor.applyEdits();
     }),

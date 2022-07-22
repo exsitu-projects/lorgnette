@@ -77,8 +77,8 @@ export const tsxComponentTreeProvider = new SyntacticMonocleProvider({
         return findTsxTreeItems(fragment.node) as TreeNode;
     }),
 
-    outputMapping: new ProgrammableOutputMapping(({ output, document }) => {
-        NodeMoveProcesser.processTreeOutput(output, document);
+    outputMapping: new ProgrammableOutputMapping(({ output, document, documentEditor }) => {
+        NodeMoveProcesser.processTreeOutput(output, document, documentEditor);
     }),
 
     userInterfaceProvider: Tree.makeProvider<SyntaxTreeNode>(),
