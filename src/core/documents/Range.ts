@@ -41,6 +41,10 @@ export class Range {
         return `${this.start}–${this.end}`;
     }
 
+    toPrettyString(): string {
+        return `${this.start.toPrettyString()} → ${this.end.toPrettyString()}`;
+    }
+
     static fromSinglePosition(position: Position): Range {
         return new Range(position, position);
     }

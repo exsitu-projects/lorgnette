@@ -66,6 +66,10 @@ export class Position {
     toString(): string {
         return `${this.row};${this.column}`;
     }
+
+    toPrettyString(): string {
+        return `Ln ${this.row + 1} Col ${this.column + 1}`;
+    }
     
     static getOffsetToPositionConverterForText(text: string): (offset: number) => Position {
         // Pre-compute the offsets at the beginning/end of each line of the input.
