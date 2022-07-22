@@ -25,6 +25,7 @@ export class PlaygroundEditor extends React.PureComponent<Props> {
     private renderEmbeddedMonocles(monocles: Monocle[]): ReactElement {
         const renderedMonocles = monocles.map(
             monocle => <monocle.renderer
+                key={monocle.uid}
                 monocle={monocle}
                 codeEditorRef={this.codeEditorRef}
             />
