@@ -1,120 +1,69 @@
-import React from "react";
-import AceEditor, { IMarker } from "react-ace";
+import React, { ReactElement } from "react";
 import "./code-editor.css";
+import { DecoratedRangeId } from "./DecoratedRange";
 
-// Configuration files for the Ace editor.
-import "ace-builds/src-min-noconflict/mode-typescript";
-import "ace-builds/src-min-noconflict/mode-json";
-import "ace-builds/src-min-noconflict/mode-css";
-import "ace-builds/src-min-noconflict/mode-python";
-import "ace-builds/src-min-noconflict/theme-tomorrow";
+export interface CodeEditorProps {
 
-import { Language } from "../../core/languages/Language";
-import { Range } from "../../core/documents/Range";
-import { Document } from "../../core/documents/Document";
-import { MarkerSet } from "./MarkerSet";
-import { RangeToHighlight } from "./RangeToHighlight";
-import { Position } from "../../core/documents/Position";
-
-export function getCursorPositionInEditor(aceEditor: any, document: Document): Position {
-  const cursorLine = aceEditor.cursor.row;
-  const cursorColumn = aceEditor.cursor.column;
-  return document.getPositionAtLineAndColumn(cursorLine, cursorColumn);
 }
 
-export function getSelectionInEditor(aceEditor: any, document: Document): Range {
-  const anchorLine = aceEditor.anchor.row ;
-  const anchorColumn = aceEditor.anchor.column;
-  const anchorPosition = document.getPositionAtLineAndColumn(anchorLine, anchorColumn);
+export interface CodeEditorState {
 
-  const cursorLine = aceEditor.cursor.row;
-  const cursorColumn = aceEditor.cursor.column;
-  const cursorPosition = document.getPositionAtLineAndColumn(cursorLine, cursorColumn);
-
-  return Range.fromUnsortedPositions(anchorPosition, cursorPosition);
 }
 
-type Props = {
-  language: Language;
-  initialContent?: string;
-  onContentChange?: (newContent: string) => void;
-  onSelectionChange?: (aceEditor: any) => void;
-  onCursorChange?: (aceEditor: any) => void;
-  rangesToHighlight?: RangeToHighlight[];
-};
-
-type State = {
-  theme: string;
-}
-
-export class CodeEditor extends React.Component<Props, State> {
-  private aceEditorRef: React.RefObject<AceEditor>;
-
-  constructor(props: Props) {
-    super(props);
-
-    this.aceEditorRef = React.createRef();
-    this.state = {
-      theme: "tomorrow"
-    };
-  }
-
-  createMarkerFromRangeToHighlight(rangeToHighlight: RangeToHighlight): IMarker {
-    return {
-      type: "text",
-      startRow: rangeToHighlight.start.row,
-      startCol: rangeToHighlight.start.column,
-      endRow: rangeToHighlight.end.row,
-      endCol: rangeToHighlight.end.column,
-      className: `${rangeToHighlight.className} marker-unique-id-${rangeToHighlight.id}`
-    };
-  }
-
-  getMarkersWithId(id: number): HTMLElement[] {
-    const ref = this.aceEditorRef.current;
-    if (!ref) {
-      return [];
+export abstract class CodeEditor<
+    P extends CodeEditorProps = CodeEditorProps,
+    S extends CodeEditorState = CodeEditorState
+> extends React.Component<P, S> {
+    // React ref to the wrapper around the Monaco editor.
+    protected editorWrapperRef: React.RefObject<HTMLDivElement>;
+    
+    constructor(props: P) {
+        super(props);
+        this.editorWrapperRef = React.createRef();
     }
 
-    return [...ref.refEditor.querySelectorAll(`.ace_marker-layer .marker-unique-id-${id}`)] as HTMLElement[];
-  }
+    abstract renderEditor(): ReactElement;
 
-  getMarkerSetWithId(id: number): MarkerSet {
-    const markers = this.getMarkersWithId(id);
-    return new MarkerSet(markers);
-  }
+    abstract getEditorBoundingBox(): DOMRect;
+    abstract getEditorTextAreaBoundingBox(): DOMRect;
+    abstract getDecorationElementsWithId(id: DecoratedRangeId): Element[];
+    
+    getDecorationBoundingBoxWithId(id: DecoratedRangeId): DOMRect {
+        const elements = this.getDecorationElementsWithId(id);
+        const nbElements = elements.length;
 
-  getEditorBoundingRect(): DOMRect {
-    const ref = this.aceEditorRef.current;
-    if (!ref) {
-      return new DOMRect(0, 0, 0, 0);
+        if (nbElements === 0) {
+            throw Error("The decoration bounding box cannot be computed: there is no element for the given ID.");
+        }
+
+        const elementBoundingBoxes = elements.map(element => element.getBoundingClientRect());
+    
+        const markersSortedByTop = elementBoundingBoxes.sort((box1, box2) => box2.top - box1.top);
+        const minMarkerTop = markersSortedByTop[0].top;
+        const maxMarkerTop = markersSortedByTop[nbElements - 1].top;
+
+        const markersSortedByLeft = elementBoundingBoxes.sort((box1, box2) => box2.left - box1.left);
+        const minMarkerLeft = markersSortedByLeft[0].left;
+
+        const markersSortedByRight = elementBoundingBoxes.sort((box1, box2) => box2.right - box1.right);
+        const maxMarkerRight = markersSortedByRight[0].right;
+    
+        return new DOMRect(
+            minMarkerLeft,
+            minMarkerTop,
+            maxMarkerRight - minMarkerLeft,
+            maxMarkerTop - minMarkerTop
+        );
     }
 
-    return ref.refEditor.getBoundingClientRect();
-  }
-
-  render() {
-    const markers = (this.props.rangesToHighlight || [])
-      .map(rangeToHiglight => this.createMarkerFromRangeToHighlight(rangeToHiglight));
-
-    return (
-      <AceEditor
-        className="code-editor"
-        value={this.props.initialContent ?? ""}
-        mode={this.props.language.codeEditorLanguageId}
-        theme={this.state.theme}
-        onChange={newContent => {this.props.onContentChange && this.props.onContentChange(newContent)}}
-        onSelectionChange={aceEditor => {this.props.onSelectionChange && this.props.onSelectionChange(aceEditor)}}
-        onCursorChange={aceEditor => {this.props.onCursorChange && this.props.onCursorChange(aceEditor)}}
-        editorProps={{ $blockScrolling: true }}
-        placeholder="Write your code here!"
-        ref={this.aceEditorRef}
-        style={{
-          width: "100%",
-          height: "100%"
-        }}
-        markers={markers}
-      />
-    );
-  }
-};
+    render() {
+        return (
+            <div
+                className="code-editor-wrapper"
+                ref={this.editorWrapperRef}
+            >
+                {this.renderEditor()}
+            </div>
+        );
+    }
+}

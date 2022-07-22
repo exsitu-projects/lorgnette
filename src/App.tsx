@@ -68,39 +68,19 @@ export default class App extends React.Component<Props, State> {
     const document = new Document(language, content);
     document.addChangeObserver({
       processChange: event => {
+        // If the change is transient, the document should only be modified internally until the transient state ends,
+        // without recreating a new document for each successive transient change.
+        if (event.changeContext.origin === DocumentChangeOrigin.Monocle && event.changeContext.isTransientChange) {
+          return;
+        }
+
         const newDocument = this.createDocument(this.state.document.language, event.document.content);
+        const newMonocles = this.createMonoclesForDocument(newDocument);
 
-        // Case 1: if the change originates from a manual edit operation
-        // performed by the user, update the monocles.
-        if (event.changeContext.origin === DocumentChangeOrigin.UserEdit) {
-          const newMonocles = this.createMonoclesForDocument(newDocument);
-
-          this.setState({
-            document: newDocument,
-            monocles: newMonocles
-          });
-        }
-
-        // Case 2: if the change originates from a code visualisation,
-        // only update the monocles if the change is not transient.
-        else if (event.changeContext.origin === DocumentChangeOrigin.Monocle) {
-          if (event.changeContext.isTransientChange) {
-            console.info("** TRANSIENT change **");
-
-            this.setState({
-              document: newDocument,
-            });
-          }
-          else {
-            console.warn("** NON-TRANSIENT change **");
-
-            const newMonocles = this.createMonoclesForDocument(newDocument);
-            this.setState({
-              document: newDocument,
-              monocles: newMonocles
-            });
-          }
-        }
+        this.setState({
+          document: newDocument,
+          monocles: newMonocles
+        });
       }
     })
 

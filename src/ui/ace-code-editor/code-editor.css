@@ -1,0 +1,25 @@
+.code-editor {
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.code-editor .highlight {
+    position: absolute;
+}
+
+.code-editor .highlight.fragment {
+    background-color: rgba(255, 255, 0, 0.25);
+}
+
+.code-editor .highlight.site {
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    /* background-color: rgba(255, 0, 0, 0.2); */
+}
+
+.code-editor .highlight.hovered {
+    background-color: rgba(0, 255, 0, 0.25);
+}
+
+.code-editor .highlight.selected {
+    background-color: rgba(0, 0, 255, 0.20);
+}
