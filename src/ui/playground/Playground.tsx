@@ -9,6 +9,7 @@ import { Language, SUPPORTED_LANGUAGES } from "../../core/languages/Language";
 import { SyntaxTree } from "./syntax-tree/SyntaxTree";
 import { PlaygroundEditor } from "./PlaygroudEditor";
 import { DEFAULT_EXAMPLE, Example, EXAMPLES } from "./examples/Example";
+import { Monocle } from "../../core/monocles/Monocle";
 
 type Props = {};
 type State = {
@@ -82,6 +83,36 @@ export class Playground extends React.Component<Props, State> {
         </Popover2>
     }
 
+    private renderMonocleInfoText(monocle: Monocle): ReactElement {
+        const range = monocle.range.toPrettyString();
+        return <li key={monocle.uid}>
+            [#{monocle.uid}] {monocle.provider.name} ({range})
+            {/* [#{monocle.uid}] {monocle.provider.name} */}
+        </li>;
+    }
+
+    private renderActiveMonoclesInfoText(context: GlobalContextContent): ReactElement | null {
+        // TODO: update how an active monocle is detected!
+        const activeMonocles: Monocle[] = [];
+        for (let monocle of context.monocles) {
+            if (monocle.range.contains(context.codeEditorCursorPosition)) {
+                activeMonocles.push(monocle);
+            }
+        }
+
+        if (activeMonocles.length === 0) {
+            return null;
+        }
+        else {
+            return <>
+                <strong>Active monocles: </strong>
+                <ul>
+                    {activeMonocles.map(monocle => this.renderMonocleInfoText(monocle))}
+                </ul>
+            </>
+        }
+    }
+
     private renderSyntaxTree(context: GlobalContextContent): ReactElement {
         return <>
             <h3>Syntax tree</h3>
@@ -114,6 +145,14 @@ export class Playground extends React.Component<Props, State> {
                             {this.renderExampleSelector(context)}
                         </div>
                         <PlaygroundEditor/>
+                        <div className="status-bar">
+                            <div className="active-monocles-information">
+                                {this.renderActiveMonoclesInfoText(context)}
+                            </div>
+                            <div className="cursor-position">
+                                {context.codeEditorCursorPosition.toPrettyString()}
+                            </div>
+                        </div>
                     </div>
                     <div className="syntax-tree-panel">
                         {this.renderSyntaxTree(context)}

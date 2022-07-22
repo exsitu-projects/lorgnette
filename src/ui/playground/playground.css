@@ -39,6 +39,39 @@
     margin: 0 0 1ex 0;
 }
 
+.playground > .code-editor-panel .status-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5ex 1ex;
+    /* background-color: rgba(0, 0, 0, 0.05); */
+    /* border: 1px solid rgba(0, 0, 0, 0.1); */
+    /* border-top: none; */
+}
+
+.playground > .code-editor-panel .status-bar .active-monocles-information ul,
+.playground > .code-editor-panel .status-bar .active-monocles-information li {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+.playground > .code-editor-panel .status-bar .active-monocles-information li {
+    margin: 0 1ex 0 0;
+    padding: 2px 4px;
+    background-color: rgba(255, 255, 0, 0.25);
+    border: 1px solid rgba(127, 127, 0, 0.25);
+    border-radius: 2px;
+    list-style: none;
+}
+
+.playground > .code-editor-panel .status-bar .active-monocles-information li:last-child {
+    margin: 0;
+}
+
+.playground > .code-editor-panel .status-bar .cursor-position {
+    font-family: monospace;
+}
+
 .playground > .syntax-tree-panel {
     /* grid-area: syntax-tree; */
     overflow-y: auto;
