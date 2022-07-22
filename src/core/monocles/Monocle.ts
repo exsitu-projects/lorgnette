@@ -57,6 +57,8 @@ export abstract class Monocle<
         this.renderer = renderer;
 
         this.transientState = null;
+
+        this.initialise();
     }
 
     get range(): Range {
@@ -88,6 +90,7 @@ export abstract class Monocle<
         // Add a model change observer to react to changes in the UI.
         this.userInterface.addModelChangeObserver({
             processChange: modelOutput => {
+                console.log("applying model output")
                 this.applyOutputMapping(modelOutput);
             }
         });

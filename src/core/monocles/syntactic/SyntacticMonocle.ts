@@ -27,7 +27,5 @@ export class SyntacticMonocle extends Monocle<SyntacticFragment> {
             userInterfaceProvider,
             renderer
         );
-
-        this.initialise();
     }
 }
