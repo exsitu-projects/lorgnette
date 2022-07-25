@@ -1,14 +1,14 @@
 /* Popover renderers */
 
-.monocle-popover-wrapper {
+.monocle-renderer.popover {
     position: absolute;
     /* z-index: 200; */
 }
 
-.monocle-popover-wrapper > button.bp4-button,
-.monocle-popover-wrapper > button.bp4-button:active,
-.monocle-popover-wrapper > button.bp4-button.bp4-active,
-.monocle-popover-wrapper > button.bp4-button:hover {
+.monocle-renderer.popover > button.bp4-button,
+.monocle-renderer.popover > button.bp4-button:active,
+.monocle-renderer.popover > button.bp4-button.bp4-active,
+.monocle-renderer.popover > button.bp4-button:hover {
     display: block;
     min-width: auto;
     min-height: auto;
@@ -23,13 +23,13 @@
     font-size: 0.9em;
 }
 
-.monocle-popover-wrapper > button.bp4-button > span {
+.monocle-renderer.popover > button.bp4-button > span {
     display: inline-block;
 }
 
-.monocle-popover-wrapper > button.bp4-button:hover,
-.monocle-popover-wrapper > button.bp4-button:active,
-.monocle-popover-wrapper > button.bp4-button.bp4-active {
+.monocle-renderer.popover > button.bp4-button:hover,
+.monocle-renderer.popover > button.bp4-button:active,
+.monocle-renderer.popover > button.bp4-button.bp4-active {
     background: #eee;
     border: 1px solid #888;
     color: #666;
@@ -49,15 +49,15 @@
 /* Popup renderers */
 
 
-.monocle-popup-wrapper {
+.monocle-renderer.popup {
     position: absolute;
     /* z-index: 200; */
 }
 
-.monocle-popup-wrapper > button.bp4-button,
-.monocle-popup-wrapper > button.bp4-button:active,
-.monocle-popup-wrapper > button.bp4-button.bp4-active,
-.monocle-popup-wrapper > button.bp4-button:hover {
+.monocle-renderer.popup > button.bp4-button,
+.monocle-renderer.popup > button.bp4-button:active,
+.monocle-renderer.popup > button.bp4-button.bp4-active,
+.monocle-renderer.popup > button.bp4-button:hover {
     display: block;
     min-width: auto;
     min-height: auto;
@@ -72,13 +72,13 @@
     font-size: 0.9em;
 }
 
-.monocle-popup-wrapper > button.bp4-button > span {
+.monocle-renderer.popup > button.bp4-button > span {
     display: inline-block;
 }
 
-.monocle-popup-wrapper > button.bp4-button:hover,
-.monocle-popup-wrapper > button.bp4-button:active,
-.monocle-popup-wrapper > button.bp4-button.bp4-active {
+.monocle-renderer.popup > button.bp4-button:hover,
+.monocle-renderer.popup > button.bp4-button:active,
+.monocle-renderer.popup > button.bp4-button.bp4-active {
     background: #eee;
     border: 1px solid #888;
     color: #666;
@@ -111,13 +111,13 @@
 
 /* Aside renderers */
 
-.monocle-aside-wrapper {
+.monocle-renderer.aside {
     position: absolute;
     background-color: rgba(255, 255, 255, 0.8);
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
     z-index: 500;
 }
 
-.monocle-aside-wrapper.hidden {
+/* .monocle-aside.hidden {
     display: none;
-}
+} */

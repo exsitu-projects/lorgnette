@@ -23,6 +23,16 @@ export class Range {
             && this.end.isAfter(position);
     }
 
+    includes(otherRange: Range): boolean {
+        return this.contains(otherRange.start)
+            && this.contains(otherRange.end);
+    }
+
+    intersects(otherRange: Range): boolean {
+        return this.contains(otherRange.start)
+            || this.contains(otherRange.end);
+    }
+
     with(changes: Partial<Range>): Range {
         return new Range(
             changes.start ?? this.start,
@@ -78,3 +88,5 @@ export class Range {
         );
     }
 }
+
+export const EMPTY_RANGE = Range.fromSinglePosition(new Position(0, 0, 0));

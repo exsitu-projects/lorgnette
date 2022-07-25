@@ -1,7 +1,7 @@
 import React from "react";
 import { Document } from "./core/documents/Document";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "./core/documents/Position";
-import { Range } from "./core/documents/Range";
+import { EMPTY_RANGE, Range } from "./core/documents/Range";
 import { Language, SUPPORTED_LANGUAGES } from "./core/languages/Language";
 import { Monocle } from "./core/monocles/Monocle";
 import { MonocleProvider } from "./core/monocles/MonocleProvider";
@@ -9,11 +9,13 @@ import { MonocleProvider } from "./core/monocles/MonocleProvider";
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[0];
 
 export interface CodeEditorRanges {
+  visible: Range,
   hovered: Range[],
   selected: Range[]
 }
 
 export const defaultCodeEditorRanges: CodeEditorRanges = {
+  visible: EMPTY_RANGE,
   hovered: [],
   selected: []
 };

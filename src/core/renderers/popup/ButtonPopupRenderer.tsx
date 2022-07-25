@@ -8,7 +8,7 @@ import { RendererProps } from "../Renderer";
 
 
 export class ButtonPopupRenderer extends PopupRenderer {
-    readonly name: string = "button-popup";
+    readonly className: string = "popup button-popup";
     protected settings: ButtonPopupRendererSettings;
 
     constructor(props: RendererProps) {
@@ -20,7 +20,6 @@ export class ButtonPopupRenderer extends PopupRenderer {
         return <Button
             {...this.settings.buttonProps}
             onClick={() => {
-                console.log("set is open state", !this.state.isPopupOpen)
                 this.setState({ isPopupOpen: !this.state.isPopupOpen })
             }}
         >
@@ -29,12 +28,10 @@ export class ButtonPopupRenderer extends PopupRenderer {
     }
 
     static makeProvider(settings: Partial<ButtonPopupRendererSettings> = {}): RendererProvider {
-        const Renderer = class extends ButtonPopupRenderer {
-            protected settings = deriveButtonPopupRendererSettingsFrom(settings);
-        };
-
         return {
-            provide: () => Renderer
+            provide: () => class extends ButtonPopupRenderer {
+                protected settings = deriveButtonPopupRendererSettingsFrom(settings);
+            }
         }
     }
 }

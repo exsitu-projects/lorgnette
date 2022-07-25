@@ -8,67 +8,48 @@ export interface PopupRendererState extends RendererState {
 };
 
 export abstract class PopupRenderer extends Renderer<RendererProps, PopupRendererState> {
-    protected popupWrapperRef: React.RefObject<HTMLDivElement>;
+    readonly className: string = "popup";
 
     constructor(props: RendererProps) {
         super(props);
-
-        this.popupWrapperRef = React.createRef();
         this.state = {
-            isPopupOpen: false
+            isPopupOpen: this.props.monocle.isActive ?? false
         };
     }
 
-    protected repositionWrapper(): void {
-        // Wait for the next redraw of the webpage before updating the wrapper's position.
-        // This is required to ensure that the code editor and the markers are part of the DOM
-        // and positioned correctly, which is mandatory for positioning relatively to them.
-        window.requestAnimationFrame(() => {
-            const wrapperRef = this.popupWrapperRef.current;
-            const codeEditorRef = this.props.codeEditorRef.current;
+    get isActive(): boolean {
+        return this.state.isPopupOpen;
+    }
 
-            if (!wrapperRef || !codeEditorRef) {
-                console.warn("Code vis. GUIs cannot be repositioned: required React refs are not available.", wrapperRef, codeEditorRef);
-                return;
-            }
-
-            const codeEditorBoundingBox = codeEditorRef.getEditorBoundingBox();
-
-            // Get the bounding box of the set of markers associated with the code visualisations
-            // (i.e., the areas in the code editor that correspond to this visualisation).
-            // If the set is empty, possibly because there has been an update and they have not been redrawn yet,
-            // simply skip the repositioning instead of drawing them at an arbitrary position scuh as (0, 0).
-            const id = this.props.monocle.uid;
-
-            let fragmentBoundingBox = new DOMRect(0, 0, 0, 0);
-            try {
-                fragmentBoundingBox = codeEditorRef.getDecorationBoundingBoxWithId(id);
-            }
-            catch (exception) {
-                this.repositionWrapper();
+    protected reposition(): void {
+        this.useBoundingBoxesAfterRedraw(({ codeEditorBox, monocleFragmentBox }) => {
+            const wrapperElement = this.rendererWrapperRef.current;
+            if (!wrapperElement) {
                 return;
             }
 
             // Position the wrapper next to the markers' bounding box.
-            const top = fragmentBoundingBox.top - codeEditorBoundingBox.top;
-            const left = fragmentBoundingBox.right + 10 - codeEditorBoundingBox.left;
+            const top = monocleFragmentBox.top - codeEditorBox.top;
+            const left = monocleFragmentBox.right + 10 - codeEditorBox.left;
 
-            wrapperRef.style.top = `${top}px`;
-            wrapperRef.style.left = `${left}px`;
+            wrapperElement.style.top = `${top}px`;
+            wrapperElement.style.left = `${left}px`;
         });
     }
 
     componentDidMount() {
-        this.repositionWrapper();
+        this.reposition();
     }
 
     componentDidUpdate(oldProps: RendererProps) {
         if (oldProps.codeEditorRef === this.props.codeEditorRef
-        &&  oldProps.monocle === this.props.monocle) {
+        &&  oldProps.monocle === this.props.monocle
+        &&  oldProps.codeEditorVisibleRange === this.props.codeEditorVisibleRange
+        &&  oldProps.codeEditorCursorPosition === this.props.codeEditorCursorPosition) {
             return;
         }
 
-        this.repositionWrapper();
+        this.reposition();
     }
 
     protected get overlayProps(): OverlayProps {
@@ -95,15 +76,12 @@ export abstract class PopupRenderer extends Renderer<RendererProps, PopupRendere
         </div>;
     }
 
-    render() {
-        return <div
-            className="monocle-popup-wrapper"
-            ref={this.popupWrapperRef}
-        >
+    renderMonocle() {
+        return <>
             {this.renderPopupToggle()}
             <Overlay {...this.overlayProps}>
                 {this.renderPopupContent()}
             </Overlay>
-        </div>;
+        </>;
     }
 }

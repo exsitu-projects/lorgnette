@@ -1,66 +1,62 @@
 import React, { ComponentProps, ReactElement } from "react";
 import "../renderers.css";
 import { Popover2, Popover2Props, Popover2TargetProps } from "@blueprintjs/popover2";
-import { Renderer, RendererProps } from "../Renderer";
+import { Renderer, RendererProps, RendererState } from "../Renderer";
 
-export abstract class PopoverRenderer extends Renderer {
-    protected popoverWrapperRef: React.RefObject<HTMLDivElement>;
+export interface PopoverRendererState extends RendererState {
+    isPopoverOpen: boolean;
+}
+
+export abstract class PopoverRenderer extends Renderer<RendererProps, PopoverRendererState> {
+    readonly className: string = "popover";
+    private popoverRef: React.RefObject<Popover2<any>>;
 
     constructor(props: RendererProps) {
         super(props);
-        this.popoverWrapperRef = React.createRef();
+
+        this.popoverRef = React.createRef();
+
+        this.state = {
+            isPopoverOpen: this.props.monocle.isActive ?? false
+        };
     }
 
-    protected repositionWrapper(): void {
-        // Wait for the next redraw of the webpage before updating the wrapper's position.
-        // This is required to ensure that the code editor and the markers are part of the DOM
-        // and positioned correctly, which is mandatory for positioning relatively to them.
-        window.requestAnimationFrame(() => {
-            const wrapperRef = this.popoverWrapperRef.current;
-            const codeEditorRef = this.props.codeEditorRef.current;
+    get isActive(): boolean {
+        return this.state.isPopoverOpen;
+    }
 
-            if (!wrapperRef || !codeEditorRef) {
-                console.warn("Code vis. GUIs cannot be repositioned: required React refs are not available.", wrapperRef, codeEditorRef);
+    protected reposition(): void {
+        this.useBoundingBoxesAfterRedraw(({ codeEditorBox, monocleFragmentBox }) => {
+            const wrapperElement = this.rendererWrapperRef.current;
+            if (!wrapperElement) {
                 return;
             }
 
-            const codeEditorBoundingBox = codeEditorRef.getEditorBoundingBox();
+            // Position the wrapper next to the fragment.
+            const top = monocleFragmentBox.top - codeEditorBox.top;
+            const left = monocleFragmentBox.right + 10 - codeEditorBox.left;
 
-            // Get the bounding box of the set of markers associated with the code visualisations
-            // (i.e., the areas in the code editor that correspond to this visualisation).
-            // If the set is empty, possibly because there has been an update and they have not been redrawn yet,
-            // simply skip the repositioning instead of drawing them at an arbitrary position scuh as (0, 0).
-            const id = this.props.monocle.uid;
+            wrapperElement.style.top = `${top}px`;
+            wrapperElement.style.left = `${left}px`;
 
-            let fragmentBoundingBox = new DOMRect(0, 0, 0, 0);
-            try {
-                fragmentBoundingBox = codeEditorRef.getDecorationBoundingBoxWithId(id);
-            }
-            catch (exception) {
-                this.repositionWrapper();
-                return;
-            }
-
-            // Position the wrapper next to the markers' bounding box.
-            const top = fragmentBoundingBox.top - codeEditorBoundingBox.top;
-            const left = fragmentBoundingBox.right + 10 - codeEditorBoundingBox.left;
-
-            wrapperRef.style.top = `${top}px`;
-            wrapperRef.style.left = `${left}px`;
+            // Reposition the content of the popover (according to the new position of the target).
+            this.popoverRef.current?.reposition();
         });
     }
 
     componentDidMount() {
-        this.repositionWrapper();
+        this.reposition();
     }
 
     componentDidUpdate(oldProps: RendererProps) {
         if (oldProps.codeEditorRef === this.props.codeEditorRef
-        &&  oldProps.monocle === this.props.monocle) {
+        &&  oldProps.monocle === this.props.monocle
+        &&  oldProps.codeEditorVisibleRange === this.props.codeEditorVisibleRange
+        &&  oldProps.codeEditorCursorPosition === this.props.codeEditorCursorPosition) {
             return;
         }
 
-        this.repositionWrapper();
+        this.reposition();
     }
 
     protected get popoverProps(): Popover2Props {
@@ -86,16 +82,15 @@ export abstract class PopoverRenderer extends Renderer {
         </div>;
     }
 
-    render() {
-        return <div
-            className="monocle-popover-wrapper"
-            ref={this.popoverWrapperRef}
-        >
-            <Popover2
-                {...this.popoverProps}
-                content={this.renderPopoverContent()}
-                renderTarget={props => this.renderPopoverTarget(props)}
-            />
-        </div>;
+    renderMonocle() {
+        return <Popover2
+            {...this.popoverProps}
+            content={this.renderPopoverContent()}
+            renderTarget={props => this.renderPopoverTarget(props)}
+            defaultIsOpen={this.state.isPopoverOpen}
+            onOpened={() => this.setState({ isPopoverOpen: true })}
+            onClosed={() => this.setState({ isPopoverOpen: false })}
+            ref={this.popoverRef}
+        />;
     }
 }

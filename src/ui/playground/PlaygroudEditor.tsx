@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import "./playground.css";
-import { GlobalContext } from "../../context";
-import { MonacoEditor as MonacoCodeEditor, convertMonacoPosition, convertMonacoSelection } from "../monaco-code-editor/MonacoEditor";
+import { GlobalContext, GlobalContextContent } from "../../context";
+import { MonacoEditor } from "../monaco-code-editor/MonacoEditor";
 import { Monocle } from "../../core/monocles/Monocle";
 import { DecoratedRange } from "../code-editor/DecoratedRange";
 import { Range } from "../../core/documents/Range";
@@ -12,7 +12,7 @@ export type Props = {
 };
 
 export class PlaygroundEditor extends React.PureComponent<Props> {
-    private codeEditorRef: React.RefObject<MonacoCodeEditor>;
+    private codeEditorRef: React.RefObject<MonacoEditor>;
     private monocleContainerRef: React.RefObject<HTMLDivElement>;
 
     constructor(props: Props) {
@@ -22,12 +22,14 @@ export class PlaygroundEditor extends React.PureComponent<Props> {
         this.monocleContainerRef = React.createRef();
     }
 
-    private renderEmbeddedMonocles(monocles: Monocle[]): ReactElement {
-        const renderedMonocles = monocles.map(
+    private renderEmbeddedMonocles(context: GlobalContextContent): ReactElement {
+        const renderedMonocles = context.monocles.map(
             monocle => <monocle.renderer
                 key={monocle.uid}
                 monocle={monocle}
                 codeEditorRef={this.codeEditorRef}
+                codeEditorVisibleRange={context.codeEditorRanges.visible}
+                codeEditorCursorPosition={context.codeEditorCursorPosition}
             />
         );
 
@@ -56,7 +58,7 @@ export class PlaygroundEditor extends React.PureComponent<Props> {
     render() {
         return <GlobalContext.Consumer>{ context => (
             <div className="playground-editor-wrapper">
-                <MonacoCodeEditor
+                <MonacoEditor
                     document={context.document}
                     // language={context.document.language}
                     content={context.document.content}
@@ -70,23 +72,21 @@ export class PlaygroundEditor extends React.PureComponent<Props> {
 
                     onContentChange={newContent => context.updateDocumentContent(newContent)}
                     onCursorPositionChange={newPosition =>
-                        context.updateCodeEditorCursorPosition(
-                            convertMonacoPosition(newPosition, context.document)
-                        )
+                        context.updateCodeEditorCursorPosition(newPosition)
                     }
                     onSelectionChange={newSelection =>
-                        context.updateCodeEditorRanges({
-                            selected: [convertMonacoSelection(newSelection, context.document)]
-                        })
+                        context.updateCodeEditorRanges({ selected: [newSelection] })
                     }
-                    onScrollChange={() => { /* TODO: update the monocle renderers */}}
+                    onScrollChange={newVisibleRange =>
+                        context.updateCodeEditorRanges({ visible: newVisibleRange })
+                    }
                     onLayoutChange={() => { /* TODO: update the monocle renderers */}}
                 />
                 <div
                     className="monocles"
                     ref={this.monocleContainerRef}
                 >
-                    {this.renderEmbeddedMonocles(context.monocles)}
+                    {this.renderEmbeddedMonocles(context)}
                 </div>
             </div>
         )}</GlobalContext.Consumer>

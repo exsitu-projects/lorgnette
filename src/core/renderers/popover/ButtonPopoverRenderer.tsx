@@ -7,9 +7,8 @@ import { RendererProvider } from "../RendererProvider";
 import { ButtonPopoverRendererSettings, DEFAULT_BUTTON_POPOVER_RENDERER_SETTINGS, deriveButtonPopoverRendererSettingsFrom } from "./ButtonPopoverRendererSettings";
 import { RendererProps } from "../Renderer";
 
-
 export class ButtonPopoverRenderer extends PopoverRenderer {
-    readonly name: string = "button-popover";
+    readonly className: string = "popover button-popover";
     protected settings: ButtonPopoverRendererSettings;
 
     constructor(props: RendererProps) {
@@ -29,12 +28,10 @@ export class ButtonPopoverRenderer extends PopoverRenderer {
     }
 
     static makeProvider(settings: Partial<ButtonPopoverRendererSettings> = {}): RendererProvider {
-        const Renderer = class extends ButtonPopoverRenderer {
-            protected settings = deriveButtonPopoverRendererSettingsFrom(settings);
-        };
-
         return {
-            provide: () => Renderer
+            provide: () => class extends ButtonPopoverRenderer {
+                protected settings = deriveButtonPopoverRendererSettingsFrom(settings);
+            }
         }
     }
 }

@@ -23,6 +23,7 @@ export type DocumentChangeContext = {
     origin: DocumentChangeOrigin.Monocle;
     monocle: Monocle;
     isTransientChange: boolean;
+    preservesMonocle: boolean;
 };
 
 export interface DocumentChangeEvent {

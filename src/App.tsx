@@ -4,7 +4,6 @@ import { Language } from "./core/languages/Language";
 import { Document, DocumentChangeOrigin } from "./core/documents/Document";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "./core/documents/Position";
 import { DEFAULT_EXAMPLE } from "./ui/playground/examples/Example";
-import { MonocleUI } from "./ui/MonocleUI";
 import { MONOCLE_PROVIDERS } from "./monocle-providers/providers";
 import { defaultCodeEditorRanges, GlobalContext, GlobalContextContent } from "./context";
 import { Monocle } from "./core/monocles/Monocle";
@@ -75,7 +74,16 @@ export default class App extends React.Component<Props, State> {
         }
 
         const newDocument = this.createDocument(this.state.document.language, event.document.content);
-        const newMonocles = this.createMonoclesForDocument(newDocument);
+        
+        // If the change originates from a monocle in a monocle-preserving way,
+        // new monocles should preserve the state of this monocle.
+        let monocleToPreserve = undefined;
+        if (event.changeContext.origin === DocumentChangeOrigin.Monocle && event.changeContext.preservesMonocle) {
+          monocleToPreserve = event.changeContext.monocle;
+          monocleToPreserve.state.isActive = true; // TODO: this should already be done elsewhere!
+        }
+
+        const newMonocles = this.createMonoclesForDocument(newDocument, monocleToPreserve);
 
         this.setState({
           document: newDocument,
@@ -88,10 +96,17 @@ export default class App extends React.Component<Props, State> {
   }
 
   // Create new monocles for the given document.
-  private createMonoclesForDocument(document: Document): Monocle[] {
+  private createMonoclesForDocument(document: Document, monocleToPreserve?: Monocle): Monocle[] {
     const monocles: Monocle[] = [];
+
     for (let monocleProvider of this.state.monocleProviders) {
-      monocles.push(...monocleProvider.provideForDocument(document));
+      // If a monocle to preserve is provided, the monocle provider of this monocle should attempt
+      // to transfer the state of this monocle to the best match among the new monocles it provides.
+      const useMonocleToPreserve = monocleToPreserve && monocleToPreserve.provider === monocleProvider;
+      monocles.push(...monocleProvider.provideForDocument(
+        document,
+        useMonocleToPreserve ? monocleToPreserve : undefined
+      ));
     }
 
     console.log("[ New monocles ]", monocles);
@@ -120,5 +135,4 @@ export default class App extends React.Component<Props, State> {
       </section>
     );
   }
-  
 }

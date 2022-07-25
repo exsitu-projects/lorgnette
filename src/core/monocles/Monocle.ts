@@ -12,9 +12,13 @@ import { UserInterfaceProvider } from "../user-interfaces/UserInterfaceProvider"
 import { MonocleProvider } from "./MonocleProvider";
 import { getUnusedUid, MonocleUid } from "./MonocleUid";
 
-export type TransientMonocleState = {
+export interface MonocleState {
+    isActive: boolean;
+}
+
+export interface TransientMonocleState {
     editor: TransientDocumentEditor;
-};
+}
 
 export abstract class Monocle<
     F extends Fragment = Fragment
@@ -35,6 +39,8 @@ export abstract class Monocle<
     
     readonly renderer: ClassOf<Renderer>;
 
+    readonly state: MonocleState;
+
     private transientState: TransientMonocleState | null;
 
     constructor(
@@ -45,6 +51,7 @@ export abstract class Monocle<
         outputMapping: OutputMapping,
         userInterfaceProvider: UserInterfaceProvider,
         renderer: ClassOf<Renderer>,
+        initialState?: MonocleState
     ) {
         this.uid = getUnusedUid();
 
@@ -55,6 +62,10 @@ export abstract class Monocle<
         this.outputMapping = outputMapping;
         this.userInterface = userInterfaceProvider.provideForMonocle(this);
         this.renderer = renderer;
+
+        this.state = initialState ?? {
+            isActive: false
+        };
 
         this.transientState = null;
 
@@ -69,7 +80,11 @@ export abstract class Monocle<
         return this.transientState !== null;
     }
 
-    get documentEditor(): DocumentEditor {
+    get isActive(): boolean {
+        return this.state?.isActive;
+    }
+
+    protected getDocumentEditor(preserveMonocle: boolean): DocumentEditor {
         return this.isTransient
             ? this.transientState!.editor
             : new DocumentEditor(
@@ -77,7 +92,8 @@ export abstract class Monocle<
                 {
                     origin: DocumentChangeOrigin.Monocle,
                     monocle: this,
-                    isTransientChange: false
+                    isTransientChange: false,
+                    preservesMonocle: preserveMonocle
                 }
             );
     }
@@ -90,7 +106,6 @@ export abstract class Monocle<
         // Add a model change observer to react to changes in the UI.
         this.userInterface.addModelChangeObserver({
             processChange: modelOutput => {
-                console.log("applying model output")
                 this.applyOutputMapping(modelOutput);
             }
         });
@@ -113,7 +128,8 @@ export abstract class Monocle<
                 {
                     origin: DocumentChangeOrigin.Monocle,
                     monocle: this,
-                    isTransientChange: true
+                    isTransientChange: true,
+                    preservesMonocle: true
                 }
             )
         };
@@ -145,7 +161,7 @@ export abstract class Monocle<
             output,
             {
                 document: this.document,
-                documentEditor: this.documentEditor,
+                documentEditor: this.getDocumentEditor(true),
                 fragment: this.fragment
             }
         );

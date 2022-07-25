@@ -9,6 +9,9 @@ import { MonocleProviderUsageRequirements } from "../MonocleUsageRequirements";
 import { SyntacticMonocle } from "./SyntacticMonocle";
 import { FragmentType } from "../../fragments/FragmentType";
 import { SyntacticFragment } from "../../fragments/syntactic/SyntacticFragment";
+import { MonocleMatcher } from "../MonocleMatcher";
+import { Fragment } from "../../fragments/Fragment";
+import { MonocleState } from "../Monocle";
 
 export interface SyntacticMonocleProviderSpecification {
     name: string;
@@ -48,20 +51,36 @@ export class SyntacticMonocleProvider implements MonocleProvider {
         this.userInterfaceProvider = specification.userInterfaceProvider;
         this.rendererProvider = specification.rendererProvider;
     }
- 
-    provideForDocument(document: Document): SyntacticMonocle[] {
-        return this.fragmentProvider
-            .provideForDocument(document)
+
+    private createMonocle(document: Document, fragment: SyntacticFragment, initialState?: MonocleState): SyntacticMonocle {
+        return new SyntacticMonocle(
+            this,
+            document,
+            fragment,
+            this.inputMapping,
+            this.outputMapping,
+            this.userInterfaceProvider,
+            this.rendererProvider.provide(),
+            initialState
+        );
+    }
+
+    provideForDocument(document: Document, monocleToPreserve?: SyntacticMonocle): SyntacticMonocle[] {
+        const newFragments = this.fragmentProvider.provideForDocument(document);
+
+        let bestMatchingFragment: Fragment | null = null;
+        if (monocleToPreserve) {
+            const matcher = new MonocleMatcher(monocleToPreserve)
+            bestMatchingFragment = matcher.findBestMatchingFragment(newFragments);
+        }
+
+        return newFragments
             .map(fragment => {
-                return new SyntacticMonocle(
-                    this,
-                    document,
-                    fragment,
-                    this.inputMapping,
-                    this.outputMapping,
-                    this.userInterfaceProvider,
-                    this.rendererProvider.provide()
-                );
+                const initialState = fragment === bestMatchingFragment
+                    ? monocleToPreserve!.state
+                    : undefined;
+
+                return this.createMonocle(document, fragment, initialState);
             });
     }
 }

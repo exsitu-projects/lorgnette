@@ -5,7 +5,7 @@ import { Position } from "../../core/documents/Position";
 import { Language } from "../../core/languages/Language";
 import { DecoratedRange, DecoratedRangeId } from "../code-editor/DecoratedRange";
 import { Document, DocumentChangeOrigin } from "../../core/documents/Document";
-import { Range } from "../../core/documents/Range";
+import { EMPTY_RANGE, Range } from "../../core/documents/Range";
 import { CodeEditor } from "../code-editor/CodeEditor";
 import { TYPESCRIPT_LANGUAGE } from "../../core/languages/typescript/language";
 
@@ -23,6 +23,19 @@ export function convertMonacoPosition(position: MonacoPosition, document: Docume
     const cursorLine = position.lineNumber - 1;
     const cursorColumn = position.column - 1;
     return document.getPositionAtLineAndColumn(cursorLine, cursorColumn);
+}
+
+// Convert a Monaco editor range to a standard range.
+export function convertMonacoRange(range: MonacoRange, document: Document): Range {
+    const startLine = range.startLineNumber - 1;
+    const startColumn = range.startColumn - 1;
+    const startPosition = document.getPositionAtLineAndColumn(startLine, startColumn);
+
+    const endLine = range.endLineNumber - 1;
+    const endColumn = range.endColumn - 1;
+    const endPosition = document.getPositionAtLineAndColumn(endLine, endColumn);
+
+    return Range.fromUnsortedPositions(startPosition, endPosition);
 }
 
 // Convert a Monaco editor selection to a standard range.
@@ -75,9 +88,9 @@ type Props = {
     selections?: Range[],
     decorations?: DecoratedRange[];
     onContentChange?: (newContent: string) => void;
-    onSelectionChange?: (newSelection: MonacoSelection) => void;
-    onCursorPositionChange?: (newPosition: MonacoPosition) => void;
-    onScrollChange?: () => void;
+    onSelectionChange?: (newSelection: Range) => void;
+    onCursorPositionChange?: (newPosition: Position) => void;
+    onScrollChange?: (newVisibleRange: Range) => void;
     onLayoutChange?: () => void;
 };
 
@@ -187,7 +200,9 @@ export class MonacoEditor extends CodeEditor<Props, State> {
 
         this.editor.onDidChangeCursorSelection(event => {
             if (this.props.onSelectionChange) {
-                this.props.onSelectionChange(event.selection);
+                this.props.onSelectionChange(
+                    convertMonacoSelection(event.selection, this.props.document)
+                );
             }
         });
     }
@@ -195,7 +210,9 @@ export class MonacoEditor extends CodeEditor<Props, State> {
     private startObservingCursorPositionChanges(): void {
         this.editor?.onDidChangeCursorPosition(event => {
             if (this.props.onCursorPositionChange) {
-                this.props.onCursorPositionChange(event.position);
+                this.props.onCursorPositionChange(
+                    convertMonacoPosition(event.position, this.props.document)
+                );
             }
         });
     }
@@ -203,7 +220,12 @@ export class MonacoEditor extends CodeEditor<Props, State> {
     private startObservingScrollChanges(): void {
         this.editor?.onDidScrollChange(event => {
             if (this.props.onScrollChange) {
-                this.props.onScrollChange();
+                const visibleRanges = this.editor?.getVisibleRanges();
+                this.props.onScrollChange(
+                    visibleRanges && visibleRanges.length > 0
+                        ? convertMonacoRange(visibleRanges[0], this.props.document)
+                        : EMPTY_RANGE
+                );
             }
         });
     }
@@ -245,6 +267,22 @@ export class MonacoEditor extends CodeEditor<Props, State> {
             const newEditorDecorationIds = this.editor.deltaDecorations(this.currentEditorDecorationIds, decorations);
             this.currentEditorDecorationIds = newEditorDecorationIds;
         } 
+    }
+
+    getVisibleRange(): Range {
+        if (!this.editor) {
+            throw Error("The visible range cannot be retrieved: the editor does not exist.");
+        }
+
+        const visibleRanges = this.editor.getVisibleRanges();
+        const firstVisibleRange = visibleRanges[0];
+
+        if (!visibleRanges) {
+            return EMPTY_RANGE;
+        }
+        else {
+            return convertMonacoRange(firstVisibleRange, this.props.document);
+        }
     }
 
     private get editorElement(): Element {

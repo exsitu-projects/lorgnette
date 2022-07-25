@@ -2,7 +2,7 @@ import { ClassOf } from "../../../utilities/types";
 import { InputMapping } from "../../mappings/InputMapping";
 import { OutputMapping } from "../../mappings/OutputMapping";
 import { UserInterfaceProvider } from "../../user-interfaces/UserInterfaceProvider";
-import { Monocle } from "../Monocle";
+import { Monocle, MonocleState } from "../Monocle";
 import { TextualMonocleProvider } from "./TextualMonocleProvider";
 import { Renderer } from "../../renderers/Renderer";
 import { Document } from "../../documents/Document";
@@ -16,7 +16,8 @@ export class TextualMonocle extends Monocle<TextualFragment> {
         inputMapping: InputMapping<TextualFragment>,
         outputMapping: OutputMapping<TextualFragment>,
         userInterfaceProvider: UserInterfaceProvider,
-        renderer: ClassOf<Renderer>
+        renderer: ClassOf<Renderer>,
+        initialState?: MonocleState
     ) {
         super(
             document,
@@ -25,7 +26,8 @@ export class TextualMonocle extends Monocle<TextualFragment> {
             inputMapping,
             outputMapping,
             userInterfaceProvider,
-            renderer
+            renderer,
+            initialState
         );
     }
 }

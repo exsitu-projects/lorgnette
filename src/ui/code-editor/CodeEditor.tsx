@@ -1,4 +1,5 @@
 import React, { ReactElement } from "react";
+import { Range } from "../../core/documents/Range";
 import "./code-editor.css";
 import { DecoratedRangeId } from "./DecoratedRange";
 
@@ -23,6 +24,8 @@ export abstract class CodeEditor<
     }
 
     abstract renderEditor(): ReactElement;
+
+    abstract getVisibleRange(): Range;
 
     abstract getEditorBoundingBox(): DOMRect;
     abstract getEditorTextAreaBoundingBox(): DOMRect;
