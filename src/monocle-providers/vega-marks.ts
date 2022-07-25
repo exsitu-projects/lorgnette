@@ -168,7 +168,11 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
             style.border = borderStyle;
         }
         if (Object.getOwnPropertyNames(fontStyle).length > 0) {
-            style.font = { ...fontStyle, color: DISABLED_PROPERTY };
+            style.font = {
+                ...fontStyle,
+                underline: DISABLED_PROPERTY,
+                color: DISABLED_PROPERTY
+            };
         }
 
         return {
@@ -271,8 +275,8 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
                 processProperty(
                     mark,
                     "fontWeight",
-                    property => documentEditor.replace(property.value.range, newIsBold ? "true" : "false"),
-                    () => insertProperty(document, documentEditor, mark, "fontWeight", newIsBold ? "true" : "false")
+                    property => documentEditor.replace(property.value.range, newIsBold ? `"bold"` : `"normal"`),
+                    () => insertProperty(document, documentEditor, mark, "fontWeight", newIsBold ? `"bold"` : `"normal"`)
                 );
             }
 
@@ -281,8 +285,8 @@ export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({
                 processProperty(
                     mark,
                     "fontStyle",
-                    property => documentEditor.replace(property.value.range, newIsItalic ? "true" : "false"),
-                    () => insertProperty(document, documentEditor, mark, "fontStyle", newIsItalic ? "true" : "false")
+                    property => documentEditor.replace(property.value.range, newIsItalic ? `"italic"` : `"normal"`),
+                    () => insertProperty(document, documentEditor, mark, "fontStyle", newIsItalic ? `"italic"` : `"normal"`)
                 );
             }
         }
