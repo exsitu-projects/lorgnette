@@ -32,12 +32,10 @@ export class ButtonColorPicker extends React.PureComponent<Props> {
                 arrow: { enabled: false },
                 offset: { enabled: true }
             }}
+            usePortal={true}
+            portalContainer={document.body}
             portalClassName="floating-color-picker-wrapper"
-            content={
-                // <div className="floating-color-picker-wrapper">
-                    colorPicker
-                // {/* </div> */}
-            }
+            content={colorPicker}
             renderTarget={({ isOpen, ref,  ...targetProps }) =>
                 <Button
                     {...targetProps}

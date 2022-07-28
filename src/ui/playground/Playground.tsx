@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import Split from "react-split";
 import { Popover2 } from "@blueprintjs/popover2";
-import { ItemRenderer, Select } from "@blueprintjs/select";
+import { ItemRenderer, Select2 } from "@blueprintjs/select";
 import { Button, Label, Menu, MenuItem } from "@blueprintjs/core";
 import "./playground.css";
 import { GlobalContext, GlobalContextContent } from "../../context";
@@ -42,12 +42,17 @@ export class Playground extends React.Component<Props, State> {
             />;
         };
             
-        const LanguageSelect = Select.ofType<Language>();
+        const LanguageSelect = Select2.ofType<Language>();
         return <LanguageSelect
             items={[...SUPPORTED_LANGUAGES]}
             itemRenderer={renderLanguageSelectorItem}
             onItemSelect={newLanguage => context.updateDocument(newLanguage, context.document.content)}
             activeItem={context.document.language}
+            popoverProps={{
+                usePortal: true,
+                portalContainer: document.body
+            }}
+            className="language-selector"
         >
             <Button text={context.document.language.name} rightIcon="caret-down" />
         </LanguageSelect>;
@@ -78,7 +83,9 @@ export class Playground extends React.Component<Props, State> {
             position="bottom"
             minimal={true}
             popoverClassName="bp4-popover"
-            >
+            usePortal={true}
+            portalContainer={document.body}
+        >
             <Button text="Load example..." rightIcon="caret-down" intent="primary" />
         </Popover2>
     }
@@ -138,7 +145,7 @@ export class Playground extends React.Component<Props, State> {
                 >
                     <div className="code-editor-panel">
                         <div className="menu-bar">
-                            <Label className="bp4-inline" style={{ margin: 0 }}>
+                            <Label className="bp4-inline" style={{ display: "inline-block", margin: 0 }}>
                                 Language:
                                 {this.renderLanguageSelector(context)}
                             </Label>

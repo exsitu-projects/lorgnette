@@ -91,6 +91,8 @@ export abstract class PopoverRenderer extends Renderer<RendererProps, PopoverRen
             onOpened={() => this.setState({ isPopoverOpen: true })}
             onClosed={() => this.setState({ isPopoverOpen: false })}
             ref={this.popoverRef}
+            usePortal={true}
+            portalContainer={document.body}
         />;
     }
 }
