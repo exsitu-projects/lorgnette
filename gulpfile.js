@@ -52,7 +52,8 @@ function inlineFontsInCSSFiles(source, context) {
         }
     }
 
-    source.content = modifiedFileContent;
+    // source.content = modifiedFileContent;
+    source.replace = `<style>${modifiedFileContent}</style>`;
     log("The content of the CSS file has been modified");
 }
 
