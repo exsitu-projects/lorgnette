@@ -3,17 +3,18 @@ import Split from "react-split";
 import "./playground.css";
 import { Popover2 } from "@blueprintjs/popover2";
 import { ItemRenderer, Select2 } from "@blueprintjs/select";
-import { Button, Label, Menu, MenuItem } from "@blueprintjs/core";
+import { Button, Checkbox, Label, Menu, MenuItem } from "@blueprintjs/core";
 import { Language, SUPPORTED_LANGUAGES } from "../../core/languages/Language";
 import { SyntaxTree } from "./syntax-tree/SyntaxTree";
 import { PlaygroundEditor } from "./PlaygroudEditor";
 import { DEFAULT_EXAMPLE, Example, EXAMPLES } from "./examples/Example";
 import { Monocle } from "../../core/monocles/Monocle";
-import { MonocleEnvironment, MonocleEnvironmentContext, MonocleEnvironmentProvider } from "../../MonocleEnvironment";
+import { MonocleEnvironment, MonocleEnvironmentContext } from "../../MonocleEnvironment";
 import { Document } from "../../core/documents/Document";
 
 type Props = {};
 type State = {
+    showSyntaxTree: boolean;
     currentExample: Example;
 };
 
@@ -21,6 +22,7 @@ export class Playground extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
+            showSyntaxTree: false,
             currentExample: DEFAULT_EXAMPLE
         }
     }
@@ -120,7 +122,6 @@ export class Playground extends React.Component<Props, State> {
 
     private renderSyntaxTree(environment: MonocleEnvironment): ReactElement {
         return <>
-            <h3>Syntax tree</h3>
             <SyntaxTree
                 document={environment.document}
                 cursorPosition={environment.codeEditorCursorPosition}
@@ -134,34 +135,59 @@ export class Playground extends React.Component<Props, State> {
     }
     
     render() {
+        const OptionalSplitPanels = (props: { children: (ReactElement | null)[] }) => {
+            const hasSeveralChildren = Array.isArray(props.children)
+                && props.children.filter(element => !!element).length > 1;
+                
+            const splitProps = {
+                className: "panel-container",
+                sizes: [70, 30],
+                minSize: 250
+            };
+
+            return hasSeveralChildren
+                ? <Split {...splitProps}>{props.children}</Split>
+                : <>{props.children}</>;
+        }
+
         return <MonocleEnvironmentContext.Consumer>{ environment => (
-            <Split
-                className="playground"
-                sizes={[70, 30]}
-                minSize={250}
-            >
-                <div className="code-editor-panel">
-                    <div className="menu-bar">
-                        <Label className="bp4-inline" style={{ display: "inline-block", margin: 0 }}>
-                            Language:
-                            {this.renderLanguageSelector(environment)}
-                        </Label>
+            <div className="playground">
+                <div className="menu-bar">
+                    <Label className="language-selector bp4-inline">
+                        Language
+                        {this.renderLanguageSelector(environment)}
+                    </Label>
+                    <div className="example-selector">
                         {this.renderExampleSelector(environment)}
                     </div>
-                    <PlaygroundEditor/>
-                    <div className="status-bar">
-                        <div className="active-monocles-information">
-                            {this.renderActiveMonoclesInfoText(environment)}
-                        </div>
-                        <div className="cursor-position">
-                            {environment.codeEditorCursorPosition.toPrettyString()}
+                    <Label className="show-syntax-tree-checkbox bp4-inline">
+                        Show syntax tree
+                        <Checkbox
+                            defaultChecked={this.state.showSyntaxTree}
+                            onChange={event => this.setState({
+                                showSyntaxTree: !this.state.showSyntaxTree
+                            })}
+                            inline={true}
+                        />
+                    </Label>
+                </div>
+                <OptionalSplitPanels>
+                    <div className="code-editor-panel">
+                        <PlaygroundEditor/>
+                        <div className="status-bar">
+                            <div className="active-monocles-information">
+                                {this.renderActiveMonoclesInfoText(environment)}
+                            </div>
+                            <div className="cursor-position">
+                                {environment.codeEditorCursorPosition.toPrettyString()}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="syntax-tree-panel">
-                    {this.renderSyntaxTree(environment)}
-                </div>
-            </Split>
+                    { this.state.showSyntaxTree ? <div className="syntax-tree-panel">
+                        {this.renderSyntaxTree(environment)}
+                    </div> : null }
+                </OptionalSplitPanels>
+            </div>
         )}</MonocleEnvironmentContext.Consumer>
     }
 };
