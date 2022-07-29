@@ -1,15 +1,16 @@
 import React, { ReactElement } from "react";
 import Split from "react-split";
+import "./playground.css";
 import { Popover2 } from "@blueprintjs/popover2";
 import { ItemRenderer, Select2 } from "@blueprintjs/select";
 import { Button, Label, Menu, MenuItem } from "@blueprintjs/core";
-import "./playground.css";
-import { GlobalContext, GlobalContextContent } from "../../context";
 import { Language, SUPPORTED_LANGUAGES } from "../../core/languages/Language";
 import { SyntaxTree } from "./syntax-tree/SyntaxTree";
 import { PlaygroundEditor } from "./PlaygroudEditor";
 import { DEFAULT_EXAMPLE, Example, EXAMPLES } from "./examples/Example";
 import { Monocle } from "../../core/monocles/Monocle";
+import { MonocleEnvironment, MonocleEnvironmentContext, MonocleEnvironmentProvider } from "../../MonocleEnvironment";
+import { Document } from "../../core/documents/Document";
 
 type Props = {};
 type State = {
@@ -24,7 +25,7 @@ export class Playground extends React.Component<Props, State> {
         }
     }
 
-    private renderLanguageSelector(context: GlobalContextContent): ReactElement {
+    private renderLanguageSelector(environment: MonocleEnvironment): ReactElement {
         const renderLanguageSelectorItem: ItemRenderer<Language> = (
             language,
             { handleClick, modifiers }
@@ -46,30 +47,27 @@ export class Playground extends React.Component<Props, State> {
         return <LanguageSelect
             items={[...SUPPORTED_LANGUAGES]}
             itemRenderer={renderLanguageSelectorItem}
-            onItemSelect={newLanguage => context.updateDocument(newLanguage, context.document.content)}
-            activeItem={context.document.language}
+            onItemSelect={newLanguage => environment.updateDocument(new Document(newLanguage, environment.document.content))}
+            activeItem={environment.document.language}
             popoverProps={{
                 usePortal: true,
                 portalContainer: document.body
             }}
             className="language-selector"
         >
-            <Button text={context.document.language.name} rightIcon="caret-down" />
+            <Button text={environment.document.language.name} rightIcon="caret-down" />
         </LanguageSelect>;
         
     }
 
-    private renderExampleSelector(context: GlobalContextContent): ReactElement {
+    private renderExampleSelector(environment: MonocleEnvironment): ReactElement {
         const renderExampleMenuItem = (example: Example): ReactElement => {
             return <MenuItem
                 key={example.name}
                 text={example.name}
                 onClick={() => {
                     this.setState({ currentExample: example });
-                    context.updateDocument(
-                        example.language,
-                        example.content
-                    )
+                    environment.updateDocument(new Document(example.language, example.content))
                 }}
             />;
         };
@@ -98,11 +96,11 @@ export class Playground extends React.Component<Props, State> {
         </li>;
     }
 
-    private renderActiveMonoclesInfoText(context: GlobalContextContent): ReactElement | null {
+    private renderActiveMonoclesInfoText(environment: MonocleEnvironment): ReactElement | null {
         // TODO: update how an active monocle is detected!
         const activeMonocles: Monocle[] = [];
-        for (let monocle of context.monocles) {
-            if (monocle.range.contains(context.codeEditorCursorPosition)) {
+        for (let monocle of environment.monocles) {
+            if (monocle.range.contains(environment.codeEditorCursorPosition)) {
                 activeMonocles.push(monocle);
             }
         }
@@ -120,52 +118,50 @@ export class Playground extends React.Component<Props, State> {
         }
     }
 
-    private renderSyntaxTree(context: GlobalContextContent): ReactElement {
+    private renderSyntaxTree(environment: MonocleEnvironment): ReactElement {
         return <>
             <h3>Syntax tree</h3>
             <SyntaxTree
-                document={context.document}
-                cursorPosition={context.codeEditorCursorPosition}
+                document={environment.document}
+                cursorPosition={environment.codeEditorCursorPosition}
                 onMouseTargetNodeChange={node =>
                     node
-                        ? context.updateCodeEditorRanges({ hovered: [node.range] })
-                        : context.updateCodeEditorRanges({ hovered: [] })
+                        ? environment.updateCodeEditorRanges({ hovered: [node.range] })
+                        : environment.updateCodeEditorRanges({ hovered: [] })
                 }
             />
         </>;
     }
     
     render() {
-        return (
-            <GlobalContext.Consumer>{ context => (
-                <Split
-                    className="playground"
-                    sizes={[70, 30]}
-                    minSize={250}
-                >
-                    <div className="code-editor-panel">
-                        <div className="menu-bar">
-                            <Label className="bp4-inline" style={{ display: "inline-block", margin: 0 }}>
-                                Language:
-                                {this.renderLanguageSelector(context)}
-                            </Label>
-                            {this.renderExampleSelector(context)}
+        return <MonocleEnvironmentContext.Consumer>{ environment => (
+            <Split
+                className="playground"
+                sizes={[70, 30]}
+                minSize={250}
+            >
+                <div className="code-editor-panel">
+                    <div className="menu-bar">
+                        <Label className="bp4-inline" style={{ display: "inline-block", margin: 0 }}>
+                            Language:
+                            {this.renderLanguageSelector(environment)}
+                        </Label>
+                        {this.renderExampleSelector(environment)}
+                    </div>
+                    <PlaygroundEditor/>
+                    <div className="status-bar">
+                        <div className="active-monocles-information">
+                            {this.renderActiveMonoclesInfoText(environment)}
                         </div>
-                        <PlaygroundEditor/>
-                        <div className="status-bar">
-                            <div className="active-monocles-information">
-                                {this.renderActiveMonoclesInfoText(context)}
-                            </div>
-                            <div className="cursor-position">
-                                {context.codeEditorCursorPosition.toPrettyString()}
-                            </div>
+                        <div className="cursor-position">
+                            {environment.codeEditorCursorPosition.toPrettyString()}
                         </div>
                     </div>
-                    <div className="syntax-tree-panel">
-                        {this.renderSyntaxTree(context)}
-                    </div>
-                </Split>
-            )}</GlobalContext.Consumer>
-        );
+                </div>
+                <div className="syntax-tree-panel">
+                    {this.renderSyntaxTree(environment)}
+                </div>
+            </Split>
+        )}</MonocleEnvironmentContext.Consumer>
     }
 };

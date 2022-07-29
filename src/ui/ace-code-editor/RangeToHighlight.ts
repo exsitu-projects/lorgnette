@@ -1,7 +1,7 @@
-import { CodeEditorRanges } from "../../context";
 import { Range } from "../../core/documents/Range";
 import { Fragment } from "../../core/fragments/Fragment";
 import { Monocle } from "../../core/monocles/Monocle";
+import { CodeEditorRanges } from "../../MonocleEnvironment";
 
 /* `start` and `end` use 0-based row and column indices. */
 export interface RangeToHighlight {

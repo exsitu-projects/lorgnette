@@ -3,8 +3,8 @@ import "./tree-component.css";
 import "react-complex-tree/lib/style.css";
 
 import { Tree, TreeItem, TreeItemIndex, DraggingPosition, TreeItemRenderContext, TreeInformation, ControlledTreeEnvironment, TreeViewState } from "react-complex-tree";
-import { GlobalContext, GlobalContextContent } from "../../../context";
 import { TreeNode } from "./Tree";
+import { MonocleEnvironment, MonocleEnvironmentContext } from "../../../MonocleEnvironment";
 
 export type TreeData = TreeItem[];
 export type TreeItemData<T> = {
@@ -118,7 +118,7 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
             }
         };
 
-        return <GlobalContext.Consumer>{ context => (
+        return <MonocleEnvironmentContext.Consumer>{ environment => (
             <ControlledTreeEnvironment
                 items={treeItems}
                 getItemTitle={item => item.data.title}
@@ -134,10 +134,10 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
                 <Tree
                     treeId={treeId}
                     rootItem="0"
-                    renderItemTitle={props => TreeComponent.renderTreeItemTitle<T>(props, context)}
+                    renderItemTitle={props => TreeComponent.renderTreeItemTitle<T>(props, environment)}
                 />
             </ControlledTreeEnvironment>
-        )}</GlobalContext.Consumer>;
+        )}</MonocleEnvironmentContext.Consumer>;
     }
 
     private static getUniqueTreeId(): string {
@@ -154,7 +154,7 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
             context: TreeItemRenderContext,
             info: TreeInformation,
         },
-        context: GlobalContextContent
+        environement: MonocleEnvironment
     ) {
         // TODO; do this another way
         const hasItemRange = props.item.data.data && (props.item.data.data as any)["range"];
@@ -163,9 +163,9 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
         return <div
             className="tree-item"
             draggable={props.context.canDrag}
-            onMouseEnter={event => hasItemRange ? context.updateCodeEditorRanges({ hovered: [itemRange] }) : {}}
-            onMouseLeave={event => hasItemRange ? context.updateCodeEditorRanges({ hovered: [] }) : {}}
-            onClick={event => hasItemRange ? context.updateCodeEditorRanges({ selected: [itemRange] }) : {}}
+            onMouseEnter={event => hasItemRange ? environement.updateCodeEditorRanges({ hovered: [itemRange] }) : {}}
+            onMouseLeave={event => hasItemRange ? environement.updateCodeEditorRanges({ hovered: [] }) : {}}
+            onClick={event => hasItemRange ? environement.updateCodeEditorRanges({ selected: [itemRange] }) : {}}
             data-rct-item-interactive={true}
             data-rct-item-id={props.item.index}
             onLoad={event => props.context.expandItem()}

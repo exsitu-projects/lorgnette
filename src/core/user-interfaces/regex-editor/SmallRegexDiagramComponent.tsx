@@ -1,9 +1,9 @@
 import React, { ReactElement } from "react";
 import "./regex-editor.css";
-import { GlobalContext } from "../../../context";
 import { RegulexIframe } from "./RegulexIframe";
 import { SplitRegex } from "../../../utilities/SplitRegex";
 import { Range } from "../../documents/Range";
+import { MonocleEnvironmentContext } from "../../../MonocleEnvironment";
 
 type Props = {
     regex: RegExp;
@@ -42,7 +42,7 @@ export class SmallRegexDiagramComponent extends React.PureComponent<Props> {
         const splitRegex = SplitRegex.fromRegex(this.props.regex);
         const iframe = this.createSmallRegulexIframe(splitRegex);
 
-        return <GlobalContext.Consumer>{ context => (
+        return <MonocleEnvironmentContext.Consumer>{ environment => (
             <>    
                 <div className="regex-diagram small">
                     {iframe}
@@ -53,16 +53,16 @@ export class SmallRegexDiagramComponent extends React.PureComponent<Props> {
                     onMouseEnter={() => {
                         console.log(this.props.regexRange)
                         if (this.props.regexRange) {
-                            context.updateCodeEditorRanges({ hovered: [this.props.regexRange] })
+                            environment.updateCodeEditorRanges({ hovered: [this.props.regexRange] })
                         }
                     }}
                     onMouseLeave={() => {
                         if (this.props.regexRange) {
-                            context.updateCodeEditorRanges({ hovered: [] })
+                            environment.updateCodeEditorRanges({ hovered: [] })
                         }
                     }}
                 />
             </>
-        )}</GlobalContext.Consumer>;
+        )}</MonocleEnvironmentContext.Consumer>;
     }
 }

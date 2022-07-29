@@ -1,7 +1,7 @@
 import React from "react";
 import "./syntax-tree.css";
 import { SyntaxTreeNode as Node } from "../../../core/languages/SyntaxTreeNode";
-import { CodeRange } from "../../utilities/CodeRange";
+import { CodeRange } from "../../../utilities/components/CodeRange";
 import { Position } from "../../../core/documents/Position";
 
 export interface SyntaxTreeNodeEventHandlerProps {

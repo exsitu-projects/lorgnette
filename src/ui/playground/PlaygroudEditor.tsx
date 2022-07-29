@@ -1,11 +1,11 @@
 import React, { ReactElement } from "react";
 import "./playground.css";
-import { GlobalContext, GlobalContextContent } from "../../context";
 import { MonacoEditor } from "../monaco-code-editor/MonacoEditor";
 import { Monocle } from "../../core/monocles/Monocle";
 import { DecoratedRange } from "../code-editor/DecoratedRange";
 import { Range } from "../../core/documents/Range";
 import { Position } from "../../core/documents/Position";
+import { MonocleEnvironment, MonocleEnvironmentContext } from "../../MonocleEnvironment";
 
 export type Props = {
 
@@ -22,14 +22,14 @@ export class PlaygroundEditor extends React.PureComponent<Props> {
         this.monocleContainerRef = React.createRef();
     }
 
-    private renderEmbeddedMonocles(context: GlobalContextContent): ReactElement {
-        const renderedMonocles = context.monocles.map(
+    private renderEmbeddedMonocles(environment: MonocleEnvironment): ReactElement {
+        const renderedMonocles = environment.monocles.map(
             monocle => <monocle.renderer
                 key={monocle.uid}
                 monocle={monocle}
                 codeEditorRef={this.codeEditorRef}
-                codeEditorVisibleRange={context.codeEditorRanges.visible}
-                codeEditorCursorPosition={context.codeEditorCursorPosition}
+                codeEditorVisibleRange={environment.codeEditorRanges.visible}
+                codeEditorCursorPosition={environment.codeEditorCursorPosition}
             />
         );
 
@@ -56,29 +56,29 @@ export class PlaygroundEditor extends React.PureComponent<Props> {
     }
 
     render() {
-        return <GlobalContext.Consumer>{ context => (
+        return <MonocleEnvironmentContext.Consumer>{ environment => (
             <div className="playground-editor-wrapper">
                 <MonacoEditor
-                    document={context.document}
-                    // language={context.document.language}
-                    content={context.document.content}
-                    // selections={context.codeEditorRanges.selected}
+                    document={environment.document}
+                    // language={environment.document.language}
+                    content={environment.document.content}
+                    // selections={environment.codeEditorRanges.selected}
                     decorations={this.createDecoratedRanges(
-                        context.monocles,
-                        context.codeEditorRanges.hovered,
-                        context.codeEditorCursorPosition
+                        environment.monocles,
+                        environment.codeEditorRanges.hovered,
+                        environment.codeEditorCursorPosition
                     )}
                     ref={this.codeEditorRef}
 
-                    onContentChange={newContent => context.updateDocumentContent(newContent)}
+                    onContentChange={newContent => environment.updateDocumentContent(newContent)}
                     onCursorPositionChange={newPosition =>
-                        context.updateCodeEditorCursorPosition(newPosition)
+                        environment.updateCodeEditorCursorPosition(newPosition)
                     }
                     onSelectionChange={newSelection =>
-                        context.updateCodeEditorRanges({ selected: [newSelection] })
+                        environment.updateCodeEditorRanges({ selected: [newSelection] })
                     }
                     onScrollChange={newVisibleRange =>
-                        context.updateCodeEditorRanges({ visible: newVisibleRange })
+                        environment.updateCodeEditorRanges({ visible: newVisibleRange })
                     }
                     onLayoutChange={() => { /* TODO: update the monocle renderers */}}
                 />
@@ -86,9 +86,9 @@ export class PlaygroundEditor extends React.PureComponent<Props> {
                     className="monocles"
                     ref={this.monocleContainerRef}
                 >
-                    {this.renderEmbeddedMonocles(context)}
+                    {this.renderEmbeddedMonocles(environment)}
                 </div>
             </div>
-        )}</GlobalContext.Consumer>
+        )}</MonocleEnvironmentContext.Consumer>
     }
 }
