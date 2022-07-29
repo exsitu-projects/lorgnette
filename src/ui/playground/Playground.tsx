@@ -112,7 +112,7 @@ export class Playground extends React.Component<Props, State> {
         }
         else {
             return <>
-                <strong>Active monocles: </strong>
+                <strong>Monocles at current position: </strong>
                 <ul>
                     {activeMonocles.map(monocle => this.renderMonocleInfoText(monocle))}
                 </ul>
