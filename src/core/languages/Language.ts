@@ -21,3 +21,7 @@ export const SUPPORTED_LANGUAGES = [
 ] as const;
 
 export type SupportedLanguages = typeof SUPPORTED_LANGUAGES[number];
+
+export function getLanguageWithId(id: string): Language | null {
+  return SUPPORTED_LANGUAGES.find(language => language.id === id) ?? null;
+}

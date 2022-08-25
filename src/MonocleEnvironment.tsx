@@ -93,19 +93,36 @@ export class MonocleEnvironmentProvider extends React.Component<
     };
   }
 
-  private setCodeEditorCursorPosition(newPosition: Position): void {
-    this.setState({
+  // The purpose of this method is to provide a callback for state changes
+  // that can be used in child classes extending this environment provider.
+  // Note: Partial<MonocleEnvironment> should work here (?), but it does not match
+  // the signature of setSate provided by React, hence the more complex Pick type.
+  protected setEnvironment<K extends keyof MonocleEnvironment>(
+    environmentChanges: Pick<MonocleEnvironment, K>
+  ): void {
+    this.setState(environmentChanges);
+    this.onEnvironmentDidChange(environmentChanges);
+  }
+
+  // Callback that can be extended by child classes extending this class.
+  // See the setEnvironment method for details.
+  protected onEnvironmentDidChange(environmentChanges: Partial<MonocleEnvironment>): void {
+    // Do nothing by default.
+  }
+
+  protected setCodeEditorCursorPosition(newPosition: Position): void {
+    this.setEnvironment({
       codeEditorCursorPosition: newPosition
     });
   }
 
-  private setCodeEditorRanges(newRanges: Partial<CodeEditorRanges>): void {
-    this.setState({
+  protected setCodeEditorRanges(newRanges: Partial<CodeEditorRanges>): void {
+    this.setEnvironment({
       codeEditorRanges: { ...this.state.codeEditorRanges, ...newRanges }
     });
   }
 
-  private setDocument(newDocument: Document): void {
+  protected setDocument(newDocument: Document): void {
     // Update the document change observers.
     this.state.document.removeChangeObserver(this.documentChangeObserver)
     newDocument.addChangeObserver(this.documentChangeObserver);
@@ -113,24 +130,24 @@ export class MonocleEnvironmentProvider extends React.Component<
     // Create monocles for the new document.
     const newMonocles = this.createMonoclesForDocument(newDocument);
 
-    this.setState({
+    this.setEnvironment({
       document: newDocument,
       monocles: newMonocles
     });
   }
 
-  private setDocumentContent(newContent: string): void {
+  protected setDocumentContent(newContent: string): void {
     this.setDocument(new Document(this.state.document.language, newContent));
   }
 
-  private createDocumentFromExample(example: Example): Document {
+  protected createDocumentFromExample(example: Example): Document {
     const document = new Document(example.language, example.content);
     document.addChangeObserver(this.documentChangeObserver);
 
     return document;
   }
 
-  private onDocumentChange(event: DocumentChangeEvent): void {
+  protected onDocumentChange(event: DocumentChangeEvent): void {
     // If the change is transient, the document should only be modified internally until the transient state ends,
     // without recreating a new document for each successive transient change.
     if (event.changeContext.origin === DocumentChangeOrigin.Monocle && event.changeContext.isTransientChange) {
@@ -165,7 +182,7 @@ export class MonocleEnvironmentProvider extends React.Component<
   }
 
   // Create new monocles for the given document.
-  private createMonoclesForDocument(document: Document, monocleToPreserve?: Monocle): Monocle[] {
+  protected createMonoclesForDocument(document: Document, monocleToPreserve?: Monocle): Monocle[] {
     const monocles: Monocle[] = [];
 
     for (let monocleProvider of this.state.monocleProviders) {
@@ -185,7 +202,7 @@ export class MonocleEnvironmentProvider extends React.Component<
   }
 
   componentDidMount(): void {
-    this.setState({
+    this.setEnvironment({
       monocles: this.createMonoclesForDocument(this.state.document)
     });
   }
