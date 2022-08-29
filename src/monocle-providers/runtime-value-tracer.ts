@@ -6,6 +6,7 @@ import { ProgrammableRuntimeRequestProvider } from "../core/runtime/request-prov
 import { RuntimeRequest } from "../core/runtime/RuntimeRequest";
 import { InputPrinter } from "../core/user-interfaces/input-printer/InputPrinter";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
+import { ValueHistory } from "../core/user-interfaces/value-history/ValueHistory";
 
 export const runtimeValueTracerProvider = new TextualMonocleProvider({
     name: "Runtime value tracer",
@@ -29,15 +30,24 @@ export const runtimeValueTracerProvider = new TextualMonocleProvider({
 
     inputMapping: new ProgrammableInputMapping(({ runtimeResponses }) => {
         return {
-            lastRuntimeResponses: runtimeResponses
+            valueChanges: runtimeResponses.map(response => {
+                const responseContentAsNumber = Number(response.content);
+                return {
+                    value: Number.isNaN(responseContentAsNumber)
+                        ? response.content
+                        : responseContentAsNumber,
+                    timestamp: response.receptionTime
+                };
+            })
+            // lastRuntimeResponses: runtimeResponses
         };
     }),
 
-    userInterfaceProvider: InputPrinter.makeProvider(),
+    userInterfaceProvider: ValueHistory.makeProvider(),
     
     rendererProvider: AsideRenderer.makeProvider({
         onlyShowWhenCursorIsInRange: false,
         position: AsideRendererPosition.RightSideOfCode,
-        positionOffset: 200
+        positionOffset: 100
     })
 });
