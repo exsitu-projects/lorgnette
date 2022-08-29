@@ -358,6 +358,9 @@ export class MonacoEditor extends CodeEditor<Props, State> {
             onMount={(editor, monaco) => {
                 this.onEditorDidMount(editor, monaco);
             }}
+            options={{
+                fontSize: 11
+            }}
         />;
     }
 };
