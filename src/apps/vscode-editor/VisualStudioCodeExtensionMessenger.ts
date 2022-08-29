@@ -1,6 +1,6 @@
+import { RawRuntimeRequest } from "../../core/runtime/RuntimeRequest";
 import { ArrayMap } from "../../utilities/ArrayMap";
 import { vscode } from "./VisualStudioCodeApi";
-import { RuntimeRequest } from "./VisualStudioCodeEditorMonocleEnvironmentProvider";
 
 export type MessageType = string;
 
@@ -25,6 +25,12 @@ export type IncomingMessage<T extends MessageType = MessageType> =
         } | {
             type: "set-content",
             payload: {
+                content: string;
+            }
+        } | {
+            type: "runtime-response",
+            payload: {
+                requestId: number;
                 content: string;
             }
         }
@@ -52,7 +58,7 @@ export type OutgoingMessage = {
 } | {
     type: "set-runtime-requests",
     payload: {
-        requests: RuntimeRequest[];
+        requests: RawRuntimeRequest[];
     }
 } | {
     type: "save-document"

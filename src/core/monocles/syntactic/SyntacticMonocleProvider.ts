@@ -12,6 +12,7 @@ import { SyntacticFragment } from "../../fragments/syntactic/SyntacticFragment";
 import { MonocleMatcher } from "../MonocleMatcher";
 import { Fragment } from "../../fragments/Fragment";
 import { MonocleState } from "../Monocle";
+import { RuntimeRequestProvider } from "../../runtime/request-providers/RuntimeRequestProvider";
 
 export interface SyntacticMonocleProviderSpecification {
     name: string;
@@ -19,6 +20,8 @@ export interface SyntacticMonocleProviderSpecification {
     usageRequirements: MonocleProviderUsageRequirements;
 
     fragmentProvider: FragmentProvider<SyntacticFragment>,
+
+    runtimeRequestProvider?: RuntimeRequestProvider<SyntacticFragment>,
 
     inputMapping: InputMapping<SyntacticFragment>;
 
@@ -37,6 +40,7 @@ export class SyntacticMonocleProvider implements MonocleProvider {
     usageRequirements: MonocleProviderUsageRequirements;
 
     private fragmentProvider: FragmentProvider<SyntacticFragment>;
+    private runtimeRequestProvider: RuntimeRequestProvider<SyntacticFragment> | null;
     private inputMapping: InputMapping<SyntacticFragment>;
     private outputMapping: OutputMapping<SyntacticFragment>;
     private userInterfaceProvider: UserInterfaceProvider;
@@ -46,6 +50,7 @@ export class SyntacticMonocleProvider implements MonocleProvider {
         this.name = specification.name;
         this.usageRequirements = specification.usageRequirements;
         this.fragmentProvider = specification.fragmentProvider;
+        this.runtimeRequestProvider = specification.runtimeRequestProvider ?? null;
         this.inputMapping = specification.inputMapping;
         this.outputMapping = specification.outputMapping ?? EMPTY_OUTPUT_MAPPING;
         this.userInterfaceProvider = specification.userInterfaceProvider;
@@ -53,10 +58,15 @@ export class SyntacticMonocleProvider implements MonocleProvider {
     }
 
     private createMonocle(document: Document, fragment: SyntacticFragment, initialState?: MonocleState): SyntacticMonocle {
+        const runtimeRequests = this.runtimeRequestProvider
+            ? this.runtimeRequestProvider.provideRuntimeRequests({ document: document, fragment: fragment })
+            : [];
+
         return new SyntacticMonocle(
             this,
             document,
             fragment,
+            runtimeRequests,
             this.inputMapping,
             this.outputMapping,
             this.userInterfaceProvider,

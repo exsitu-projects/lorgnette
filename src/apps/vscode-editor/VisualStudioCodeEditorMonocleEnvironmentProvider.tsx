@@ -1,36 +1,33 @@
 import { Document } from "../../core/documents/Document";
-import { Position } from "../../core/documents/Position";
 import { getLanguageWithId } from "../../core/languages/Language";
 import { Monocle } from "../../core/monocles/Monocle";
+import { RawRuntimeRequest, RuntimeRequest, RuntimeRequestId } from "../../core/runtime/RuntimeRequest";
+import { RawRuntimeResponse, RuntimeResponse } from "../../core/runtime/RuntimeResponse";
 import { MonocleEnvironment, MonocleEnvironmentProvider, MonocleEnvironmentProviderProps, MonocleEnvironmentProviderState } from "../../MonocleEnvironment";
-import { ArrayMap } from "../../utilities/ArrayMap";
 import { VisualStudioCodeExtensionMessenger } from "./VisualStudioCodeExtensionMessenger";
 
 type Props = MonocleEnvironmentProviderProps;
 type State = MonocleEnvironmentProviderState;
 
-export interface RuntimeRequest {
-    id: number;
-    position: { line: number, column: number };
-    expression: string;
-};
-
-let nextRuntimeRequestId = 0;
-
 export class VisualStudioCodeEditorMonocleEnvironmentProvider extends MonocleEnvironmentProvider {
     private messenger: VisualStudioCodeExtensionMessenger;
-    private monoclesToRuntimeRequests: ArrayMap<Monocle, RuntimeRequest>;
+    private runtimeRequestIdsToMonoclesAndRequests: Map<RuntimeRequestId, { monocle: Monocle, request: RuntimeRequest }>;
     
     constructor(props: Props) {
         super(props);
 
         this.messenger = new VisualStudioCodeExtensionMessenger();
-        this.monoclesToRuntimeRequests = new ArrayMap();
+        this.runtimeRequestIdsToMonoclesAndRequests = new Map();
         this.initialiseExtensionMessageHandlers();
     }
 
     private get runtimeRequests(): RuntimeRequest[] {
-        return [...this.monoclesToRuntimeRequests.values];
+        return [...this.runtimeRequestIdsToMonoclesAndRequests.values()]
+            .map(({ request }) => request);
+    }
+
+    private get rawRuntimeRequests(): RawRuntimeRequest[] {
+        return this.runtimeRequests.map(request => request.raw);
     }
 
     private initialiseExtensionMessageHandlers(): void {
@@ -55,8 +52,41 @@ export class VisualStudioCodeEditorMonocleEnvironmentProvider extends MonocleEnv
 
         this.messenger.addMessageHandler(
             "runtime-response",
-            message => console.log("RUNTIME RESPONSE:", message)
+            message => this.processRawRuntimeResponse(message.payload, Date.now())
         );
+    }
+
+    private remapRuntimeRequestIdsToMonoclesAndRequests(monocles: Monocle[]): void {
+        this.runtimeRequestIdsToMonoclesAndRequests.clear();
+
+        for (let monocle of monocles) {
+            for (let request of monocle.runtimeRequests) {
+                this.runtimeRequestIdsToMonoclesAndRequests.set(
+                    request.id,
+                    { monocle: monocle, request: request }
+                );
+            }
+        }
+    }
+
+    private processRawRuntimeResponse(rawResponse: RawRuntimeResponse, receptionTime: number): void {
+        if (!this.runtimeRequestIdsToMonoclesAndRequests.has(rawResponse.requestId)) {
+            console.warn("The received runtime response has no matching request:", rawResponse);
+            return;
+        }
+
+        // Convert the raw response to a standard response.
+        const { monocle, request } = this.runtimeRequestIdsToMonoclesAndRequests.get(rawResponse.requestId)!;
+        const response = RuntimeResponse.fromRawResponse(
+            rawResponse,
+            request.name,
+            receptionTime
+        );
+
+        // Dispatch the response to the appropriate monocle.
+        monocle.queueRuntimeResponse(response);
+        
+        console.info("Dispatched runtime response:", response, monocle);
     }
 
     protected onEnvironmentDidChange(environmentChanges: Partial<MonocleEnvironment>): void {
@@ -83,22 +113,13 @@ export class VisualStudioCodeEditorMonocleEnvironmentProvider extends MonocleEnv
 
         if (environmentChanges.monocles) {
             // Update the list of runtime requests of each monocle.
-            this.monoclesToRuntimeRequests.clear();
-            for (let monocle of environmentChanges.monocles) {
-                // TODO: actually implement this.
-                nextRuntimeRequestId += 1;
-                this.monoclesToRuntimeRequests.add(monocle, {
-                    id: nextRuntimeRequestId,
-                    position: { line: monocle.range.start.row, column: monocle.range.start.column },
-                    expression: "aaa" // `${nextRuntimeRequestId}`
-                });
-            }
+            this.remapRuntimeRequestIdsToMonoclesAndRequests(environmentChanges.monocles);
 
             // Send a list of all the runtime requests to the extension.
             this.messenger.sendMessage({
                 type: "set-runtime-requests",
                 payload: {
-                    requests: this.runtimeRequests
+                    requests: this.rawRuntimeRequests
                 }
             });
         }

@@ -10,21 +10,35 @@ export interface Output extends UserInterfaceOutput {};
 export class InputPrinter extends UserInterface<Input, Output> {
     readonly className = "input-printer";
     private input: any;
+    private component: InputPrinterComponent | null;
 
     constructor(monocle: Monocle) {
         super(monocle);
 
-        this.input = "";
+        this.input = {};
+        this.component = null;
     }
 
     setInput(newInput: any): void {
         this.input = newInput;
+        this.updateViewContent();
     }
 
     createViewContent(): JSX.Element {
         return <InputPrinterComponent
-            input={this.input}
+            initialInput={this.input}
+            ref={component => this.component = component}
         />;
+    }
+
+    updateViewContent(): void {
+        if (!this.component) {
+            return;
+        }
+
+        this.component.setState({
+            input: this.input
+        });
     }
 
     protected get modelOutput(): Output {
@@ -34,6 +48,7 @@ export class InputPrinter extends UserInterface<Input, Output> {
     updateModel(input: Input): void {
         // TODO: check input
         this.setInput(input);
+        console.log("Updated input printer model with:", input);
     }
 
     static makeProvider(): UserInterfaceProvider {

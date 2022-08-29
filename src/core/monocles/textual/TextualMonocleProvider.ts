@@ -12,6 +12,7 @@ import { TextualFragment } from "../../fragments/textual/TextualFragment";
 import { Fragment } from "../../fragments/Fragment";
 import { MonocleMatcher } from "../MonocleMatcher";
 import { MonocleState } from "../Monocle";
+import { RuntimeRequestProvider } from "../../runtime/request-providers/RuntimeRequestProvider";
 
 export interface TextualMonocleProviderSpecification {
     name: string;
@@ -19,6 +20,8 @@ export interface TextualMonocleProviderSpecification {
     usageRequirements: MonocleProviderUsageRequirements;
 
     fragmentProvider: FragmentProvider<TextualFragment>,
+
+    runtimeRequestProvider?: RuntimeRequestProvider<TextualFragment>,
 
     inputMapping: InputMapping<TextualFragment>;
 
@@ -37,6 +40,7 @@ export class TextualMonocleProvider implements MonocleProvider {
     usageRequirements: MonocleProviderUsageRequirements;
 
     private fragmentProvider: FragmentProvider<TextualFragment>;
+    private runtimeRequestProvider: RuntimeRequestProvider<TextualFragment> | null;
     private inputMapping: InputMapping<TextualFragment>;
     private outputMapping: OutputMapping<TextualFragment>;
     private userInterfaceProvider: UserInterfaceProvider;
@@ -46,6 +50,7 @@ export class TextualMonocleProvider implements MonocleProvider {
         this.name = specification.name;
         this.usageRequirements = specification.usageRequirements;
         this.fragmentProvider = specification.fragmentProvider;
+        this.runtimeRequestProvider = specification.runtimeRequestProvider ?? null;
         this.inputMapping = specification.inputMapping;
         this.outputMapping = specification.outputMapping ?? EMPTY_OUTPUT_MAPPING;
         this.userInterfaceProvider = specification.userInterfaceProvider;
@@ -53,10 +58,15 @@ export class TextualMonocleProvider implements MonocleProvider {
     }
 
     private createMonocle(document: Document, fragment: TextualFragment, initialState?: MonocleState): TextualMonocle {
+        const runtimeRequests = this.runtimeRequestProvider
+            ? this.runtimeRequestProvider.provideRuntimeRequests({ document: document, fragment: fragment })
+            : [];
+
         return new TextualMonocle(
             this,
             document,
             fragment,
+            runtimeRequests,
             this.inputMapping,
             this.outputMapping,
             this.userInterfaceProvider,

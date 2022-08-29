@@ -1,14 +1,26 @@
-import React from "react";
+import React, { Component } from "react";
 import ReactJson from 'react-json-view'
 
 type Props = {
+    initialInput: object;
+};
+
+type State = {
     input: object;
 };
 
-export class InputPrinterComponent extends React.PureComponent<Props> {
+export class InputPrinterComponent extends Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            input: props.initialInput
+        };
+    }
+
     render() {
         return <ReactJson
-            src={this.props.input}
+            src={this.state.input}
             name={null}
             quotesOnKeys={false}
             enableClipboard={false}

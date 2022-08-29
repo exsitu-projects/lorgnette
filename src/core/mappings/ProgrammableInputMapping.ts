@@ -1,13 +1,15 @@
 import { ProgrammableFunction } from "../../utilities/ProgrammableFunction";
 import { Document } from "../documents/Document";
 import { Fragment } from "../fragments/Fragment";
+import { RuntimeResponse } from "../runtime/RuntimeResponse";
 import { UserInterfaceInput } from "../user-interfaces/UserInterface";
 import { InputMapping, InputMappingContext } from "./InputMapping";
 
 export type ProgrammableMappingFunction<F extends Fragment = Fragment> =
     ((argument: {
         document: Document,
-        fragment: F
+        fragment: F,
+        runtimeResponses: RuntimeResponse[]
     }) => UserInterfaceInput);
 
 export class ProgrammableInputMapping<
@@ -31,7 +33,8 @@ export class ProgrammableInputMapping<
         try {
             return this.programmableFunction.call({
                 document: context.document,
-                fragment: context.fragment
+                fragment: context.fragment,
+                runtimeResponses: context.runtimeResponses
             });
         }
         catch (error) {
