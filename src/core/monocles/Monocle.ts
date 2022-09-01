@@ -1,4 +1,4 @@
-import { Throttler } from "../../utilities/Throttler";
+import { FixedThrottler } from "../../utilities/tasks/FixedThrottler";
 import { ClassOf } from "../../utilities/types";
 import { Document, DocumentChangeOrigin } from "../documents/Document";
 import { DocumentEditor } from "../documents/DocumentEditor";
@@ -49,7 +49,7 @@ export abstract class Monocle<
 
     private transientState: TransientMonocleState | null;
 
-    private runtimeResponseProcesser: Throttler;
+    private runtimeResponseProcesser: FixedThrottler;
 
     constructor(
         document: Document,
@@ -81,9 +81,9 @@ export abstract class Monocle<
         this.transientState = null;
 
         const minTimeBetweenRuntimeResponseProcessing = 100; // ms
-        this.runtimeResponseProcesser = new Throttler(
-            () => this.processRuntimeResponses()
-            , minTimeBetweenRuntimeResponseProcessing
+        this.runtimeResponseProcesser = new FixedThrottler(
+            () => this.processRuntimeResponses(),
+            minTimeBetweenRuntimeResponseProcessing
         );
 
         this.initialise();
@@ -138,7 +138,7 @@ export abstract class Monocle<
 
     queueRuntimeResponse(response: RuntimeResponse): void {
         this.state.unprocessedRuntimeResponses.push(response);
-        this.runtimeResponseProcesser.runOrScheduleTask();
+        this.runtimeResponseProcesser.runTask();
     }
 
     protected processRuntimeResponses(): void {

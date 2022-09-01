@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import { Observer } from "../../utilities/Observer";
-import { Throttler } from "../../utilities/Throttler";
+import { FixedThrottler } from "../../utilities/tasks/FixedThrottler";
 import { Monocle } from "../monocles/Monocle";
 
 export type UserInterfaceInput = {};
@@ -18,13 +18,13 @@ export abstract class UserInterface<
     protected monocle: Monocle;
     
     private modelChangeObservers: Set<Observer<O>>;
-    private modelChangeNotificationThrottler: Throttler;
+    private modelChangeNotificationThrottler: FixedThrottler;
 
     constructor(monocle: Monocle) {
         this.monocle = monocle;
 
         this.modelChangeObservers = new Set();
-        this.modelChangeNotificationThrottler = new Throttler(
+        this.modelChangeNotificationThrottler = new FixedThrottler(
             () => this.notifyModelChangeObservers(),
             this.minDelayBetweenModelChangeNotifications
         )
@@ -66,11 +66,11 @@ export abstract class UserInterface<
     
     protected declareModelChange(notifyImmediately: boolean = false): void {
         if (notifyImmediately) {
-            this.modelChangeNotificationThrottler.cancelScheduledTask();
-            this.modelChangeNotificationThrottler.runTaskImmediately();
+            this.modelChangeNotificationThrottler.throttler.clearTasks();
+            this.modelChangeNotificationThrottler.runTask();
         }
         else {
-            this.modelChangeNotificationThrottler.runOrScheduleTask();
+            this.modelChangeNotificationThrottler.runTask();
         }
     }
 
