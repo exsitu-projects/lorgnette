@@ -89,7 +89,7 @@ export class Document {
     }
 
     get canBeParsed(): boolean {
-        return this.language.parser !== null;
+        return !!this.language.parser;
     }
 
     // Throw an error if there is no parser/in case of a parsing error.
