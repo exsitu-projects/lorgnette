@@ -90,6 +90,8 @@ export class VisualStudioCodeEditorMonocleEnvironmentProvider extends MonocleEnv
     }
 
     protected onEnvironmentDidChange(environmentChanges: Partial<MonocleEnvironment>): void {
+        super.onEnvironmentDidChange(environmentChanges);
+
         if (environmentChanges.document) {
             const currentLanguage = this.state.document.language;
             if (environmentChanges.document.language === currentLanguage) {

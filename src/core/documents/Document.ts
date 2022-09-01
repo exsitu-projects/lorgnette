@@ -61,6 +61,12 @@ export class Document {
         return [...this.textSplitByLine];
     }
 
+    get nbCharacters(): number {
+        const nbCharactersWithoutNewlines =  this.textSplitByLine.reduce((sum, line) => sum + line.length, 0);
+        const nbNewlines = this.textSplitByLine.length - 1;
+        return nbCharactersWithoutNewlines + nbNewlines;
+    }
+
     get nbLines(): number {
         return this.textSplitByLine.length;
     }
@@ -73,9 +79,7 @@ export class Document {
         const endColumn = this.textSplitByLine[this.textSplitByLine.length - 1].length - 1;
 
         const startOffset = 0;
-        const endOffset =
-            this.textSplitByLine.reduce((sum, line) => sum + line.length, 0) + // Nb. chars in each line
-            this.textSplitByLine.length - 1; // Nb. newline characters
+        const endOffset = this.nbCharacters;
 
         return new DocumentRange(
             this,
@@ -89,18 +93,22 @@ export class Document {
     }
 
     // Throw an error if there is no parser/in case of a parsing error.
-    get syntaxTree(): SyntaxTree {
+    get syntaxTree(): Promise<SyntaxTree> {
         // If there is a cached syntax tree (up-to-date), use it.
         if (this.cachedSyntaxTree) {
-            return this.cachedSyntaxTree;
+            return Promise.resolve(this.cachedSyntaxTree);
         }
 
         // If there is no cached syntax tree but one can be computed, create a fresh one (and cache it).
         if (this.canBeParsed) {
-            const syntaxTree = this.language.parser!.parse(this.content);
-            this.cachedSyntaxTree = syntaxTree;
-
-            return syntaxTree;
+            return this.language.parser!.parse(this.content)
+                .then(syntaxTree => {
+                    this.cachedSyntaxTree = syntaxTree;
+                    return syntaxTree;
+                })
+                .catch(error => {
+                    throw error;
+                });
         }
 
         // If no syntax tree can be computed, throw an error.

@@ -23,7 +23,7 @@ export class JsonParser implements Parser {
         );
     }
 
-    parse(text: string): JsonSyntaxTree {
+    async parse(text: string): Promise<JsonSyntaxTree> {
         const offsetToPositionConverter = Position.getOffsetToPositionConverterForText(text);
         const parsingContext = {
             text: text,

@@ -19,7 +19,7 @@ export class TypescriptParser implements Parser {
         });
     }
 
-    parse(text: string): TypescriptSyntaxTree {
+    async parse(text: string): Promise<TypescriptSyntaxTree> {
         const sourceFile = this.project.createSourceFile(
             "code-in-editor.tsx",
             text,

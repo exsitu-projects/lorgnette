@@ -7,7 +7,7 @@ export interface CssParserContext {
 };
 
 export class CssParser implements Parser {
-    parse(text: string): CssSyntaxTree {
+    async parse(text: string): Promise<CssSyntaxTree> {
         const parsingContext = {
             text: text
         };

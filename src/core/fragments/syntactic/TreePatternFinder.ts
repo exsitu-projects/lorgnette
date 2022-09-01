@@ -12,10 +12,11 @@ export class TreePatternFinder implements FragmentProvider<SyntacticFragment> {
         this.searchPattern = searchPattern;
     }
 
-    provideForDocument(document: Document): SyntacticFragment[] {
+    async provideForDocument(document: Document): Promise<SyntacticFragment[]> {
         try {
+            const syntaxTree = await document.syntaxTree;
             return this.searchPattern
-                .apply(document.syntaxTree)
+                .apply(syntaxTree)
                 .map(node => new SyntacticFragment(node, document));
         }
         catch (error: any) {

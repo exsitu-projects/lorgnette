@@ -8,6 +8,7 @@ import { MONOCLE_PROVIDERS } from "./monocle-providers/providers";
 import { Monocle } from "./core/monocles/Monocle";
 import { MonocleProvider } from "./core/monocles/MonocleProvider";
 import { EMPTY_RANGE, Range } from "./core/documents/Range";
+import { Debouncer } from "./utilities/tasks/Debouncer";
 
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[0];
 
@@ -70,12 +71,16 @@ export class MonocleEnvironmentProvider extends React.Component<
   MonocleEnvironmentProviderProps,
   MonocleEnvironmentProviderState
 > {
+  private monocleUpdateDebouncer: Debouncer;
   private readonly documentChangeObserver = {
     processChange: (event: DocumentChangeEvent) => this.onDocumentChange(event)
   };
 
   constructor(props: MonocleEnvironmentProviderProps) {
     super(props);
+
+    const initialMonocleUpdateDebounceDelay = 100; // ms
+    this.monocleUpdateDebouncer = new Debouncer(initialMonocleUpdateDebounceDelay);
 
     this.state = {
       codeEditorCursorPosition: ABSOLUTE_ORIGIN_POSITION,
@@ -93,6 +98,20 @@ export class MonocleEnvironmentProvider extends React.Component<
     };
   }
 
+  // This method must return the minimum time (in milliseconds)
+  // to wait before updating the monocles upon request, so as to
+  // debounce the update if another request occurs before it happens.
+  protected updateMonocleUpdateDebounceDelayForDocument(document: Document): void {
+    // Heuristic to improve performance based on the length of the document.
+    const documentLength = document.nbCharacters;
+    const debounceDelay =
+      documentLength < 1000 ? 100 : // Less than 1,000 characters
+      documentLength < 10000 ? 500 : // Less than 10,000 characters
+        1000 // Over 10,000 characters
+    
+    this.monocleUpdateDebouncer.minimumDelayBetweenTasks = debounceDelay;
+  }
+
   // The purpose of this method is to provide a callback for state changes
   // that can be used in child classes extending this environment provider.
   // Note: Partial<MonocleEnvironment> should work here (?), but it does not match
@@ -105,9 +124,12 @@ export class MonocleEnvironmentProvider extends React.Component<
   }
 
   // Callback that can be extended by child classes extending this class.
+  // Note that child classes must call super.onEnvironmentDidChange!
   // See the setEnvironment method for details.
   protected onEnvironmentDidChange(environmentChanges: Partial<MonocleEnvironment>): void {
-    // Do nothing by default.
+    if (environmentChanges.document) {
+      this.updateMonocleUpdateDebounceDelayForDocument(environmentChanges.document);
+    }
   }
 
   protected setCodeEditorCursorPosition(newPosition: Position): void {
@@ -127,13 +149,12 @@ export class MonocleEnvironmentProvider extends React.Component<
     this.state.document.removeChangeObserver(this.documentChangeObserver)
     newDocument.addChangeObserver(this.documentChangeObserver);
 
-    // Create monocles for the new document.
-    const newMonocles = this.createMonoclesForDocument(newDocument);
-
     this.setEnvironment({
-      document: newDocument,
-      monocles: newMonocles
+      document: newDocument
     });
+
+    // Create monocles for the new document.
+    this.requestMonocleUpdateForDocument(newDocument);
   }
 
   protected setDocumentContent(newContent: string): void {
@@ -163,26 +184,24 @@ export class MonocleEnvironmentProvider extends React.Component<
     // Update the document change observers.
     this.state.document.removeChangeObserver(this.documentChangeObserver);
     newDocument.addChangeObserver(this.documentChangeObserver);
+
+    this.setState({
+      document: newDocument
+    });
     
     // If the change originates from a monocle, it might have to be preserved.
     // In this case, monocle providers should take it into account when creating new monocles.
-    // new monocles should preserve the state of this monocle.
     let monocleToPreserve = undefined;
     if (event.changeContext.origin === DocumentChangeOrigin.Monocle && event.changeContext.preservesMonocle) {
       monocleToPreserve = event.changeContext.monocle;
       monocleToPreserve.state.isActive = true; // TODO: this should already be done elsewhere!
     }
 
-    const newMonocles = this.createMonoclesForDocument(newDocument, monocleToPreserve);
-
-    this.setState({
-      document: newDocument,
-      monocles: newMonocles
-    });
+    this.requestMonocleUpdateForDocument(newDocument, monocleToPreserve);
   }
 
   // Create new monocles for the given document.
-  protected createMonoclesForDocument(document: Document, monocleToPreserve?: Monocle): Monocle[] {
+  protected async createMonoclesForDocument(document: Document, monocleToPreserve?: Monocle): Promise<Monocle[]> {
     const monocles: Monocle[] = [];
 
     for (let monocleProvider of this.state.monocleProviders) {
@@ -190,21 +209,26 @@ export class MonocleEnvironmentProvider extends React.Component<
       // to transfer the state of this monocle to the best match among the new monocles it provides.
       const useMonocleToPreserve = monocleToPreserve && monocleToPreserve.provider === monocleProvider;
       
-      monocles.push(...monocleProvider.provideForDocument(
+      monocles.push(...await monocleProvider.provideForDocument(
         document,
         useMonocleToPreserve ? monocleToPreserve : undefined
       ));
     }
 
     console.log("[ New monocles ]", monocles);
-
     return monocles;
   }
 
-  componentDidMount(): void {
-    this.setEnvironment({
-      monocles: this.createMonoclesForDocument(this.state.document)
+  protected requestMonocleUpdateForDocument(document: Document, monocleToPreserve?: Monocle): void {
+    this.monocleUpdateDebouncer.addTask(async () => {
+      const newMonocles = await this.createMonoclesForDocument(document, monocleToPreserve);
+      this.setEnvironment({ monocles: newMonocles });
     });
+  }
+
+  componentDidMount(): void {
+    this.updateMonocleUpdateDebounceDelayForDocument(this.state.document);
+    this.requestMonocleUpdateForDocument(this.state.document);
   }
 
   render() {

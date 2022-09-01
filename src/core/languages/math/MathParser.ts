@@ -23,7 +23,7 @@ export class MathParser implements Parser {
         );
     }
 
-    parse(text: string): MathSyntaxTree {
+    async parse(text: string): Promise<MathSyntaxTree> {
         const offsetToPositionConverter = Position.getOffsetToPositionConverterForText(text);
         const parsingContext = {
             text: text,

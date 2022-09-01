@@ -10,5 +10,5 @@ export interface MonocleProvider {
 
     usageRequirements: MonocleProviderUsageRequirements;
 
-    provideForDocument(document: Document, monocleToPreserve?: Monocle): Monocle[];
+    provideForDocument(document: Document, monocleToPreserve?: Monocle): Promise<Monocle[]>;
 }

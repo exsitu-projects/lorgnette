@@ -23,7 +23,7 @@ export class PythonParser implements Parser {
         );
     }
 
-    parse(text: string): PythonSyntaxTree {
+    async parse(text: string): Promise<PythonSyntaxTree> {
         const offsetToPositionConverter = Position.getOffsetToPositionConverterForText(text);
         const parsingContext = {
             text: text,
