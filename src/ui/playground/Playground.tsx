@@ -52,6 +52,7 @@ export class Playground extends React.Component<Props, State> {
             onItemSelect={newLanguage => environment.updateDocument(new Document(newLanguage, environment.document.content))}
             activeItem={environment.document.language}
             popoverProps={{
+                minimal: true,
                 usePortal: true,
                 portalContainer: document.body
             }}
