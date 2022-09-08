@@ -46,6 +46,9 @@ export class Debouncer extends TaskRunner {
     private runTask(task: Task): void {
         this.isRunningTask = true;
             Promise.resolve(task())
+                .catch(exception => {
+                    console.error("An exception was caught in a debounced task:", exception);
+                })
                 .then(() => {
                     this.lastTaskEndTimestamp = Date.now();
                     this.isRunningTask = false;
