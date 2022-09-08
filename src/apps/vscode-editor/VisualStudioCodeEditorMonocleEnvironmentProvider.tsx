@@ -1,5 +1,6 @@
 import { Document } from "../../core/documents/Document";
 import { getLanguageWithId } from "../../core/languages/Language";
+import { PLAIN_TEXT_LANGUAGE } from "../../core/languages/plain-text/language";
 import { Monocle } from "../../core/monocles/Monocle";
 import { RawRuntimeRequest, RuntimeRequest, RuntimeRequestId } from "../../core/runtime/RuntimeRequest";
 import { RawRuntimeResponse, RuntimeResponse } from "../../core/runtime/RuntimeResponse";
@@ -34,10 +35,11 @@ export class VisualStudioCodeEditorMonocleEnvironmentProvider extends MonocleEnv
         this.messenger.addMessageHandler(
             "set-document",
             message => {
-                const language = getLanguageWithId(message.payload.languageId);
+                // If there is no language for the given ID, switch to plain text.
+                let language = getLanguageWithId(message.payload.languageId);
                 if (!language) {
-                    console.warn(`The document cannot be set: there is no language with the ID "${message.payload.languageId}"`);
-                    return;
+                    console.warn(`There is no language for ID "${message.payload.languageId}": the document will be considered as plain text.`);
+                    language = PLAIN_TEXT_LANGUAGE;
                 }
 
                 const document = new Document(language, message.payload.content);
