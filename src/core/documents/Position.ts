@@ -102,6 +102,23 @@ export class Position {
             return new Position(row, column, offset);
         }
     }
+        
+    static getLineAndColumnToPositionConverterForText(text: string): (row: number, column: number) => Position {
+        // Pre-compute the offsets of each line of the input.
+        const lineStartOffsets = [
+            0,
+            ...[...text.matchAll(/\n/g)].map(match => match.index! + 1)
+        ];
+
+        if (text.endsWith("\n")) {
+            lineStartOffsets.push(text.length - 1);
+        }
+
+       return (row: number, column: number): Position => {
+            const offset = lineStartOffsets[row] + column;
+            return new Position(row, column, offset);
+        }
+    }
 }
 
 export const ABSOLUTE_ORIGIN_POSITION = new Position(0, 0, 0);
