@@ -7,6 +7,7 @@ import { regexLiteralMonocleProvider } from "./regex-literals";
 import { syntacticRgbConstructorColorPickerProvider, textualRgbConstructorColorPickerProvider } from "./rgb-color-constructors";
 import { runtimeValueTracerProvider } from "./runtime-value-tracer";
 import { seabornBarplotStyleInspectorProvider } from "./seaborn-plots";
+import { markdownTableProvider } from "./markdown-tables";
 import { tsxComponentTreeProvider } from "./tsx-components";
 import { vegaMarksStyleInspectorProvider } from "./vega-marks";
 
@@ -27,5 +28,6 @@ export const MONOCLE_PROVIDERS: MonocleProvider[] = [
     seabornBarplotStyleInspectorProvider,
     matplotlibTextPropertiesStyleInspectorProvider,
 
-    runtimeValueTracerProvider
+    runtimeValueTracerProvider,
+    markdownTableProvider,
 ];
