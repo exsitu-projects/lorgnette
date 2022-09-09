@@ -87,6 +87,30 @@ export class Range {
             position.with({ column: lineLength, offset: position.offset + (lineLength - position.column) }),
         );
     }
+
+    /** Return the smallest range that contains all the given ranges. */
+    static enclose(ranges: Range[]): Range {
+        if (ranges.length === 0) {
+            return EMPTY_RANGE;
+        }
+
+        let start = ranges[0].start;
+        let end = ranges[0].end;
+
+        for (let i = 1; i < ranges.length; i++) {
+            const currentRange = ranges[i];
+            
+            if (currentRange.start.isStrictlyBefore(start)) {
+                start = currentRange.start;
+            }
+
+            if (currentRange.end.isStrictlyAfter(end)) {
+                end = currentRange.end;
+            }
+        }
+
+        return new Range(start, end);
+    }
 }
 
 export const EMPTY_RANGE = Range.fromSinglePosition(new Position(0, 0, 0));
