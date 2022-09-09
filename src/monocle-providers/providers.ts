@@ -10,6 +10,7 @@ import { seabornBarplotStyleInspectorProvider } from "./seaborn-plots";
 import { markdownTableProvider } from "./markdown-tables";
 import { tsxComponentTreeProvider } from "./tsx-components";
 import { vegaMarksStyleInspectorProvider } from "./vega-marks";
+import { pythonRuntimeDataframeTableProvider } from "./python-runtime-dataframe-tables";
 
 export const MONOCLE_PROVIDERS: MonocleProvider[] = [
     hexadecimalColorPickerProvider,
@@ -30,4 +31,5 @@ export const MONOCLE_PROVIDERS: MonocleProvider[] = [
 
     runtimeValueTracerProvider,
     markdownTableProvider,
+    pythonRuntimeDataframeTableProvider
 ];
