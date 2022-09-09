@@ -65,6 +65,7 @@ gulp.task("default", () => {
     .pipe(replace('.js"></script>', '.js" inline></script>'))
     .pipe(replace('rel="stylesheet">', 'rel="stylesheet" inline>'))
     .pipe(inlinesource({
+        compress: false,
         handlers: [inlineFontsInCSSFiles]
     }))
     .pipe(rename("monocle-editor.html"))
