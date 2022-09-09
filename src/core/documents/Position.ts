@@ -19,11 +19,11 @@ export class Position {
     //     return new DocumentPosition(document, this.row, this.column, this.offset);
     // }
 
-    isStrictlyBefore(otherPosition: Position): boolean {
+    isBefore(otherPosition: Position): boolean {
         return this.offset < otherPosition.offset;
     }
 
-    isBefore(otherPosition: Position): boolean {
+    isBeforeOrEqualTo(otherPosition: Position): boolean {
         return this.offset <= otherPosition.offset;
     }
 
@@ -31,11 +31,11 @@ export class Position {
         return this.offset === otherPosition.offset;
     }
 
-    isAfter(otherPosition: Position): boolean {
+    isAfterOrEqualTo(otherPosition: Position): boolean {
         return this.offset >= otherPosition.offset;
     }
 
-    isStrictlyAfter(otherPosition: Position): boolean {
+    isAfter(otherPosition: Position): boolean {
         return this.offset > otherPosition.offset;
     }
 

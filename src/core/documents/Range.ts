@@ -19,8 +19,8 @@ export class Range {
     }
 
     contains(position: Position): boolean {
-        return this.start.isBefore(position)
-            && this.end.isAfter(position);
+        return this.start.isBeforeOrEqualTo(position)
+            && this.end.isAfterOrEqualTo(position);
     }
 
     includes(otherRange: Range): boolean {
@@ -69,7 +69,7 @@ export class Range {
     }
 
     static fromUnsortedPositions(position1: Position, position2: Position): Range {
-        return position1.isStrictlyBefore(position2)
+        return position1.isBefore(position2)
             ? new Range(position1, position2)
             : new Range(position2, position1);
     }
@@ -100,11 +100,11 @@ export class Range {
         for (let i = 1; i < ranges.length; i++) {
             const currentRange = ranges[i];
             
-            if (currentRange.start.isStrictlyBefore(start)) {
+            if (currentRange.start.isBefore(start)) {
                 start = currentRange.start;
             }
 
-            if (currentRange.end.isStrictlyAfter(end)) {
+            if (currentRange.end.isAfter(end)) {
                 end = currentRange.end;
             }
         }
