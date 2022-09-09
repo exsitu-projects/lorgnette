@@ -89,16 +89,6 @@ export class Position {
        return (offset: number): Position => {
             const row = lineEndOffsets.findIndex(lineEndOffset => lineEndOffset >= offset);
             const column = offset - lineStartOffsets[row];
-
-            // console.log(text)
-            // console.log(lineStartOffsets)
-            // console.log(lineEndOffsets)
-
-            // console.log(`end of text: "${text.slice(-3)}"`)
-            // console.log("offset", offset)
-            // console.log("row", row)
-            // console.log("column", column)
-
             return new Position(row, column, offset);
         }
     }
