@@ -37,8 +37,6 @@ export class PythonParser implements Parser {
         const results = this.nearleyParser.results;
         const nbResults = results.length;
 
-        console.warn("Python parser result: ", this.nearleyParser.results);
-
         if (nbResults === 0) {
             throw new Error("The Python parser returned no result.");
         }

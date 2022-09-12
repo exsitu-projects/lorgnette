@@ -16,8 +16,6 @@ export class MarkdownParser implements Parser {
             mdastExtensions: [gfmFromMarkdown()]
         });
 
-        console.log("root", rootNode)
-        
         return MarkdownSyntaxTree.fromMarkdownTreeRootNode(rootNode, { text: text });
     }
 }
