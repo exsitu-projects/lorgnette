@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import { HotTable, HotTableProps } from "@handsontable/react";
-import { registerAllModules } from 'handsontable/registry';
-import { CellChange, CellCoordinates, TableContent } from "./Table";
 import "handsontable/dist/handsontable.full.css";
 import "./table.css";
+import { registerAllModules } from 'handsontable/registry';
+import { CellChange, CellCoordinates, TableContent } from "./Table";
 import { ArrayMap } from "../../../utilities/ArrayMap";
+import { TableSettings } from "./TableSettings";
+import { moveElementsByIndex } from "../../../utilities/array";
 
 // register Handsontable's modules
 registerAllModules();
@@ -14,6 +16,7 @@ type Props = {
     selection?: CellCoordinates[];
     rowNames?: string[];
     columnNames?: string[];
+    settings: TableSettings,
 
     onContentChange?: (newContent: TableContent, changes: CellChange[]) => void;
     onSelectionChange?: (newSelection: CellCoordinates[]) => void;
@@ -79,7 +82,7 @@ export class TableComponent extends Component<Props, State> {
         console.error("Error caught in TableComponent:", error);
     }
 
-    private get handsontableEventHandlerProps(): HotTableProps {
+    private get selectionChangeProps(): HotTableProps {
         const props: HotTableProps = {};
 
         const selectionChangeHandler = this.props.onSelectionChange;
@@ -124,6 +127,12 @@ export class TableComponent extends Component<Props, State> {
             }
         }
 
+        return props;
+    }
+
+    private get contentChangeProps(): HotTableProps {
+        const props: HotTableProps = {};
+
         const contentChangeHandler = this.props.onContentChange;
         if (contentChangeHandler) {
             props["afterChange"] = (changes, source) => {
@@ -152,12 +161,106 @@ export class TableComponent extends Component<Props, State> {
         return props;
     }
 
+    private get rowAndColumnInsertionAndDeletionProps(): HotTableProps {
+        const props: HotTableProps = {};
+
+        const contentChangeHandler = this.props.onContentChange;
+        const rowSettings = this.props.settings.rows;
+        const columnSettings = this.props.settings.columns;
+
+        const rowsCanBeInsertedOrDeleted = rowSettings.canBeInserted || rowSettings.canBeDeleted;
+        const columnsCanBeInsertedOrDeleted = columnSettings.canBeInserted || columnSettings.canBeDeleted;
+
+        if (rowsCanBeInsertedOrDeleted || columnsCanBeInsertedOrDeleted) {
+            props["contextMenu"] = [
+                ...(rowSettings.canBeInserted ? ["row_above" as const, "row_below" as const] : []),
+                ...(rowSettings.canBeDeleted ? ["remove_row" as const] : []),
+                ...(rowsCanBeInsertedOrDeleted && columnsCanBeInsertedOrDeleted ? ["---------" as const] : []),
+                ...(columnSettings.canBeInserted ? ["col_left" as const, "col_right" as const] : []),
+                ...(columnSettings.canBeDeleted ? ["remove_col" as const] : [])
+            ];
+        }
+
+        if (rowsCanBeInsertedOrDeleted && contentChangeHandler) {
+            props["afterCreateRow"] = (index, amount) => {
+                const newContent = this.handsontable?.hotInstance?.getSourceData();
+                contentChangeHandler(newContent as TableContent, []);
+            };
+
+            props["afterRemoveRow"] = (index, amount) => {
+                const newContent = this.handsontable?.hotInstance?.getSourceData();
+                contentChangeHandler(newContent as TableContent, []);
+            };
+        }
+
+        if (columnsCanBeInsertedOrDeleted && contentChangeHandler) {
+            props["afterCreateCol"] = (index, amount) => {
+                const newContent = this.handsontable?.hotInstance?.getSourceData();
+                contentChangeHandler(newContent as TableContent, []);
+            };
+
+            props["afterRemoveCol"] = (index, amount) => {
+                const newContent = this.handsontable?.hotInstance?.getSourceData();
+                contentChangeHandler(newContent as TableContent, []);
+            };
+        }
+
+        return props;
+    }
+
+    private get rowAndColumnReorderingProps(): HotTableProps {
+        const props: HotTableProps = {};
+
+        const contentChangeHandler = this.props.onContentChange;
+        const rowSettings = this.props.settings.rows;
+        const columnSettings = this.props.settings.columns;
+
+        if (rowSettings.canBeMoved) {
+            props["manualRowMove"] = true;
+
+            if (contentChangeHandler) {
+                props["afterRowMove"] = (movedRowIndices, finalIndex, dropIndex, movePossible, orderChanged) => {
+                    if (movePossible) {
+                        // Since Handsontable does not modify the order of the rows of the underlying data,
+                        // we must reorder them ourselves.
+                        const content = this.state.content;
+                        const insertionIndex = dropIndex!;
+                        const newContent = moveElementsByIndex(content, movedRowIndices, insertionIndex);
+                        contentChangeHandler(newContent, []);
+                    }
+                }
+            }
+        }
+
+        if (columnSettings.canBeMoved) {
+            props["manualColumnMove"] = true;
+
+            if (contentChangeHandler) {
+                props["afterColumnMove"] = (movedColumnIndices, finalIndex, dropIndex, movePossible, orderChanged) => {
+                    if (movePossible) {
+                        // Since Handsontable does not modify the order of the columns of the underlying data,
+                        // we must reorder them ourselves.
+                        const content = this.state.content;
+                        const insertionIndex = dropIndex!;
+                        const newContent = content.map(row => moveElementsByIndex(row, movedColumnIndices, insertionIndex));
+                        contentChangeHandler(newContent as TableContent, []);
+                    }
+                }
+            }
+        }
+
+        return props;
+    }
+
     render() {
         return <HotTable
             data={this.state.content}
             colHeaders={this.state.columnNames}
             rowHeaders={this.state.rowNames}
-            {...this.handsontableEventHandlerProps}
+            {...this.selectionChangeProps}
+            {...this.contentChangeProps}
+            {...this.rowAndColumnInsertionAndDeletionProps}
+            {...this.rowAndColumnReorderingProps}
             licenseKey="non-commercial-and-evaluation"
             ref={h => this.handsontable = h}
         />

@@ -1,4 +1,3 @@
-import { Range } from "../core/documents/Range";
 import { TreePatternFinder } from "../core/fragments/syntactic/TreePatternFinder";
 import { MarkdownSyntaxTreeNode } from "../core/languages/markdown/MarkdownSyntaxTreeNode";
 import { SyntaxTreePattern } from "../core/languages/SyntaxTreePattern";
@@ -8,6 +7,7 @@ import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMo
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
 import { EMPTY_TABLE_HEADER, Output, Table, TableContent } from "../core/user-interfaces/table/Table";
+import { convertMdastToMarkdownString, createMdastTable } from "../utilities/languages/markdown";
 
 export const markdownTableProvider = new SyntacticMonocleProvider({
     name: "Markdown table",
@@ -46,33 +46,15 @@ export const markdownTableProvider = new SyntacticMonocleProvider({
         };
     }),
 
-    outputMapping: new ProgrammableOutputMapping(({ output, fragment, document, documentEditor }) => {
-        const { selection, cellChanges }: Output = output;
-        const tableNode = fragment.node as MarkdownSyntaxTreeNode;
-        
-        // Update the table.
+    outputMapping: new ProgrammableOutputMapping(({ output, fragment, documentEditor }) => {
+        const { selection, cellChanges, content }: Output = output;
+
         if (cellChanges) {
-            for (let cellChange of cellChanges) {
-                const rowIndex = cellChange.coordinates.row;
-                const columnIndex = cellChange.coordinates.column;
-
-                const cellNode = tableNode.childNodes[rowIndex].childNodes[columnIndex];
-                const cellNodeStart = cellNode.range.start;
-                const cellNodeEnd = cellNode.range.end;
-
-                const cellContentRange = cellNode.childNodes.length > 0
-                    ? Range.enclose(cellNode.childNodes.map(node => node.range))
-                    : columnIndex === 0
-                        ? new Range(cellNodeStart.shiftBy(0, 1, 1), cellNodeEnd.shiftBy(0, -1, -1)) // Remove leading + trailing '|'s
-                        : new Range(cellNodeStart, cellNodeEnd.shiftBy(0, -1, -1)) // Remove trailing '|'
-
-                documentEditor.replace(
-                    cellContentRange,
-                    cellChange.newData === null
-                        ? ""
-                        : cellChange.newData.toString()
-                );
-            }
+            const mdastTable = createMdastTable(content);
+            documentEditor.replace(
+                fragment.range,
+                convertMdastToMarkdownString(mdastTable)
+            );
 
             documentEditor.applyEdits();
         }

@@ -16,8 +16,8 @@ export interface ParserNodeRange {
 
 export interface ParserNode {
     type: string;
-    children?: ParserNode[];
     position: ParserNodeRange;
+    children?: ParserNode[];
 }
 
 export class MarkdownSyntaxTreeNode extends SyntaxTreeNode {

@@ -103,6 +103,7 @@ export class Table extends UserInterface<Input, Output> {
             content={this.content}
             rowNames={this.rowNames}
             columnNames={this.columnNames}
+            settings={this.settings}
             onContentChange={(newContent, changes) => this.onContentChange(newContent, changes)}
             onSelectionChange={(newSelection) => this.onSelectionChange(newSelection)}
             ref={component => this.component = component}
