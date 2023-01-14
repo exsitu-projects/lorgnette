@@ -1,3 +1,4 @@
+import { Document } from "../documents/Document";
 import { Range } from "../documents/Range";
 import { SyntaxTeeeVisitor } from "./SyntaxTreeVisitor";
 
@@ -21,5 +22,9 @@ export abstract class SyntaxTreeNode<T = any> {
 
     isEmpty(): boolean {
         return this.range.isEmpty();
+    }
+
+    getTextIn(document: Document): string {
+        return document.getContentInRange(this.range);
     }
 }
