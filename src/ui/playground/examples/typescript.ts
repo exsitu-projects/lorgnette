@@ -15,6 +15,13 @@ const style = {
   color: "#fedcba"
 };
 
+const formEntries = {
+  a: 123,
+  b: "foo",
+  d: "bar",
+  e: true
+};
+
 const tsx = (
   <ComponentOne
     propFoo={foo}

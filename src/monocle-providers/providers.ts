@@ -11,6 +11,7 @@ import { markdownTableProvider } from "./markdown-tables";
 import { tsxComponentTreeProvider } from "./tsx-components";
 import { vegaMarksStyleInspectorProvider } from "./vega-marks";
 import { pythonRuntimeDataframeTableProvider } from "./python-runtime-dataframe-tables";
+import { FormTestProvider } from "./test-form";
 
 export const MONOCLE_PROVIDERS: MonocleProvider[] = [
     hexadecimalColorPickerProvider,
@@ -31,5 +32,7 @@ export const MONOCLE_PROVIDERS: MonocleProvider[] = [
 
     runtimeValueTracerProvider,
     markdownTableProvider,
-    pythonRuntimeDataframeTableProvider
+    pythonRuntimeDataframeTableProvider,
+
+    FormTestProvider
 ];

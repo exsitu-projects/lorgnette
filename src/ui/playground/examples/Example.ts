@@ -21,4 +21,4 @@ export const EXAMPLES: Example[] = [
     MARKDOWN_EXAMPLE
 ];
 
-export const DEFAULT_EXAMPLE: Example = MARKDOWN_EXAMPLE;
+export const DEFAULT_EXAMPLE: Example = TYPESCRIPT_EXAMPLE;
