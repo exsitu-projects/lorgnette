@@ -1,0 +1,15 @@
+.ui.form {
+    max-width: 600px;
+    padding: 1ex;
+    border: 1px solid #666;
+}
+
+.ui.form .label-text {
+    /* color: #666; */
+    font-weight: bold;
+}
+
+.ui.form .bp4-switch {
+    float: right;
+    margin: 0;
+}
