@@ -4,6 +4,7 @@ import { Monocle } from "../../monocles/Monocle";
 import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../UserInterface";
 import { FormContext, FormContextData } from "./FormContext";
 import { FormEntry } from "./FormEntry";
+import { UserInterfaceProvider } from "../UserInterfaceProvider";
 
 export type FormData = FormEntry[];
 
@@ -65,5 +66,19 @@ export abstract class Form extends UserInterface<Input, Output> {
         return <FormContext.Provider value={this.formContextData}>
             { this.createFormBody() }
         </FormContext.Provider>;
+    }
+
+    static makeProvider(formBody: ReactElement): UserInterfaceProvider {
+        const concreteFormUserInterface = class extends Form {
+            protected createFormBody(): React.ReactElement<any, string | React.JSXElementConstructor<any>> {
+                return formBody;
+            }
+        };
+
+        return {
+            provideForMonocle: (monocle: Monocle): UserInterface<Input, Output> => {
+                return new concreteFormUserInterface(monocle);
+            }
+        };
     }
 }

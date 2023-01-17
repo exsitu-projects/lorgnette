@@ -1,3 +1,4 @@
+import React from "react";
 import { TreePatternFinder } from "../core/fragments/syntactic/TreePatternFinder";
 import { SyntaxTreePattern, SKIP_MATCH_DESCENDANTS } from "../core/languages/SyntaxTreePattern";
 import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapping";
@@ -5,8 +6,12 @@ import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMa
 import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMonocleProvider";
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
+import { Form } from "../core/user-interfaces/form/Form";
+import { NumberInput } from "../core/user-interfaces/form/form-elements/NumberInput";
+import { Select } from "../core/user-interfaces/form/form-elements/Select";
+import { StringInput } from "../core/user-interfaces/form/form-elements/StringInput";
+import { Switch } from "../core/user-interfaces/form/form-elements/Switch";
 import { FormEntry, FormEntryType } from "../core/user-interfaces/form/FormEntry";
-import { TestForm } from "../core/user-interfaces/form/TestForm";
 
 export const FormTestProvider = new SyntacticMonocleProvider({
     name: "Form test",
@@ -67,7 +72,16 @@ export const FormTestProvider = new SyntacticMonocleProvider({
         console.log("Modified form entry:", output.modifiedData)
     }),
 
-    userInterfaceProvider: TestForm.makeProvider(),
+    userInterfaceProvider: Form.makeProvider(<>
+        <h4 style={{ textAlign: "center" }}>Test form</h4>
+        Some text introducing the purpose of this form and explaining some details.<br/>
+        <NumberInput formEntryKey="a" label="Some number" />
+        <StringInput formEntryKey="b" label="Some string" />
+        Some text explaining the purpose of the next form element.<br/>
+        <Switch formEntryKey="e" label="Some boolean" />
+        <Select formEntryKey="d" items={["foo", "bar"]} />
+        Some conclusive text...<br/>
+    </>),
     
     rendererProvider: AsideRenderer.makeProvider({
         onlyShowWhenCursorIsInRange: true,
