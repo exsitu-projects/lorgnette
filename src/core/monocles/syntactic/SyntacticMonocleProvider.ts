@@ -76,7 +76,7 @@ export class SyntacticMonocleProvider implements MonocleProvider {
     }
 
     async provideForDocument(document: Document, monocleToPreserve?: SyntacticMonocle): Promise<SyntacticMonocle[]> {
-        const newFragments = await this.fragmentProvider.provideForDocument(document);
+        const newFragments = await this.fragmentProvider.provideFragmentsForDocument(document);
 
         let bestMatchingFragment: Fragment | null = null;
         if (monocleToPreserve) {

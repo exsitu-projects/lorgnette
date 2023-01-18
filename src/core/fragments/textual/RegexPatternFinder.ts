@@ -20,7 +20,7 @@ export class RegexPatternFinder implements FragmentProvider<TextualFragment> {
         this.regexMatcher.pattern = newPattern;
     }
 
-    async provideForDocument(document: Document): Promise<TextualFragment[]> {
+    async provideFragmentsForDocument(document: Document): Promise<TextualFragment[]> {
         // If the document is empty, there is nothing to do.
         if (document.isEmpty) {
             return [];

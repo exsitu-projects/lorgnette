@@ -76,7 +76,7 @@ export class TextualMonocleProvider implements MonocleProvider {
     }
 
     async provideForDocument(document: Document, monocleToPreserve?: TextualMonocle): Promise<TextualMonocle[]> {
-        const newFragments = await this.fragmentProvider.provideForDocument(document);
+        const newFragments = await this.fragmentProvider.provideFragmentsForDocument(document);
 
         let bestMatchingFragment: Fragment | null = null;
         if (monocleToPreserve) {
