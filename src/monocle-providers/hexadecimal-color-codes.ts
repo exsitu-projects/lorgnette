@@ -50,3 +50,33 @@ export const hexadecimalColorPickerProvider = new TextualMonocleProvider({
         onlyShowWhenCursorIsInRange: true
     })
 });
+
+const hexadecimalValuatorProvider = TemplateSlotNumericValuator.makeProvider({
+    isIntegerValue: true,
+    integerBase: 16
+});
+
+const hexadecimalColorTemplate = RegexPatternFinder.createTemplate(
+    "#(?<r>[a-fA-F0-9]{2})(?<g>[a-fA-F0-9]{2})(?<b>[a-fA-F0-9]{2})",
+    {
+        "r": hexadecimalValuatorProvider,
+        "g": hexadecimalValuatorProvider,
+        "b": hexadecimalValuatorProvider
+    },
+    data => { return { color: data }; },
+    output => { return { ...output.color }; },
+);
+
+export const hexadecimalColorPickerProvider2 = new TextualMonocleProvider({
+    name: "Hexadecimal color code",
+
+    usageRequirements: {},
+
+    ...hexadecimalColorTemplate,
+
+    userInterfaceProvider: ColorPicker.makeProvider(),
+    
+    rendererProvider: AsideRenderer.makeProvider({
+        onlyShowWhenCursorIsInRange: true
+    })
+});

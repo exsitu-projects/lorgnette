@@ -1,6 +1,6 @@
 import { MonocleProvider } from "../core/monocles/MonocleProvider";
 import { cssPropertyStyleInspectorProvider } from "./css-properties";
-import { hexadecimalColorPickerProvider } from "./hexadecimal-color-codes";
+import { hexadecimalColorPickerProvider, hexadecimalColorPickerProvider2 } from "./hexadecimal-color-codes";
 import { matplotlibTextPropertiesStyleInspectorProvider } from "./matplotlib-text-properties";
 import { regexConstructorVisualisationProvider } from "./regex-constructors";
 import { regexLiteralMonocleProvider } from "./regex-literals";
@@ -14,7 +14,9 @@ import { pythonRuntimeDataframeTableProvider } from "./python-runtime-dataframe-
 import { FormTestProvider } from "./test-form";
 
 export const MONOCLE_PROVIDERS: MonocleProvider[] = [
-    hexadecimalColorPickerProvider,
+    // hexadecimalColorPickerProvider,
+    hexadecimalColorPickerProvider2,
+
     // textualRgbColorConstructorVisualisationProvider,
     syntacticRgbConstructorColorPickerProvider,
 
@@ -34,5 +36,5 @@ export const MONOCLE_PROVIDERS: MonocleProvider[] = [
     markdownTableProvider,
     pythonRuntimeDataframeTableProvider,
 
-    FormTestProvider
+    // FormTestProvider
 ];
