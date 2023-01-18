@@ -2,7 +2,7 @@ import { Document } from "../../documents/Document";
 import { Range } from "../../documents/Range";
 import { SyntaxTreeNode } from "../../languages/SyntaxTreeNode";
 import { TemplateSlot, TemplateSlotKey } from "../TemplateSlot";
-import { TemplateSlotValuator } from "../TemplateSlotValuator";
+import { TemplateSlotValuatorProvider } from "../TemplateSlotValuator";
 
 export class SyntacticTemplateSlot extends TemplateSlot {
     readonly node: SyntaxTreeNode;
@@ -11,9 +11,9 @@ export class SyntacticTemplateSlot extends TemplateSlot {
         node: SyntaxTreeNode,
         sourceDocument: Document,
         key: TemplateSlotKey,
-        valuator?: TemplateSlotValuator
+        valuatorProvider?: TemplateSlotValuatorProvider
     ) {
-        super(sourceDocument, key, valuator);
+        super(sourceDocument, key, valuatorProvider);
 
         this.node = node;
     }
@@ -24,9 +24,5 @@ export class SyntacticTemplateSlot extends TemplateSlot {
 
     getText(): string {
         return this.node.getTextIn(this.sourceDocument);
-    }
-
-    setText(text: string): void {
-        // TODO
     }
 }

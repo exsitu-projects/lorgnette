@@ -1,6 +1,7 @@
 import { Document } from "../documents/Document";
+import { DocumentEditor } from "../documents/DocumentEditor";
 import { Range } from "../documents/Range";
-import { TemplateSlotTextualValuator, TemplateSlotTypedValue, TemplateSlotValuator } from "./TemplateSlotValuator";
+import { TemplateSlotTextualValuator, TemplateSlotValue, TemplateSlotValuator, TemplateSlotValuatorProvider } from "./TemplateSlotValuator";
 
 export type TemplateSlotKey = string;
 
@@ -13,21 +14,26 @@ export abstract class TemplateSlot {
     constructor(
         sourceDocument: Document,
         key: TemplateSlotKey,
-        valuator?: TemplateSlotValuator
+        valuatorProvider?: TemplateSlotValuatorProvider
     ) {
         this.sourceDocument = sourceDocument;
         this.key = key;
-        this.valuator = valuator ?? new TemplateSlotTextualValuator(this);
+        this.valuator = valuatorProvider
+            ? valuatorProvider.provideValuatorForSlot(this)
+            : new TemplateSlotTextualValuator(this);
     }
     
     abstract getText(): string;
-    abstract setText(text: string): void;
 
-    getValue(): TemplateSlotTypedValue {
+    setText(text: string, documentEditor: DocumentEditor): void {
+        documentEditor.replace(this.range, text);
+    };
+
+    getValue(): TemplateSlotValue {
         return this.valuator.getValue();
     }
 
-    setValue(newTypedValue: TemplateSlotTypedValue) {
-        this.valuator.setValue(newTypedValue);
+    setValue(newValue: TemplateSlotValue, documentEditor: DocumentEditor) {
+        this.valuator.setValue(newValue, documentEditor);
     }
 }

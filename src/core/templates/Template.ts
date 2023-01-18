@@ -12,8 +12,8 @@ export interface TemplateData<F extends Fragment = Fragment> {
         : SyntacticTemplateSlot;
 }
 
-export abstract class Template<F extends Fragment = Fragment> {
-    abstract readonly fragmentProvider: FragmentProvider<F>;
-    abstract readonly inputMapping: InputMapping<F>
-    abstract readonly outputMapping: OutputMapping<F>;
+export interface Template<F extends Fragment = Fragment> {
+    fragmentProvider: FragmentProvider<F>;
+    inputMapping: InputMapping<F>
+    outputMapping: OutputMapping<F>;
 }
