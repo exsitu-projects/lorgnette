@@ -41,9 +41,11 @@ export const textualRgbConstructorColorPickerProvider = new TextualMonocleProvid
     inputMapping: new ProgrammableInputMapping(({ fragment }) => {
         const rgbRegexMatches = getTextualColorConstructorRgbRegexMatches(fragment);
         return {
-            r: parseInt(rgbRegexMatches.r.value),
-            g: parseInt(rgbRegexMatches.g.value),
-            b: parseInt(rgbRegexMatches.b.value)
+            color: {
+                r: parseInt(rgbRegexMatches.r.value),
+                g: parseInt(rgbRegexMatches.g.value),
+                b: parseInt(rgbRegexMatches.b.value)
+            }
         };
     }),
 
@@ -52,9 +54,9 @@ export const textualRgbConstructorColorPickerProvider = new TextualMonocleProvid
         
         const adaptRange = (range: Range) => range.relativeTo(fragment.range.start);
         
-        documentEditor.replace(adaptRange(rgbRegexMatches.r.range), output.r.toString());
-        documentEditor.replace(adaptRange(rgbRegexMatches.g.range) ,output.g.toString());
-        documentEditor.replace(adaptRange(rgbRegexMatches.b.range), output.b.toString());
+        documentEditor.replace(adaptRange(rgbRegexMatches.r.range), output.color.r.toString());
+        documentEditor.replace(adaptRange(rgbRegexMatches.g.range) ,output.color.g.toString());
+        documentEditor.replace(adaptRange(rgbRegexMatches.b.range), output.color.b.toString());
         
         documentEditor.applyEdits();
     }),
@@ -97,9 +99,11 @@ export const syntacticRgbConstructorColorPickerProvider = new SyntacticMonoclePr
     inputMapping: new ProgrammableInputMapping(({ fragment }) => {
         const rgbNodes = getSyntacticColorConstructorRgbNodes(fragment);
         return {
-            r: parseInt(rgbNodes.r.text),
-            g: parseInt(rgbNodes.g.text),
-            b: parseInt(rgbNodes.b.text)
+            color: {
+                r: parseInt(rgbNodes.r.text),
+                g: parseInt(rgbNodes.g.text),
+                b: parseInt(rgbNodes.b.text)
+            }
         };
     }),
 

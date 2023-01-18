@@ -1,4 +1,3 @@
-import { RegexPatternFinder } from "../core/fragments/textual/RegexPatternFinder";
 import { Position } from "../core/documents/Position";
 import { Range } from "../core/documents/Range";
 import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapping";
@@ -6,6 +5,8 @@ import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMa
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { ColorPicker } from "../core/user-interfaces/color-picker/ColorPicker";
 import { TextualMonocleProvider } from "../core/monocles/textual/TextualMonocleProvider";
+import { RegexPatternFinder } from "../core/patterns/textual/RegexPatternFinder";
+import { TemplateSlotNumericValuator } from "../core/templates/TemplateSlotValuator";
 
 const HEXADECIMAL_COLOR_STRING_RGB_RANGES = {
     r: new Range(new Position(1, 0, 1), new Position(3, 0, 3)),
@@ -24,9 +25,11 @@ export const hexadecimalColorPickerProvider = new TextualMonocleProvider({
         const hexadecimalColorString = fragment.text;
 
         return {
-            r: parseInt(hexadecimalColorString.substring(1, 3), 16),
-            g: parseInt(hexadecimalColorString.substring(3, 5), 16),
-            b: parseInt(hexadecimalColorString.substring(5, 7), 16)
+            color: {
+                r: parseInt(hexadecimalColorString.substring(1, 3), 16),
+                g: parseInt(hexadecimalColorString.substring(3, 5), 16),
+                b: parseInt(hexadecimalColorString.substring(5, 7), 16)
+            }
         };
     }),
 

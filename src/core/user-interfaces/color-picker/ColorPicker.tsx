@@ -7,7 +7,10 @@ import { UserInterfaceProvider } from "../UserInterfaceProvider";
 
 
 
-export interface Input extends Color {};
+export interface Input extends UserInterfaceOutput {
+    color: Color
+};
+
 export interface Output extends UserInterfaceOutput {
     color: Color
 };
@@ -62,7 +65,7 @@ export class ColorPicker extends UserInterface<Input, Output> {
 
     updateModel(input: Input): void {
         // TODO: check input
-        this.setColor(input);
+        this.setColor(input.color);
     }
 
     static makeProvider(): UserInterfaceProvider {
