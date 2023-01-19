@@ -65,37 +65,38 @@ export class RegexPatternFinder implements FragmentProvider<TextualFragment> {
         templateDataTransformer: (data: RegexPatternFinderTemplateData) => UserInterfaceInput = (data) => data,
         userInterfaceOutputTransformer: (output: UserInterfaceOutput) => RegexPatternFinderTemplateData = (output) => output,
     ): Template<TextualFragment> {
-        const fragmentsToSlots: Map<TextualFragment, TemplateSlot[]> = new Map();
+        const fragmentsToKeysToSlots: Map<TextualFragment, Map<TemplateSlotKey, TemplateSlot>> = new Map();
 
         return {
             fragmentProvider: (() => {
-                // const fragmentsToSlots = fragmentsToSlots;
                 const regexPatternFinder = new RegexPatternFinder(pattern);
-
                 return {
                     async provideFragmentsForDocument(document: Document): Promise<TextualFragment[]> {
                         const fragmentsWithMatches = regexPatternFinder.provideFragmentsWithMatchesForDocument(document);
 
                         // For each fragment, create its set of slots based on the groups matched by the regular expression
                         // and map the fragment to its set of slots in order to be able to access it in the mappings.
-                        fragmentsToSlots.clear();
+                        fragmentsToKeysToSlots.clear();
 
                         for (let { fragment, match } of fragmentsWithMatches) {
-                            const slots: TemplateSlot[] = [];
-                            fragmentsToSlots.set(fragment, slots);
+                            const keysToSlots: Map<TemplateSlotKey, TemplateSlot> = new Map();
+                            fragmentsToKeysToSlots.set(fragment, keysToSlots);
 
                             for (let [slotKey, slotValuatorProvider] of Object.entries(slotSpecification)) {
                                 // For each slot specification, try to find a regex group whose name matches the slot key.
                                 // Each match must generate a slot with the valuator associated to that key.
                                 const matchingRegexGroup = match.groups.find(group => group.name === slotKey);
                                 if (matchingRegexGroup) {
-                                    slots.push(new TextualTemplateSlot(
-                                        matchingRegexGroup.value,
-                                        matchingRegexGroup.range,
-                                        document,
+                                    keysToSlots.set(
                                         slotKey,
-                                        slotValuatorProvider
-                                    ));
+                                        new TextualTemplateSlot(
+                                            matchingRegexGroup.value,
+                                            matchingRegexGroup.range,
+                                            document,
+                                            slotKey,
+                                            slotValuatorProvider
+                                        )
+                                    );
                                 }
                             }
                         }
@@ -106,29 +107,29 @@ export class RegexPatternFinder implements FragmentProvider<TextualFragment> {
             })(),
 
             inputMapping: new ProgrammableInputMapping<TextualFragment>(({ fragment }) => {
-                    const slots = fragmentsToSlots.get(fragment);
-                    if (!slots) {
-                        throw new Error("The list of slots could not be retrieved: there is no matching fragment.");
+                    const keysToSlots = fragmentsToKeysToSlots.get(fragment);
+                    if (!keysToSlots) {
+                        throw new Error("The slots could not be retrieved: there is no matching fragment.");
                     }
 
                     const slotKeysToValues: RegexPatternFinderTemplateData = {};
-                    for (let slot of slots) {
-                        slotKeysToValues[slot.key] = slot.getValue();
+                    for (let [key, slot] of keysToSlots.entries()) {
+                        slotKeysToValues[key] = slot.getValue();
                     }
 
                     return templateDataTransformer(slotKeysToValues);
                 }),
 
             outputMapping: new ProgrammableOutputMapping<TextualFragment>(({ fragment, documentEditor, output }) => {
-                    const slots = fragmentsToSlots.get(fragment);
-                    if (!slots) {
-                        throw new Error("The list of slots could not be retrieved: there is no matching fragment.");
+                    const keysToSlots = fragmentsToKeysToSlots.get(fragment);
+                    if (!keysToSlots) {
+                        throw new Error("The slots could not be retrieved: there is no matching fragment.");
                     }
 
                     const transformedOutput = userInterfaceOutputTransformer(output);
 
                     for (let [key, value] of Object.entries(transformedOutput)) {
-                        const slot = slots.find(slot => key === slot.key);
+                        const slot = keysToSlots.get(key);
                         if (!slot) {
                             console.warn(`There is no slot with key ${key}.`);
                             continue;
