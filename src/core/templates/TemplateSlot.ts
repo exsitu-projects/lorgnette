@@ -1,7 +1,9 @@
 import { Document } from "../documents/Document";
 import { DocumentEditor } from "../documents/DocumentEditor";
 import { Range } from "../documents/Range";
-import { TemplateSlotTextualValuator, TemplateSlotValue, TemplateSlotValuator, TemplateSlotValuatorProvider } from "./TemplateSlotValuator";
+import { TemplateSlotValue, TemplateSlotValuator } from "./valuators/TemplateSlotValuator";
+import { TemplateSlotValuatorProvider } from "./valuators/TemplateSlotValuatorProvider";
+import { TemplateSlotTextualValuator } from "./valuators/TextualTemplateSlotValuator";
 
 export type TemplateSlotKey = string;
 

@@ -2,7 +2,7 @@ import { Document } from "../../documents/Document";
 import { Range } from "../../documents/Range";
 import { SyntaxTreeNode } from "../../languages/SyntaxTreeNode";
 import { TemplateSlot, TemplateSlotKey } from "../TemplateSlot";
-import { TemplateSlotValuatorProvider } from "../TemplateSlotValuator";
+import { TemplateSlotValuatorProvider } from "../valuators/TemplateSlotValuatorProvider";
 
 // Note: defining the range property as a getter results in an exception,
 // because it seems that some code (that I could not identify...)

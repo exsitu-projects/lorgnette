@@ -3,12 +3,6 @@ import { Document } from "../../documents/Document";
 import { FragmentProvider } from "../../fragments/FragmentProvider";
 import { FragmentType } from "../../fragments/FragmentType";
 import { TextualFragment } from "../../fragments/textual/TextualFragment";
-import { TemplateSlotKey } from "../../templates/TemplateSlot";
-import { TemplateSlotValuatorProvider, TemplateSlotValue } from "../../templates/TemplateSlotValuator";
-
-export type RegexPatternTemplateSlotSpecification = Record<TemplateSlotKey, TemplateSlotValuatorProvider>;
-
-export type RegexPatternFinderTemplateData = Record<TemplateSlotKey, TemplateSlotValue>;
 
 export class RegexPatternFinder implements FragmentProvider<TextualFragment> {
     readonly type = FragmentType.Textual;

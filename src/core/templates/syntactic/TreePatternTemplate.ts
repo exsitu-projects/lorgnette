@@ -6,7 +6,7 @@ import { SyntaxTreeNode } from "../../languages/SyntaxTreeNode";
 import { SyntaxTreePattern } from "../../languages/SyntaxTreePattern";
 import { Template, deriveTemplateSettingsFromDefaults, TemplateSettings } from "../Template"
 import { TemplateSlot, TemplateSlotKey } from "../TemplateSlot";
-import { TemplateSlotValuatorProvider } from "../TemplateSlotValuator";
+import { TemplateSlotValuatorProvider } from "../valuators/TemplateSlotValuatorProvider";
 import { SyntacticTemplateSlot } from "./SyntacticTemplateSlot";
 
 export interface TreePatternTemplateSlotSpecification {

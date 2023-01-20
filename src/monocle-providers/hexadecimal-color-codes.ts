@@ -5,10 +5,10 @@ import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMa
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { ColorPicker } from "../core/user-interfaces/color-picker/ColorPicker";
 import { TextualMonocleProvider } from "../core/monocles/textual/TextualMonocleProvider";
-import { TemplateSlotNumericValuator } from "../core/templates/TemplateSlotValuator";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
 import { RegexPatternTemplate } from "../core/templates/textual/RegexPatternTemplate";
 import { RegexPatternFinder } from "../core/fragments/textual/RegexPatternFinder";
+import { TemplateSlotNumericValuator } from "../core/templates/valuators/NumericTemplateSlotValuator";
 
 const HEXADECIMAL_COLOR_STRING_RGB_RANGES = {
     r: new Range(new Position(1, 0, 1), new Position(3, 0, 3)),

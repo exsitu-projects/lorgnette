@@ -4,7 +4,7 @@ import { RegexPatternFinder } from "../../fragments/textual/RegexPatternFinder";
 import { TextualFragment } from "../../fragments/textual/TextualFragment"
 import { Template, deriveTemplateSettingsFromDefaults, TemplateSettings } from "../Template"
 import { TemplateSlot, TemplateSlotKey } from "../TemplateSlot";
-import { TemplateSlotValuatorProvider } from "../TemplateSlotValuator";
+import { TemplateSlotValuatorProvider } from "../valuators/TemplateSlotValuatorProvider";
 import { TextualTemplateSlot } from "./TextualTemplateSlot";
 
 export type RegexPatternTemplateSlotSpecification = Record<TemplateSlotKey, TemplateSlotValuatorProvider>;

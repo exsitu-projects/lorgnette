@@ -4,7 +4,7 @@ import { FragmentProvider } from "../fragments/FragmentProvider";
 import { ProgrammableInputMapping } from "../mappings/ProgrammableInputMapping";
 import { ProgrammableOutputMapping } from "../mappings/ProgrammableOutputMapping";
 import { TemplateSlot, TemplateSlotKey } from "./TemplateSlot";
-import { TemplateSlotValue } from "./TemplateSlotValuator";
+import { TemplateSlotValue } from "./valuators/TemplateSlotValuator";
 
 // export interface TemplateData<F extends Fragment = Fragment> {
 //     slots: F extends SyntacticFragment

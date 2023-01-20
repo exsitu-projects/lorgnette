@@ -7,7 +7,11 @@ import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMo
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
 import { TreePatternTemplate } from "../core/templates/syntactic/TreePatternTemplate";
-import { TemplateSlotBooleanValuator, TemplateSlotNumericValuator, TemplateSlotTextualValuator, TemplateSlotValuatorProvider, TemplateSlotValuatorSettings } from "../core/templates/TemplateSlotValuator";
+import { TemplateSlotBooleanValuator } from "../core/templates/valuators/BooleanTemplateSlotValuator";
+import { TemplateSlotNumericValuator } from "../core/templates/valuators/NumericTemplateSlotValuator";
+import { TemplateSlotValuatorSettings } from "../core/templates/valuators/TemplateSlotValuator";
+import { TemplateSlotValuatorProvider } from "../core/templates/valuators/TemplateSlotValuatorProvider";
+import { TemplateSlotTextualValuator } from "../core/templates/valuators/TextualTemplateSlotValuator";
 import { Form } from "../core/user-interfaces/form/Form";
 import { NumberInput } from "../core/user-interfaces/form/form-elements/NumberInput";
 import { Select } from "../core/user-interfaces/form/form-elements/Select";
