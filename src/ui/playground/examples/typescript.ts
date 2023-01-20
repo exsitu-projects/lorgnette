@@ -18,8 +18,11 @@ const style = {
 const formEntries = {
   a: 123,
   b: "foo",
-  d: "bar",
-  e: true
+  c: "bar",
+  d: true,
+  e: {x: 1, y: 2},
+  f: [1, 2, 3], 
+  g: data
 };
 
 const tsx = (
