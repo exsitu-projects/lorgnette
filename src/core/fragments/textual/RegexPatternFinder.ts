@@ -1,8 +1,14 @@
-import { RegexMatcher } from "../../../utilities/RegexMatcher";
+import { RegexMatcher, RegexMatchWithGroups } from "../../../utilities/RegexMatcher";
 import { Document } from "../../documents/Document";
-import { FragmentProvider } from "../FragmentProvider";
-import { FragmentType } from "../FragmentType";
-import { TextualFragment } from "./TextualFragment";
+import { FragmentProvider } from "../../fragments/FragmentProvider";
+import { FragmentType } from "../../fragments/FragmentType";
+import { TextualFragment } from "../../fragments/textual/TextualFragment";
+import { TemplateSlotKey } from "../../templates/TemplateSlot";
+import { TemplateSlotValuatorProvider, TemplateSlotValue } from "../../templates/TemplateSlotValuator";
+
+export type RegexPatternTemplateSlotSpecification = Record<TemplateSlotKey, TemplateSlotValuatorProvider>;
+
+export type RegexPatternFinderTemplateData = Record<TemplateSlotKey, TemplateSlotValue>;
 
 export class RegexPatternFinder implements FragmentProvider<TextualFragment> {
     readonly type = FragmentType.Textual;
@@ -29,5 +35,21 @@ export class RegexPatternFinder implements FragmentProvider<TextualFragment> {
         return this.regexMatcher
             .matchAll(document.content)
             .map(match => TextualFragment.fromRegexMatch(match, document));
+    }
+
+    provideFragmentsWithMatchesForDocument(document: Document): { fragment: TextualFragment, match: RegexMatchWithGroups }[] {
+        // If the document is empty, there is nothing to do.
+        if (document.isEmpty) {
+            return [];
+        }
+
+        return this.regexMatcher
+            .matchAllWithGroups(document.content)
+            .map(match => {
+                return {
+                    fragment: TextualFragment.fromRegexMatch(match, document),
+                    match: match
+                };
+            });
     }
 }

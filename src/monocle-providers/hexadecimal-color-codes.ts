@@ -5,8 +5,10 @@ import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMa
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { ColorPicker } from "../core/user-interfaces/color-picker/ColorPicker";
 import { TextualMonocleProvider } from "../core/monocles/textual/TextualMonocleProvider";
-import { RegexPatternFinder } from "../core/patterns/textual/RegexPatternFinder";
 import { TemplateSlotNumericValuator } from "../core/templates/TemplateSlotValuator";
+import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
+import { RegexPatternTemplate } from "../core/templates/textual/RegexPatternTemplate";
+import { RegexPatternFinder } from "../core/fragments/textual/RegexPatternFinder";
 
 const HEXADECIMAL_COLOR_STRING_RGB_RANGES = {
     r: new Range(new Position(1, 0, 1), new Position(3, 0, 3)),
@@ -56,15 +58,19 @@ const hexadecimalValuatorProvider = TemplateSlotNumericValuator.makeProvider({
     integerBase: 16
 });
 
-const hexadecimalColorTemplate = RegexPatternFinder.createTemplate(
+const hexadecimalColorTemplate = new RegexPatternTemplate(
     "#(?<r>[a-fA-F0-9]{2})(?<g>[a-fA-F0-9]{2})(?<b>[a-fA-F0-9]{2})",
+    
     {
         "r": hexadecimalValuatorProvider,
         "g": hexadecimalValuatorProvider,
         "b": hexadecimalValuatorProvider
     },
-    data => { return { color: data }; },
-    output => { return { ...output.color }; },
+
+    {
+        transformTemplateData: data => { return { color: data }; },
+        transformUserInterfaceOutput: output => { return { ...output.color }; }
+    }
 );
 
 export const hexadecimalColorPickerProvider2 = new TextualMonocleProvider({
@@ -72,11 +78,12 @@ export const hexadecimalColorPickerProvider2 = new TextualMonocleProvider({
 
     usageRequirements: {},
 
-    ...hexadecimalColorTemplate,
+    ...hexadecimalColorTemplate.monocleProviderProperties,
 
     userInterfaceProvider: ColorPicker.makeProvider(),
     
     rendererProvider: AsideRenderer.makeProvider({
-        onlyShowWhenCursorIsInRange: true
+        onlyShowWhenCursorIsInRange: true,
+        position: AsideRendererPosition.RightSideOfEditor
     })
 });

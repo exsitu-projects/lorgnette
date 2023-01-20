@@ -4,9 +4,9 @@ import { SyntaxTreePattern, SKIP_MATCH_DESCENDANTS } from "../core/languages/Syn
 import { ProgrammableInputMapping } from "../core/mappings/ProgrammableInputMapping";
 import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMapping";
 import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMonocleProvider";
-import { TreePatternTemplateFinder } from "../core/patterns/syntactic/TreePatternFinder";
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
+import { TreePatternTemplate } from "../core/templates/syntactic/TreePatternTemplate";
 import { TemplateSlotBooleanValuator, TemplateSlotNumericValuator, TemplateSlotTextualValuator, TemplateSlotValuatorProvider, TemplateSlotValuatorSettings } from "../core/templates/TemplateSlotValuator";
 import { Form } from "../core/user-interfaces/form/Form";
 import { NumberInput } from "../core/user-interfaces/form/form-elements/NumberInput";
@@ -91,17 +91,18 @@ export const testFormProvider = new SyntacticMonocleProvider({
     })
 });
 
-// Create valuator settings that automatically wrap/unwrap values into/from a form entry,
+// Make valuators automatically wrap values into a form entry,
 // i.e., the kind of object expected by each form element.
 function createValuatorSettings(key: string, type: FormEntryType): Partial<TemplateSlotValuatorSettings> {
     return {
         // Create a form entry from the valuator's value.
         transformGetterValue: value => {
-            return { value: value, type: type, key: key };
-        },
-
-        // Extract the value from the form entry.
-        // transformSetterValue: formEntry => formEntry.value
+            return {
+                value: value,
+                type: type,
+                key: key
+            };
+        }
     };
 }
 
@@ -125,7 +126,7 @@ const slotKeysToValuatorProviders: Record<string, TemplateSlotValuatorProvider> 
     "d": createValuatorProvider("d", FormEntryType.Boolean),
 };
 
-const testFormTemplate = TreePatternTemplateFinder.createTemplate(
+const testFormTemplate = new TreePatternTemplate(
     new SyntaxTreePattern(
         n => n.type === "ObjectLiteralExpression",
         SKIP_MATCH_DESCENDANTS
@@ -149,15 +150,17 @@ const testFormTemplate = TreePatternTemplateFinder.createTemplate(
             .filter(slotSpecification => slotSpecification.key in slotKeysToValuatorProviders)
     },
 
-    data => { return { data: [...Object.values(data)] }; },
-    output => {
-        return output.modifiedData.reduce(
-            (keysToModifiedEntries: any, entry: any) => {
-                return { ...keysToModifiedEntries, [entry.key]: entry.value  }
-            },
-            {}
-        )
-    },
+    {
+        transformTemplateData: data => { return { data: [...Object.values(data)] }; },
+        transformUserInterfaceOutput: output => {
+            return output.modifiedData.reduce(
+                (keysToModifiedEntries: any, entry: any) => {
+                    return { ...keysToModifiedEntries, [entry.key]: entry.value  }
+                },
+                {}
+            )
+        },
+    }
 );
 
 export const testFormProvider2 = new SyntacticMonocleProvider({
@@ -165,7 +168,7 @@ export const testFormProvider2 = new SyntacticMonocleProvider({
 
     usageRequirements: { languages: ["typescript"] },
 
-    ...testFormTemplate,
+    ...testFormTemplate.monocleProviderProperties,
 
     userInterfaceProvider: Form.makeProvider(<>
         <h4 style={{ textAlign: "center" }}>Test form</h4>
@@ -177,8 +180,6 @@ export const testFormProvider2 = new SyntacticMonocleProvider({
         <Switch formEntryKey="d" label="Some boolean" />
         Some conclusive text...<br/>
     </>),
-
-    // userInterfaceProvider: InputPrinter.makeProvider(),
     
     rendererProvider: AsideRenderer.makeProvider({
         onlyShowWhenCursorIsInRange: true,
