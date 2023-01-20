@@ -4,8 +4,12 @@ import { SyntaxTreeNode } from "../../languages/SyntaxTreeNode";
 import { TemplateSlot, TemplateSlotKey } from "../TemplateSlot";
 import { TemplateSlotValuatorProvider } from "../TemplateSlotValuator";
 
+// Note: defining the range property as a getter results in an exception,
+// because it seems that some code (that I could not identify...)
+// attempts to set the "range" property of the slot.
 export class SyntacticTemplateSlot extends TemplateSlot {
     readonly node: SyntaxTreeNode;
+    readonly range: Range;
 
     constructor(
         node: SyntaxTreeNode,
@@ -16,10 +20,7 @@ export class SyntacticTemplateSlot extends TemplateSlot {
         super(sourceDocument, key, valuatorProvider);
 
         this.node = node;
-    }
-
-    get range(): Range {
-        return this.node.range;
+        this.range = node.range;
     }
 
     getText(): string {
