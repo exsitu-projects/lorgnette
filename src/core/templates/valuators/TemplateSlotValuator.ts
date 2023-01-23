@@ -20,8 +20,8 @@ export type TemplateSlotValue = TemplateSlotValueOfType<TemplateSlotValueType>;
 export interface TemplateSlotValuatorSettings<T extends TemplateSlotValueType = TemplateSlotValueType> {
     // Transformer functions that can be used to further transform values and input/output text.
     transformGetterInputText: (text: string) => string;
-    transformGetterValue: (value: TemplateSlotValueOfType<T>) => TemplateSlotValueOfType<T>;
-    transformSetterValue: (value: TemplateSlotValueOfType<T>) => TemplateSlotValueOfType<T>;
+    transformGetterValue: (value: TemplateSlotValueOfType<T>) => any;
+    transformSetterValue: (value: any) => TemplateSlotValueOfType<T>;
     transformSetterOutputText: (text: string) => string;
 }
 
