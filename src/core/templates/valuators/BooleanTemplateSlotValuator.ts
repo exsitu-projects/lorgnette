@@ -17,7 +17,7 @@ export function deriveTemplateSlotBooleanValuatorSettingsFromDefaults<
     return {
         trueSymbol: "true",
         falseSymbol: "false",
-        isTextTruthful(text: string) { return text !== this.trueSymbol; },
+        isTextTruthful(text: string) { return text !== this.falseSymbol; },
 
         ...deriveTemplateSlotValuatorSettingsFromDefaults(settings)
     };
