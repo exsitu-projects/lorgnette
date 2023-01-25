@@ -4,6 +4,9 @@ import { FormEntry, FormEntryOfType, FormEntryType, FormEntryValueOfType } from 
 export interface FormContextData {
     formEntries: FormEntry[];
 
+    beginTransientEdit(): void;
+    endTransientEdit(): void;
+
     declareFormEntryValueChange<T extends FormEntryType>(
         formEntry: FormEntryOfType<T>,
         newValue: FormEntryValueOfType<T>
@@ -12,5 +15,7 @@ export interface FormContextData {
 
 export const FormContext = React.createContext<FormContextData>({
     formEntries: [],
+    beginTransientEdit: () => {},
+    endTransientEdit: () => {},
     declareFormEntryValueChange: () => {}
 });

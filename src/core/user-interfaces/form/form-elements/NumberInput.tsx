@@ -24,11 +24,15 @@ export class NumberInput extends FormElement<SupportedEntryTypes, NumberInputPro
 
     renderControl(
         formEntry: FormEntryOfType<SupportedEntryTypes>,
-        declareValueChange: (newValue: FormEntryValueOfType<SupportedEntryTypes>) => void
+        declareValueChange: (newValue: FormEntryValueOfType<SupportedEntryTypes>) => void,
+        beginTransientState: () => void,
+        endTransientState: () => void
     ): ReactElement {
         return <NumericInput
             defaultValue={formEntry.value}
             onValueChange={newValue => declareValueChange(newValue)}
+            onFocus={event => beginTransientState()}
+            onBlur={event => endTransientState()}
             {...this.inputConfigurationProps}
         />
     };

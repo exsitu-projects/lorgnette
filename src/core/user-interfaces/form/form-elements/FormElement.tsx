@@ -49,16 +49,20 @@ export abstract class FormElement<
 
     abstract renderControl(
         formEntry: FormEntryOfType<T>,
-        declareValueChange: (newValue: FormEntryValueOfType<T>) => void
+        declareValueChange: (newValue: FormEntryValueOfType<T>) => void,
+        beginTransientState: () => void,
+        endTransientState: () => void
     ): ReactElement;
 
     private renderControlWithLabel(
         formEntry: FormEntryOfType<T>,
-        declareValueChange: (newValue: FormEntryValueOfType<T>) => void
+        declareValueChange: (newValue: FormEntryValueOfType<T>) => void,
+        beginTransientState: () => void,
+        endTransientState: () => void
     ): ReactElement {
         return <Label>
             <span className="label-text">{ this.props.label }</span>
-            { this.renderControl(formEntry, declareValueChange) }
+            { this.renderControl(formEntry, declareValueChange, beginTransientState, endTransientState) }
         </Label>;
     }
 
@@ -66,9 +70,12 @@ export abstract class FormElement<
         const formEntry = this.getFormEntryFromContext(context);
         if (formEntry) {
             const declareValueChange = (newValue: FormEntryValueOfType<T>) => context.declareFormEntryValueChange(formEntry, newValue);
+            const beginTransientState = context.beginTransientEdit;
+            const endTransientState = context.endTransientEdit;
+
             return this.hasLabel
-                ? this.renderControlWithLabel(formEntry, declareValueChange)
-                : this.renderControl(formEntry, declareValueChange)
+                ? this.renderControlWithLabel(formEntry, declareValueChange, beginTransientState, endTransientState)
+                : this.renderControl(formEntry, declareValueChange, beginTransientState, endTransientState)
         }
 
         return null;

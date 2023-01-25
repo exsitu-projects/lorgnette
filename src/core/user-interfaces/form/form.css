@@ -1,6 +1,7 @@
 .ui.form {
     max-width: 600px;
     padding: 1ex;
+    background-color: #FFF;
     border: 1px solid #666;
 }
 

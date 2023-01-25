@@ -18,11 +18,15 @@ export class StringInput extends FormElement<SupportedEntryTypes, StringInputPro
 
     renderControl(
         formEntry: FormEntryOfType<SupportedEntryTypes>,
-        declareValueChange: (newValue: FormEntryValueOfType<SupportedEntryTypes>) => void
+        declareValueChange: (newValue: FormEntryValueOfType<SupportedEntryTypes>) => void,
+        beginTransientState: () => void,
+        endTransientState: () => void
     ): ReactElement {
         return <InputGroup
             defaultValue={formEntry.value}
             onChange={event => declareValueChange(event.target.value)}
+            onFocus={event => beginTransientState()}
+            onBlur={event => endTransientState()}
             {...this.inputConfigurationProps}
         />;
     };

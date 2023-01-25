@@ -43,6 +43,15 @@ export abstract class Form extends UserInterface<Input, Output> {
         return {
             formEntries: this.data,
 
+            beginTransientEdit: () => {
+                this.beginTransientState();
+            },
+
+            endTransientEdit: () => {
+                this.endTransientState();
+                this.declareModelChange();
+            },
+
             declareFormEntryValueChange: (formEntry, newValue) => {
                 const entryToModify = this.data.find(entry => entry.key === formEntry.key);
                 if (entryToModify) {
