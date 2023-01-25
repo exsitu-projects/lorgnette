@@ -9,6 +9,41 @@ import { EMPTY_RANGE, Range } from "../../core/documents/Range";
 import { CodeEditor } from "../code-editor/CodeEditor";
 import { TYPESCRIPT_LANGUAGE } from "../../core/languages/typescript/language";
 
+// Set up a function that creates the appropriate worker for the Monaco editor for a given "label".
+// Adapted from https://github.com/microsoft/monaco-editor/issues/2605.
+(window as any)["MonacoEnvironment"] = {
+    getWorker: (moduleId: any, label: string) => {
+      switch (label) {
+        // Special editor workers.
+        case "editorWorkerService":
+            return new Worker(new URL("monaco-editor/esm/vs/editor/editor.worker", import.meta.url));
+
+        // Language service (?) workers.
+        case "css":
+        case "less":
+        case "scss":
+            return new Worker(new URL("monaco-editor/esm/vs/basic-languages/css/css.js", import.meta.url));
+
+        case "handlebars":
+        case "html":
+            return new Worker(new URL("monaco-editor/esm/vs/language/html/html.worker", import.meta.url));
+
+        case "python":
+            return new Worker(new URL("monaco-editor/esm/vs/basic-languages/python/python.js", import.meta.url));
+
+        case "json":
+            return new Worker(new URL("monaco-editor/esm/vs/language/json/json.worker", import.meta.url));
+
+        case "javascript":
+        case "typescript":
+            return new Worker(new URL("monaco-editor/esm/vs/language/typescript/ts.worker", import.meta.url));
+
+        default:
+          throw new Error(`The language service worker could not be created: unknown language ID: ${label}`);
+      }
+    },
+  };
+
 // Use local files (?) to setup the Monaco editor instead of downloading them from a CDN. 
 // Assumption: the files are packaged by Webpack in a CRA-compliant way?
 loader.config({ monaco });
@@ -357,6 +392,13 @@ export class MonacoEditor extends CodeEditor<Props, State> {
             theme={this.state.theme}
             onMount={(editor, monaco) => {
                 this.onEditorDidMount(editor, monaco);
+                
+                // For now, disable errors in TypeScript.
+                // Adapted from https://stackoverflow.com/a/57044804.
+                monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+                    noSyntaxValidation: true,
+                    noSemanticValidation: true
+                });
             }}
             options={{
                 fontSize: 11
