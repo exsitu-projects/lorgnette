@@ -9,23 +9,23 @@ import { SyntacticTemplateSlot } from "../../../core/templates/syntactic/Syntact
 import { TreePatternTemplate, TreePatternTemplateSlotSpecification, TreePatternTemplateSlotSpecifier } from "../../../core/templates/syntactic/TreePatternTemplate";
 import { DELETE_SLOT, TemplateDataValue, TemplateSettings } from "../../../core/templates/Template";
 import { TemplateSlotKey } from "../../../core/templates/TemplateSlot";
-import { TemplateSlotValuator, TemplateSlotValue } from "../../../core/templates/valuators/TemplateSlotValuator";
+import { Valuator, ValuatorValue } from "../../../core/templates/valuators/Valuator";
 
 export type PythonFunctionCallNamedArgumentsTemplateSlotSpecification = {
     key: TemplateSlotKey;
-    valuator: TemplateSlotValuator;
-    defaultValue?: TemplateSlotValue;
+    valuator: Valuator;
+    defaultValue?: ValuatorValue;
 };
 
 export function createSlotSpecification(
     key: TemplateSlotKey,
-    valuator: TemplateSlotValuator,
-    defaultValue?: TemplateSlotValue
+    valuator: Valuator,
+    defaultValue?: ValuatorValue
 ): PythonFunctionCallNamedArgumentsTemplateSlotSpecification {
     return {
         key: key,
         valuator: valuator,
-        ...(defaultValue)
+        defaultValue: defaultValue
     };
 }
 
