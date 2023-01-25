@@ -50,7 +50,7 @@ export class Select extends FormElement<SupportedEntryTypes, SelectProps> {
             activeItem={currentValue}
             popoverProps={{
                 minimal: true,
-                usePortal: true,
+                usePortal: false,
                 portalContainer: document.body
             }}
             {...this.inputConfigurationProps}
