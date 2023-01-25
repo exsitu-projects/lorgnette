@@ -11,7 +11,7 @@ import { Style } from "../core/user-interfaces/style-inspector/Style";
 import { StyleInspector, Input as StyleInspectorInput } from "../core/user-interfaces/style-inspector/StyleInspector";
 import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMonocleProvider";
 import { Color } from "../utilities/Color";
-import { processProperty, insertProperty, deleteProperty } from "../utilities/languages/json";
+import { processProperty, insertProperty, deleteProperty } from "../utilities/languages/json/json-utilities";
 import { ValueWithUnit } from "../utilities/ValueWithUnit";
 
 export const vegaMarksStyleInspectorProvider = new SyntacticMonocleProvider({

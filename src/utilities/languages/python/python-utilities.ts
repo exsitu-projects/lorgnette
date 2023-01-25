@@ -1,11 +1,11 @@
-import { Document } from "../../core/documents/Document";
-import { DocumentEditor } from "../../core/documents/DocumentEditor";
-import { Range } from "../../core/documents/Range";
-import { ExpressionNode } from "../../core/languages/python/nodes/ExpressionNode";
-import { FunctionCallNode } from "../../core/languages/python/nodes/FunctionCallNode";
-import { NamedArgumentNode } from "../../core/languages/python/nodes/NamedArgumentNode";
-import { StringNode } from "../../core/languages/python/nodes/StringNode";
-import { Color } from "../Color";
+import { Document } from "../../../core/documents/Document";
+import { DocumentEditor } from "../../../core/documents/DocumentEditor";
+import { Range } from "../../../core/documents/Range";
+import { ExpressionNode } from "../../../core/languages/python/nodes/ExpressionNode";
+import { FunctionCallNode } from "../../../core/languages/python/nodes/FunctionCallNode";
+import { NamedArgumentNode } from "../../../core/languages/python/nodes/NamedArgumentNode";
+import { StringNode } from "../../../core/languages/python/nodes/StringNode";
+import { Color } from "../../Color";
 
 // Do something if a named argument with (one of) the given names exists.
 const processNamedArgument = (

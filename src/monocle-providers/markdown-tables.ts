@@ -7,7 +7,7 @@ import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMo
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
 import { EMPTY_TABLE_HEADER, Output, Table, TableContent } from "../core/user-interfaces/table/Table";
-import { convertMdastToMarkdownString, createMdastTable } from "../utilities/languages/markdown";
+import { convertMdastToMarkdownString, createMdastTable } from "../utilities/languages/markdown/markdown-utilities";
 
 export const markdownTableProvider = new SyntacticMonocleProvider({
     name: "Markdown table",

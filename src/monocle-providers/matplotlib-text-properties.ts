@@ -9,7 +9,7 @@ import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSett
 import { isEnabledAndDefined, DISABLED_PROPERTY } from "../core/user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
 import { Input, StyleInspector } from "../core/user-interfaces/style-inspector/StyleInspector";
 import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMonocleProvider";
-import { createNamedArgumentProcesser, convertColorFromExpression, createNamedArgumentModifyer } from "../utilities/languages/python";
+import { createNamedArgumentProcesser, convertColorFromExpression, createNamedArgumentModifyer } from "../utilities/languages/python/python-utilities";
 import { ValueWithUnit } from "../utilities/ValueWithUnit";
 
 export const matplotlibTextPropertiesStyleInspectorProvider = new SyntacticMonocleProvider({
