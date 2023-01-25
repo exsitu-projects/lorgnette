@@ -5,13 +5,13 @@ import { FragmentProvider } from "../fragments/FragmentProvider";
 import { ProgrammableInputMapping } from "../mappings/ProgrammableInputMapping";
 import { ProgrammableOutputMapping } from "../mappings/ProgrammableOutputMapping";
 import { TemplateSlot, TemplateSlotKey } from "./TemplateSlot";
-import { TemplateSlotValue } from "./valuators/TemplateSlotValuator";
+import { ValuatorValue } from "./valuators/Valuator";
 
 
 export const DELETE_SLOT = Symbol("Delete template slot");
 export type DeleteSlotSymbol = typeof DELETE_SLOT;
 
-export type TemplateDataValue = TemplateSlotValue | DeleteSlotSymbol;
+export type TemplateDataValue = ValuatorValue | DeleteSlotSymbol;
 export type TemplateData = Record<TemplateSlotKey, TemplateDataValue>;
 
 export interface TemplateSettings {

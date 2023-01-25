@@ -8,7 +8,7 @@ import { TextualMonocleProvider } from "../core/monocles/textual/TextualMonocleP
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
 import { RegexPatternTemplate } from "../core/templates/textual/RegexPatternTemplate";
 import { RegexPatternFinder } from "../core/fragments/textual/RegexPatternFinder";
-import { TemplateSlotNumericValuator } from "../core/templates/valuators/NumericTemplateSlotValuator";
+import { NumericValuator } from "../core/templates/valuators/NumericValuator";
 
 const HEXADECIMAL_COLOR_STRING_RGB_RANGES = {
     r: new Range(new Position(1, 0, 1), new Position(3, 0, 3)),
@@ -53,7 +53,7 @@ export const hexadecimalColorPickerProvider = new TextualMonocleProvider({
     })
 });
 
-const hexadecimalValuator = new TemplateSlotNumericValuator({
+const hexadecimalValuator = new NumericValuator({
     isIntegerValue: true,
     integerBase: 16
 });

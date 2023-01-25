@@ -6,13 +6,13 @@ import { SyntaxTreeNode } from "../../languages/SyntaxTreeNode";
 import { SyntaxTreePattern } from "../../languages/SyntaxTreePattern";
 import { Template, deriveTemplateSettingsFromDefaults, TemplateSettings } from "../Template"
 import { TemplateSlotKey } from "../TemplateSlot";
-import { TemplateSlotValuator } from "../valuators/TemplateSlotValuator";
+import { Valuator } from "../valuators/Valuator";
 import { SyntacticTemplateSlot } from "./SyntacticTemplateSlot";
 
 export interface TreePatternTemplateSlotSpecification {
     node: SyntaxTreeNode;
     key: TemplateSlotKey;
-    valuator: TemplateSlotValuator;
+    valuator: Valuator;
 }
 
 export type TreePatternTemplateSlotSpecifier =

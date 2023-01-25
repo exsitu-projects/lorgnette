@@ -1,30 +1,30 @@
 import { Document } from "../documents/Document";
 import { DocumentEditor } from "../documents/DocumentEditor";
 import { Range } from "../documents/Range";
-import { TemplateSlotValue, TemplateSlotValuator } from "./valuators/TemplateSlotValuator";
-import { TemplateSlotTextualValuator } from "./valuators/TextualTemplateSlotValuator";
+import { ValuatorValue, Valuator } from "./valuators/Valuator";
+import { TextualValuator } from "./valuators/TextualValuator";
 
 export type TemplateSlotKey = string;
 
 export interface TemplateSlotSpecification {
     key: TemplateSlotKey;
-    valuator: TemplateSlotValuator;
+    valuator: Valuator;
 }
 
 export abstract class TemplateSlot {
     readonly sourceDocument: Document;
     readonly key: TemplateSlotKey;
-    protected valuator: TemplateSlotValuator;
+    protected valuator: Valuator;
     abstract readonly range: Range;
 
     constructor(
         sourceDocument: Document,
         key: TemplateSlotKey,
-        valuator?: TemplateSlotValuator
+        valuator?: Valuator
     ) {
         this.sourceDocument = sourceDocument;
         this.key = key;
-        this.valuator = valuator ?? new TemplateSlotTextualValuator();
+        this.valuator = valuator ?? new TextualValuator();
     }
     
     abstract getText(): string;
@@ -33,11 +33,11 @@ export abstract class TemplateSlot {
         documentEditor.replace(this.range, text);
     };
 
-    getValue(): TemplateSlotValue {
+    getValue(): ValuatorValue {
         return this.valuator.getValueFromSlot(this);
     }
 
-    setValue(newValue: TemplateSlotValue, documentEditor: DocumentEditor) {
+    setValue(newValue: ValuatorValue, documentEditor: DocumentEditor) {
         this.valuator.setValueInSlot(this, newValue, documentEditor);
     }
 }

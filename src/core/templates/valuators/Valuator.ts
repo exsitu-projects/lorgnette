@@ -1,47 +1,47 @@
 import { DocumentEditor } from "../../documents/DocumentEditor";
 import { TemplateSlot } from "../TemplateSlot";
 
-export const enum TemplateSlotValueType {
+export const enum ValuatorValueType {
     Number = "Number",
     Text = "Text",
     Boolean = "Boolean",
     Other = "Other"
 }
 
-export type TemplateSlotValueOfType<T extends TemplateSlotValueType = TemplateSlotValueType> =
-    T extends TemplateSlotValueType.Number ? number :
-    T extends TemplateSlotValueType.Text ? string :
-    T extends TemplateSlotValueType.Boolean ? boolean :
-    T extends TemplateSlotValueType.Other ? any :
+export type ValuatorValueOfType<T extends ValuatorValueType = ValuatorValueType> =
+    T extends ValuatorValueType.Number ? number :
+    T extends ValuatorValueType.Text ? string :
+    T extends ValuatorValueType.Boolean ? boolean :
+    T extends ValuatorValueType.Other ? any :
     never;
 
-export type TemplateSlotValue = TemplateSlotValueOfType<TemplateSlotValueType>;
+export type ValuatorValue = ValuatorValueOfType<ValuatorValueType>;
 
-export interface TemplateSlotValuatorSettings<T extends TemplateSlotValueType = TemplateSlotValueType> {
+export interface ValuatorSettings<T extends ValuatorValueType = ValuatorValueType> {
     // Transformer functions that can be used to further transform values and input/output text.
     transformGetterInputText: (text: string) => string;
-    transformGetterValue: (value: TemplateSlotValueOfType<T>) => any;
-    transformSetterValue: (value: any) => TemplateSlotValueOfType<T>;
+    transformGetterValue: (value: ValuatorValueOfType<T>) => any;
+    transformSetterValue: (value: any) => ValuatorValueOfType<T>;
     transformSetterOutputText: (text: string) => string;
 }
 
-export function deriveTemplateSlotValuatorSettingsFromDefaults<
-    T extends TemplateSlotValueType,
-    S extends TemplateSlotValuatorSettings<T>
->(settings: Partial<S>): TemplateSlotValuatorSettings<T> {
+export function deriveValuatorSettingsFromDefaults<
+    T extends ValuatorValueType,
+    S extends ValuatorSettings<T>
+>(settings: Partial<S>): ValuatorSettings<T> {
     return {
         transformGetterInputText: (text: string) => text,
-        transformGetterValue: (value: TemplateSlotValueOfType<T>) => value,
-        transformSetterValue: (value: TemplateSlotValueOfType<T>) => value,
+        transformGetterValue: (value: ValuatorValueOfType<T>) => value,
+        transformSetterValue: (value: ValuatorValueOfType<T>) => value,
         transformSetterOutputText: (text: string) => text,
         
         ...settings
     };
 }
 
-export abstract class TemplateSlotValuator<
-    T extends TemplateSlotValueType = TemplateSlotValueType,
-    S extends TemplateSlotValuatorSettings<T> = TemplateSlotValuatorSettings<T>
+export abstract class Valuator<
+    T extends ValuatorValueType = ValuatorValueType,
+    S extends ValuatorSettings<T> = ValuatorSettings<T>
 > {
     readonly abstract type: T;
     protected settings: S;
@@ -52,18 +52,18 @@ export abstract class TemplateSlotValuator<
     ) {
         this.settings = settingsDeriverFromDefaults({
             transformGetterInputText: (text: string) => text,
-            transformGetterValue: (value: TemplateSlotValueOfType<T>) => value,
-            transformSetterValue: (value: TemplateSlotValueOfType<T>) => value,
+            transformGetterValue: (value: ValuatorValueOfType<T>) => value,
+            transformSetterValue: (value: ValuatorValueOfType<T>) => value,
             transformSetterOutputText: (text: string) => text,
 
             ...partialSettings
         });
     }
 
-    protected abstract convertRawValueToValue(text: string): TemplateSlotValueOfType<T>;
-    protected abstract convertValueToRawValue(value: TemplateSlotValueOfType<T>): string;
+    protected abstract convertRawValueToValue(text: string): ValuatorValueOfType<T>;
+    protected abstract convertValueToRawValue(value: ValuatorValueOfType<T>): string;
 
-    getValueFromText(text: string): TemplateSlotValueOfType<T> {
+    getValueFromText(text: string): ValuatorValueOfType<T> {
         const transformedText = this.settings.transformGetterInputText(text);
         const value = this.convertRawValueToValue(transformedText);
         const transformedValue = this.settings.transformGetterValue(value);
@@ -71,12 +71,12 @@ export abstract class TemplateSlotValuator<
         return transformedValue;
     }
 
-    getValueFromSlot(slot: TemplateSlot): TemplateSlotValueOfType<T> {
+    getValueFromSlot(slot: TemplateSlot): ValuatorValueOfType<T> {
         const text = slot.getText();
         return this.getValueFromText(text);
     }
 
-    convertValueToText(value: TemplateSlotValueOfType<T>): string {
+    convertValueToText(value: ValuatorValueOfType<T>): string {
         const transformedValue = this.settings.transformSetterValue(value);
         const text = this.convertValueToRawValue(transformedValue);
         const transformedText = this.settings.transformSetterOutputText(text);
@@ -84,7 +84,7 @@ export abstract class TemplateSlotValuator<
         return transformedText;
     }
 
-    setValueInSlot(slot: TemplateSlot, newValue: TemplateSlotValueOfType<T>, documentEditor: DocumentEditor): void {
+    setValueInSlot(slot: TemplateSlot, newValue: ValuatorValueOfType<T>, documentEditor: DocumentEditor): void {
         try {
             const text = this.convertValueToText(newValue);
             slot.setText(text, documentEditor);

@@ -1,37 +1,37 @@
-import { TemplateSlotValuatorSettings, TemplateSlotValueType, deriveTemplateSlotValuatorSettingsFromDefaults, TemplateSlotValuator } from "./TemplateSlotValuator";
+import { ValuatorSettings, ValuatorValueType, deriveValuatorSettingsFromDefaults, Valuator } from "./Valuator";
 
-export interface TemplateSlotTextualValuatorSettings extends TemplateSlotValuatorSettings<TemplateSlotValueType.Text> {
+export interface TextualValuatorSettings extends ValuatorSettings<ValuatorValueType.Text> {
     // List of delimiters that must be trimmed from the start and the end of the value.
     // The first delimiter of the list will be used to enclose new values if it is defined.
     ignorePairsOfDelimiters: string[] | false;
 }
 
-export function deriveTemplateSlotTextualValuatorSettingsFromDefaults<
-    S extends TemplateSlotValuatorSettings<TemplateSlotValueType.Text>
->(settings: Partial<S>): TemplateSlotTextualValuatorSettings {
+export function deriveTextualValuatorSettingsFromDefaults<
+    S extends ValuatorSettings<ValuatorValueType.Text>
+>(settings: Partial<S>): TextualValuatorSettings {
     return {
         ignorePairsOfDelimiters: ["\"", "'", "`"],
 
-        ...deriveTemplateSlotValuatorSettingsFromDefaults(settings)
+        ...deriveValuatorSettingsFromDefaults(settings)
     };
 }
 
-export class TemplateSlotTextualValuator extends TemplateSlotValuator<
-    TemplateSlotValueType.Text,
-    TemplateSlotTextualValuatorSettings
+export class TextualValuator extends Valuator<
+    ValuatorValueType.Text,
+    TextualValuatorSettings
 > {
-    readonly type = TemplateSlotValueType.Text;
+    readonly type = ValuatorValueType.Text;
 
-    constructor(partialSettings: Partial<TemplateSlotTextualValuatorSettings> = {}) {
+    constructor(partialSettings: Partial<TextualValuatorSettings> = {}) {
         super(
             partialSettings,
-            deriveTemplateSlotTextualValuatorSettingsFromDefaults
+            deriveTextualValuatorSettingsFromDefaults
         );
     }
 
     protected convertRawValueToValue(text: string): string {
         return this.settings.ignorePairsOfDelimiters
-            ? TemplateSlotTextualValuator.trimPairsOfIdentificDelimitersOff(text, this.settings.ignorePairsOfDelimiters)
+            ? TextualValuator.trimPairsOfIdentificDelimitersOff(text, this.settings.ignorePairsOfDelimiters)
             : text;
     }
 

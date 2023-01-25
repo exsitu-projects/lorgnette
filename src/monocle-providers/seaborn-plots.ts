@@ -12,9 +12,9 @@ import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMo
 import { createNamedArgumentProcesser, convertColorFromExpression, createNamedArgumentModifyer } from "../utilities/languages/python/python-utilities";
 import { ValueWithUnit } from "../utilities/ValueWithUnit";
 import { PythonFunctionCallNamedArgumentsTemplate } from "../utilities/languages/python/PythonFunctionCallNamedArgumentsTemplate";
-import { TemplateSlotTextualValuator } from "../core/templates/valuators/TextualTemplateSlotValuator";
+import { TextualValuator } from "../core/templates/valuators/TextualValuator";
 import { Color } from "../utilities/Color";
-import { TemplateSlotNumericValuator } from "../core/templates/valuators/NumericTemplateSlotValuator";
+import { NumericValuator } from "../core/templates/valuators/NumericValuator";
 
 export const seabornBarplotStyleInspectorProvider = new SyntacticMonocleProvider({
     name: "Seaborn style (barplots)",
@@ -140,17 +140,17 @@ export const seabornBarplotStyleInspectorProvider = new SyntacticMonocleProvider
     })
 });
 
-const colorValuator = new TemplateSlotTextualValuator({
+const colorValuator = new TextualValuator({
     transformGetterValue: text => Color.fromCss(text),
     transformSetterValue: (color: Color) => color.css
 });
 
-const pixelLengthValuator = new TemplateSlotNumericValuator({
+const pixelLengthValuator = new NumericValuator({
     transformGetterValue: value => new ValueWithUnit(value, "px"),
     transformSetterValue: (length: ValueWithUnit) => length.value
 });
 
-const lineStyleValuator = new TemplateSlotTextualValuator({
+const lineStyleValuator = new TextualValuator({
     transformGetterValue: value => {
         return {
             "-": "solid",

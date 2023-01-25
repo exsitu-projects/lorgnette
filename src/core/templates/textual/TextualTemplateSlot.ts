@@ -1,7 +1,7 @@
 import { Document } from "../../documents/Document";
 import { Range } from "../../documents/Range";
 import { TemplateSlot, TemplateSlotKey } from "../TemplateSlot";
-import { TemplateSlotValuator } from "../valuators/TemplateSlotValuator";
+import { Valuator } from "../valuators/Valuator";
 
 export class TextualTemplateSlot extends TemplateSlot {
     private text: string;
@@ -12,7 +12,7 @@ export class TextualTemplateSlot extends TemplateSlot {
         range: Range,
         sourceDocument: Document,
         key: TemplateSlotKey,
-        valuator?: TemplateSlotValuator
+        valuator?: Valuator
     ) {
         super(sourceDocument, key, valuator);
 

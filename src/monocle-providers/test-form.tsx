@@ -7,10 +7,10 @@ import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMo
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
 import { TreePatternTemplate } from "../core/templates/syntactic/TreePatternTemplate";
-import { TemplateSlotBooleanValuator } from "../core/templates/valuators/BooleanTemplateSlotValuator";
-import { TemplateSlotNumericValuator } from "../core/templates/valuators/NumericTemplateSlotValuator";
-import { TemplateSlotValuator, TemplateSlotValuatorSettings } from "../core/templates/valuators/TemplateSlotValuator";
-import { TemplateSlotTextualValuator } from "../core/templates/valuators/TextualTemplateSlotValuator";
+import { BooleanValuator } from "../core/templates/valuators/BooleanValuator";
+import { NumericValuator } from "../core/templates/valuators/NumericValuator";
+import { Valuator, ValuatorSettings } from "../core/templates/valuators/Valuator";
+import { TextualValuator } from "../core/templates/valuators/TextualValuator";
 import { Form } from "../core/user-interfaces/form/Form";
 import { NumberInput } from "../core/user-interfaces/form/form-elements/NumberInput";
 import { Select } from "../core/user-interfaces/form/form-elements/Select";
@@ -96,7 +96,7 @@ export const testFormProvider = new SyntacticMonocleProvider({
 
 // Make valuators automatically wrap values into a form entry,
 // i.e., the kind of object expected by each form element.
-function createValuatorSettings(key: string, type: FormEntryType): Partial<TemplateSlotValuatorSettings> {
+function createValuatorSettings(key: string, type: FormEntryType): Partial<ValuatorSettings> {
     return {
         // Create a form entry from the valuator's value.
         transformGetterValue: value => {
@@ -109,20 +109,20 @@ function createValuatorSettings(key: string, type: FormEntryType): Partial<Templ
     };
 }
 
-function createValuator(key: string, type: FormEntryType): TemplateSlotValuator {
+function createValuator(key: string, type: FormEntryType): Valuator {
     const valuatorSettings = createValuatorSettings(key, type);
     switch (type) {
         case FormEntryType.Number:
-            return new TemplateSlotNumericValuator(valuatorSettings);
+            return new NumericValuator(valuatorSettings);
         case FormEntryType.Boolean:
-            return new TemplateSlotBooleanValuator(valuatorSettings);
+            return new BooleanValuator(valuatorSettings);
         case FormEntryType.String:
         default:
-            return new TemplateSlotTextualValuator(valuatorSettings);
+            return new TextualValuator(valuatorSettings);
     }
 }
 
-const slotKeysToValuators: Record<string, TemplateSlotValuator> = {
+const slotKeysToValuators: Record<string, Valuator> = {
     "a": createValuator("a", FormEntryType.Number),
     "b": createValuator("b", FormEntryType.String),
     "c": createValuator("c", FormEntryType.String),

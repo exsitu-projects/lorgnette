@@ -4,10 +4,10 @@ import { RegexPatternFinder } from "../../fragments/textual/RegexPatternFinder";
 import { TextualFragment } from "../../fragments/textual/TextualFragment"
 import { Template, deriveTemplateSettingsFromDefaults, TemplateSettings } from "../Template"
 import { TemplateSlotKey } from "../TemplateSlot";
-import { TemplateSlotValuator } from "../valuators/TemplateSlotValuator";
+import { Valuator } from "../valuators/Valuator";
 import { TextualTemplateSlot } from "./TextualTemplateSlot";
 
-export type RegexPatternTemplateSlotSpecification = Record<TemplateSlotKey, TemplateSlotValuator>;
+export type RegexPatternTemplateSlotSpecification = Record<TemplateSlotKey, Valuator>;
 
 export class RegexPatternTemplate extends Template<TextualTemplateSlot, TextualFragment, TemplateSettings> {
     protected regexPatternFinder: RegexPatternFinder;
