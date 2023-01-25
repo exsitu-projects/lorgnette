@@ -16,6 +16,7 @@ export class Switch extends FormElement<SupportedEntryTypes, SwitchProps> {
     ): ReactElement {
         return <BlueprintSwitch
             defaultChecked={formEntry.value}
+            style={this.props.style}
             onChange={() => declareValueChange(!formEntry.value)}
             inline={true}
         />;

@@ -1,10 +1,13 @@
+import { Color } from "../../../utilities/Color";
+
 export type FormEntryKey = string | number;
 
 export const enum FormEntryType {
     Boolean = "Boolean",
     Number = "Number",
     String = "String",
-    StringList = "StringList"
+    StringList = "StringList",
+    Color = "Color"
 };
 
 export type FormEntry =
@@ -25,6 +28,10 @@ export type FormEntry =
         key: FormEntryKey,
         value: string,
         valueOptions: string[]
+    } | {
+        type: FormEntryType.Color,
+        key: FormEntryKey,
+        value: Color
     };
 
 // Utility type used to implement other types.
@@ -33,6 +40,7 @@ type FormEntryTypesToFormEntries = { [K in FormEntryType]: Extract<FormEntry, { 
 
 export type FormEntryOfType<T extends FormEntryType> = FormEntryTypesToFormEntries[T];
 export type FormEntryValueOfType<T extends FormEntryType> = FormEntryOfType<T>["value"];
+export type FormEntryValue = FormEntryValueOfType<FormEntryType>;
 
 export function formEntryHasType<T extends FormEntryType>(
     formEntry: FormEntry,

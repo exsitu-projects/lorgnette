@@ -22,7 +22,8 @@ const formEntries = {
   d: true,
   e: {x: 1, y: 2},
   f: [1, 2, 3], 
-  g: data
+  g: data,
+  color: "#123456"
 };
 
 const tsx = (

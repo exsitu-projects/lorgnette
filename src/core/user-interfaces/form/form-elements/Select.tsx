@@ -55,7 +55,11 @@ export class Select extends FormElement<SupportedEntryTypes, SelectProps> {
             }}
             {...this.inputConfigurationProps}
         >
-            <Button text={currentValue} rightIcon="caret-down" />
+            <Button
+                text={currentValue}
+                rightIcon="caret-down"
+                style={this.props.style}
+            />
         </Select2>;
     };
 }

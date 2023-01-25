@@ -30,6 +30,7 @@ export class NumberInput extends FormElement<SupportedEntryTypes, NumberInputPro
     ): ReactElement {
         return <NumericInput
             defaultValue={formEntry.value}
+            style={this.props.style}
             onValueChange={newValue => declareValueChange(newValue)}
             onFocus={event => beginTransientState()}
             onBlur={event => endTransientState()}

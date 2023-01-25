@@ -17,6 +17,9 @@ import { Select } from "../core/user-interfaces/form/form-elements/Select";
 import { StringInput } from "../core/user-interfaces/form/form-elements/StringInput";
 import { Switch } from "../core/user-interfaces/form/form-elements/Switch";
 import { FormEntry, FormEntryType } from "../core/user-interfaces/form/FormEntry";
+import { Button } from "../core/user-interfaces/form/form-elements/Button";
+import { Color } from "../utilities/Color";
+import { ButtonColorPicker } from "../core/user-interfaces/form/form-elements/ButtonColorPicker";
 
 export const testFormProvider = new SyntacticMonocleProvider({
     name: "Form test",
@@ -97,14 +100,20 @@ export const testFormProvider = new SyntacticMonocleProvider({
 // Make valuators automatically wrap values into a form entry,
 // i.e., the kind of object expected by each form element.
 function createValuatorSettings(key: string, type: FormEntryType): Partial<ValuatorSettings> {
+    if (type === FormEntryType.Color) {
+        return {
+            transformGetterValue: colorAsText => {
+                return { value: Color.fromCss(colorAsText), type, key };
+            },
+            transformSetterValue: (color: Color) => {
+                return color.css;
+            }
+        };
+    }
+
     return {
-        // Create a form entry from the valuator's value.
         transformGetterValue: value => {
-            return {
-                value: value,
-                type: type,
-                key: key
-            };
+            return { value, type, key };
         }
     };
 }
@@ -116,6 +125,8 @@ function createValuator(key: string, type: FormEntryType): Valuator {
             return new NumericValuator(valuatorSettings);
         case FormEntryType.Boolean:
             return new BooleanValuator(valuatorSettings);
+        case FormEntryType.Color:
+            return new TextualValuator(valuatorSettings);
         case FormEntryType.String:
         default:
             return new TextualValuator(valuatorSettings);
@@ -127,6 +138,7 @@ const slotKeysToValuators: Record<string, Valuator> = {
     "b": createValuator("b", FormEntryType.String),
     "c": createValuator("c", FormEntryType.String),
     "d": createValuator("d", FormEntryType.Boolean),
+    "color": createValuator("color", FormEntryType.Color),
 };
 
 const testFormTemplate = new TreePatternTemplate(
@@ -176,11 +188,23 @@ export const testFormProvider2 = new SyntacticMonocleProvider({
     userInterfaceProvider: Form.makeProvider(<>
         <h4 style={{ textAlign: "center" }}>Test form</h4>
         Some text introducing the purpose of this form and explaining some details.<br/>
+
         <NumberInput formEntryKey="a" label="Some number" />
         <StringInput formEntryKey="b" label="Some string" />
         <Select formEntryKey="c" items={["foo", "bar"]} />
+
         Some text explaining the purpose of the next form element.<br/>
+
         <Switch formEntryKey="d" label="Some boolean" />
+        <ButtonColorPicker formEntryKey="color" />
+        <Button
+            formEntryKey="color"
+            text="Set color to red"
+            value={Color.fromCss("red")}
+            style={{ margin: "0 1ex" }}
+        />
+        <br/>
+
         Some conclusive text...<br/>
     </>),
     

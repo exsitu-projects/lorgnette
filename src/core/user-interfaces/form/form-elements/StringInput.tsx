@@ -24,6 +24,7 @@ export class StringInput extends FormElement<SupportedEntryTypes, StringInputPro
     ): ReactElement {
         return <InputGroup
             defaultValue={formEntry.value}
+            style={this.props.style}
             onChange={event => declareValueChange(event.target.value)}
             onFocus={event => beginTransientState()}
             onBlur={event => endTransientState()}

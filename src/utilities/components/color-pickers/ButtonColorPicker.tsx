@@ -11,6 +11,7 @@ type Props = {
     color: Color;
     useRgba?: boolean;
     disabled?: boolean;
+    buttonStyle?: React.CSSProperties;
     onChange?: (newColor: Color) => void;
     onDragStart?: () => void;
     onDragEnd?: () => void;
@@ -25,7 +26,7 @@ export class ButtonColorPicker extends React.PureComponent<Props> {
         const colorPicker = this.shouldUseRgba
             ? <RgbaColorPicker {...this.props} />
             : <RgbColorPicker {...this.props} />;
-        
+
         return <Popover2
             placement="bottom"
             modifiers={{
@@ -38,10 +39,11 @@ export class ButtonColorPicker extends React.PureComponent<Props> {
             content={colorPicker}
             renderTarget={({ isOpen, ref,  ...targetProps }) =>
                 <Button
-                    {...targetProps}
+                    {...targetProps }
                     elementRef={ref as any}
                     className="color-picker-button"
                     disabled={this.props.disabled}
+                    style={this.props.buttonStyle}
                 >
                     <div
                         className="color-preview"

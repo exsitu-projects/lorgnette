@@ -9,18 +9,22 @@ export type FormElementValueChangeListener<T extends FormEntryType> =
 export interface FormElementProps<T extends FormEntryType> {
     formEntryKey: FormEntryKey;
     label?: string;
+    style?: React.CSSProperties;
 };
 
 export interface FormElementState<T extends FormEntryType> {
 
 };
 
+export const ANY_ENTRY_TYPES = Symbol("Any form element entry type");
+export type AnyEntryTypeSymbol = typeof ANY_ENTRY_TYPES;
+
 export abstract class FormElement<
     T extends FormEntryType,
     P extends FormElementProps<T> = FormElementProps<T>,
     S extends FormElementState<T> = FormElementState<T>
 > extends Component<P, S> {
-    protected abstract readonly supportedFormEntryTypes: T[];
+    protected abstract readonly supportedFormEntryTypes: T[] | AnyEntryTypeSymbol;
 
     protected get hasLabel(): boolean {
         return this.props.label !== undefined;
@@ -35,12 +39,14 @@ export abstract class FormElement<
             return null;
         }
 
-        if (!formEntryHasType(formEntry, this.supportedFormEntryTypes)) {
+        if (this.supportedFormEntryTypes !== ANY_ENTRY_TYPES && !formEntryHasType(formEntry, this.supportedFormEntryTypes)) {
             console.log(`The type of the form entry with key "${this.props.formEntryKey}" (${formEntry.type}) is not supported: expected ${this.supportedFormEntryTypes.join(" or ")}.`);
             return null;
         }
         
-        return formEntry;
+        // The cast is required because the type is unknown (but does not matter)
+        // if the form element supports all types using the ANY_ENTRY_TYPES symbol.
+        return formEntry as FormEntryOfType<T>;
     }
 
     // protected shouldRender(formEntry: FormEntryOfType<T>): boolean {
