@@ -53,7 +53,7 @@ export const hexadecimalColorPickerProvider = new TextualMonocleProvider({
     })
 });
 
-const hexadecimalValuatorProvider = TemplateSlotNumericValuator.makeProvider({
+const hexadecimalValuator = new TemplateSlotNumericValuator({
     isIntegerValue: true,
     integerBase: 16
 });
@@ -62,9 +62,9 @@ const hexadecimalColorTemplate = new RegexPatternTemplate(
     "#(?<r>[a-fA-F0-9]{2})(?<g>[a-fA-F0-9]{2})(?<b>[a-fA-F0-9]{2})",
     
     {
-        "r": hexadecimalValuatorProvider,
-        "g": hexadecimalValuatorProvider,
-        "b": hexadecimalValuatorProvider
+        "r": hexadecimalValuator,
+        "g": hexadecimalValuator,
+        "b": hexadecimalValuator
     },
 
     {

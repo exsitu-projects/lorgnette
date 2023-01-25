@@ -1,6 +1,5 @@
 import { TemplateSlot } from "../TemplateSlot";
 import { TemplateSlotValuatorSettings, TemplateSlotValueType, deriveTemplateSlotValuatorSettingsFromDefaults, TemplateSlotValuator } from "./TemplateSlotValuator";
-import { TemplateSlotValuatorProvider } from "./TemplateSlotValuatorProvider";
 
 export interface TemplateSlotNumericValuatorSettings extends TemplateSlotValuatorSettings<TemplateSlotValueType.Number> {
     isIntegerValue: boolean;
@@ -24,29 +23,22 @@ export class TemplateSlotNumericValuator extends TemplateSlotValuator<
 > {
     readonly type = TemplateSlotValueType.Number;
 
-    constructor(slot: TemplateSlot, partialSettings: Partial<TemplateSlotNumericValuatorSettings> = {}) {
+    constructor(partialSettings: Partial<TemplateSlotNumericValuatorSettings> = {}) {
         super(
-            slot,
             partialSettings,
             deriveTemplateSlotNumericValuatorSettingsFromDefaults
         );
     }
 
-    convertTextToValue(text: string): number {
+    protected convertRawValueToValue(text: string): number {
         return this.settings.isIntegerValue
             ? parseInt(text, this.settings.integerBase)
             : parseFloat(text);
     }
 
-    convertValueToText(newValue: number): string {
+    protected convertValueToRawValue(newValue: number): string {
         return this.settings.isIntegerValue
             ? newValue.toString(this.settings.integerBase)
             : newValue.toString();
-    }
-
-    static makeProvider(partialSettings: Partial<TemplateSlotNumericValuatorSettings> = {}): TemplateSlotValuatorProvider {
-        return {
-            provideValuatorForSlot: (slot: TemplateSlot) => new TemplateSlotNumericValuator(slot, partialSettings)
-        };
     }
 }

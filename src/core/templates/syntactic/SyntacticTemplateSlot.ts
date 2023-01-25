@@ -2,7 +2,7 @@ import { Document } from "../../documents/Document";
 import { Range } from "../../documents/Range";
 import { SyntaxTreeNode } from "../../languages/SyntaxTreeNode";
 import { TemplateSlot, TemplateSlotKey } from "../TemplateSlot";
-import { TemplateSlotValuatorProvider } from "../valuators/TemplateSlotValuatorProvider";
+import { TemplateSlotValuator } from "../valuators/TemplateSlotValuator";
 
 // Note: defining the range property as a getter results in an exception,
 // because it seems that some code (that I could not identify...)
@@ -15,9 +15,9 @@ export class SyntacticTemplateSlot extends TemplateSlot {
         node: SyntaxTreeNode,
         sourceDocument: Document,
         key: TemplateSlotKey,
-        valuatorProvider?: TemplateSlotValuatorProvider
+        valuator?: TemplateSlotValuator
     ) {
-        super(sourceDocument, key, valuatorProvider);
+        super(sourceDocument, key, valuator);
 
         this.node = node;
         this.range = node.range;

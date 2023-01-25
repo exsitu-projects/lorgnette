@@ -40,13 +40,13 @@ export function deriveTemplateSettingsFromDefaults<
     };
 }
 
-
 export abstract class Template<
+    T extends TemplateSlot = TemplateSlot,
     F extends Fragment = Fragment,
-    S extends TemplateSettings = TemplateSettings
+    S extends TemplateSettings = TemplateSettings,
 > {
     protected settings: S;
-    protected fragmentsToKeysToSlots: Map<F, Map<TemplateSlotKey, TemplateSlot>>;
+    protected fragmentsToKeysToSlots: Map<F, Map<TemplateSlotKey, T>>;
 
     protected constructor(
         partialSettings: Partial<S>,

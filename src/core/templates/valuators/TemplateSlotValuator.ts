@@ -44,15 +44,12 @@ export abstract class TemplateSlotValuator<
     S extends TemplateSlotValuatorSettings<T> = TemplateSlotValuatorSettings<T>
 > {
     readonly abstract type: T;
-    protected slot: TemplateSlot;
     protected settings: S;
 
     constructor(
-        slot: TemplateSlot,
         partialSettings: Partial<S> = {},
         settingsDeriverFromDefaults: (partialSettings: Partial<S>) => S
     ) {
-        this.slot = slot;
         this.settings = settingsDeriverFromDefaults({
             transformGetterInputText: (text: string) => text,
             transformGetterValue: (value: TemplateSlotValueOfType<T>) => value,
@@ -60,28 +57,37 @@ export abstract class TemplateSlotValuator<
             transformSetterOutputText: (text: string) => text,
 
             ...partialSettings
-        })
+        });
     }
 
-    abstract convertTextToValue(text: string): TemplateSlotValueOfType<T>;
-    abstract convertValueToText(value: TemplateSlotValueOfType<T>): string;
+    protected abstract convertRawValueToValue(text: string): TemplateSlotValueOfType<T>;
+    protected abstract convertValueToRawValue(value: TemplateSlotValueOfType<T>): string;
 
-    getValue(): TemplateSlotValueOfType<T> {
-        const text = this.slot.getText();
+    getValueFromText(text: string): TemplateSlotValueOfType<T> {
         const transformedText = this.settings.transformGetterInputText(text);
-        const value = this.convertTextToValue(transformedText);
+        const value = this.convertRawValueToValue(transformedText);
         const transformedValue = this.settings.transformGetterValue(value);
 
         return transformedValue;
     }
 
-    setValue(newValue: TemplateSlotValueOfType<T>, documentEditor: DocumentEditor): void {
-        try {
-            const transformedValue = this.settings.transformSetterValue(newValue);
-            const text = this.convertValueToText(transformedValue);
-            const transformedText = this.settings.transformSetterOutputText(text);
+    getValueFromSlot(slot: TemplateSlot): TemplateSlotValueOfType<T> {
+        const text = slot.getText();
+        return this.getValueFromText(text);
+    }
 
-            this.slot.setText(transformedText, documentEditor);
+    convertValueToText(value: TemplateSlotValueOfType<T>): string {
+        const transformedValue = this.settings.transformSetterValue(value);
+        const text = this.convertValueToRawValue(transformedValue);
+        const transformedText = this.settings.transformSetterOutputText(text);
+
+        return transformedText;
+    }
+
+    setValueInSlot(slot: TemplateSlot, newValue: TemplateSlotValueOfType<T>, documentEditor: DocumentEditor): void {
+        try {
+            const text = this.convertValueToText(newValue);
+            slot.setText(text, documentEditor);
         }
         catch (error) {
             console.error("The valuator could not set the value of the slot:", error);

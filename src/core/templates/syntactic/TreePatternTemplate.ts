@@ -5,20 +5,20 @@ import { TreePatternFinder } from "../../fragments/syntactic/TreePatternFinder";
 import { SyntaxTreeNode } from "../../languages/SyntaxTreeNode";
 import { SyntaxTreePattern } from "../../languages/SyntaxTreePattern";
 import { Template, deriveTemplateSettingsFromDefaults, TemplateSettings } from "../Template"
-import { TemplateSlot, TemplateSlotKey } from "../TemplateSlot";
-import { TemplateSlotValuatorProvider } from "../valuators/TemplateSlotValuatorProvider";
+import { TemplateSlotKey } from "../TemplateSlot";
+import { TemplateSlotValuator } from "../valuators/TemplateSlotValuator";
 import { SyntacticTemplateSlot } from "./SyntacticTemplateSlot";
 
 export interface TreePatternTemplateSlotSpecification {
     node: SyntaxTreeNode;
     key: TemplateSlotKey;
-    valuatorProvider: TemplateSlotValuatorProvider;
+    valuator: TemplateSlotValuator;
 }
 
 export type TreePatternTemplateSlotSpecifier =
     (fragment: SyntacticFragment, document: Document) => TreePatternTemplateSlotSpecification[];
 
-export class TreePatternTemplate extends Template<SyntacticFragment, TemplateSettings> {
+export class TreePatternTemplate extends Template<SyntacticTemplateSlot, SyntacticFragment, TemplateSettings> {
     protected treePatternFinder: TreePatternFinder;
     protected slotSpecifier: TreePatternTemplateSlotSpecifier;
 
@@ -39,13 +39,13 @@ export class TreePatternTemplate extends Template<SyntacticFragment, TemplateSet
         for (let fragment of fragments) {
             const slotSpecifications = this.slotSpecifier(fragment, document);
 
-            const keysToSlots: Map<TemplateSlotKey, TemplateSlot> = new Map();
+            const keysToSlots: Map<TemplateSlotKey, SyntacticTemplateSlot> = new Map();
             this.fragmentsToKeysToSlots.set(fragment, keysToSlots);
 
-            for (let { key, node, valuatorProvider } of slotSpecifications) {
+            for (let { key, node, valuator } of slotSpecifications) {
                 keysToSlots.set(
                     key,
-                    new SyntacticTemplateSlot(node, document, key, valuatorProvider)
+                    new SyntacticTemplateSlot(node, document, key, valuator)
                 );
             }
         }

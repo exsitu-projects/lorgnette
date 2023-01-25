@@ -3,13 +3,13 @@ import { FragmentProvider } from "../../fragments/FragmentProvider"
 import { RegexPatternFinder } from "../../fragments/textual/RegexPatternFinder";
 import { TextualFragment } from "../../fragments/textual/TextualFragment"
 import { Template, deriveTemplateSettingsFromDefaults, TemplateSettings } from "../Template"
-import { TemplateSlot, TemplateSlotKey } from "../TemplateSlot";
-import { TemplateSlotValuatorProvider } from "../valuators/TemplateSlotValuatorProvider";
+import { TemplateSlotKey } from "../TemplateSlot";
+import { TemplateSlotValuator } from "../valuators/TemplateSlotValuator";
 import { TextualTemplateSlot } from "./TextualTemplateSlot";
 
-export type RegexPatternTemplateSlotSpecification = Record<TemplateSlotKey, TemplateSlotValuatorProvider>;
+export type RegexPatternTemplateSlotSpecification = Record<TemplateSlotKey, TemplateSlotValuator>;
 
-export class RegexPatternTemplate extends Template<TextualFragment, TemplateSettings> {
+export class RegexPatternTemplate extends Template<TextualTemplateSlot, TextualFragment, TemplateSettings> {
     protected regexPatternFinder: RegexPatternFinder;
     protected slotSpecification: RegexPatternTemplateSlotSpecification;
 
@@ -31,10 +31,10 @@ export class RegexPatternTemplate extends Template<TextualFragment, TemplateSett
         this.fragmentsToKeysToSlots.clear();
 
         for (let { fragment, match } of fragmentsWithMatches) {
-            const keysToSlots: Map<TemplateSlotKey, TemplateSlot> = new Map();
+            const keysToSlots: Map<TemplateSlotKey, TextualTemplateSlot> = new Map();
             this.fragmentsToKeysToSlots.set(fragment, keysToSlots);
 
-            for (let [slotKey, slotValuatorProvider] of Object.entries(this.slotSpecification)) {
+            for (let [slotKey, slotValuator] of Object.entries(this.slotSpecification)) {
                 // For each slot specification, try to find a regex group whose name matches the slot key.
                 // Each match must generate a slot with the valuator associated to that key.
                 const matchingRegexGroup = match.groups.find(group => group.name === slotKey);
@@ -46,7 +46,7 @@ export class RegexPatternTemplate extends Template<TextualFragment, TemplateSett
                             matchingRegexGroup.range,
                             document,
                             slotKey,
-                            slotValuatorProvider
+                            slotValuator
                         )
                     );
                 }

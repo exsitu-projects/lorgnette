@@ -9,8 +9,7 @@ import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSett
 import { TreePatternTemplate } from "../core/templates/syntactic/TreePatternTemplate";
 import { TemplateSlotBooleanValuator } from "../core/templates/valuators/BooleanTemplateSlotValuator";
 import { TemplateSlotNumericValuator } from "../core/templates/valuators/NumericTemplateSlotValuator";
-import { TemplateSlotValuatorSettings } from "../core/templates/valuators/TemplateSlotValuator";
-import { TemplateSlotValuatorProvider } from "../core/templates/valuators/TemplateSlotValuatorProvider";
+import { TemplateSlotValuator, TemplateSlotValuatorSettings } from "../core/templates/valuators/TemplateSlotValuator";
 import { TemplateSlotTextualValuator } from "../core/templates/valuators/TextualTemplateSlotValuator";
 import { Form } from "../core/user-interfaces/form/Form";
 import { NumberInput } from "../core/user-interfaces/form/form-elements/NumberInput";
@@ -110,24 +109,24 @@ function createValuatorSettings(key: string, type: FormEntryType): Partial<Templ
     };
 }
 
-function createValuatorProvider(key: string, type: FormEntryType): TemplateSlotValuatorProvider {
+function createValuator(key: string, type: FormEntryType): TemplateSlotValuator {
     const valuatorSettings = createValuatorSettings(key, type);
     switch (type) {
         case FormEntryType.Number:
-            return TemplateSlotNumericValuator.makeProvider(valuatorSettings);
+            return new TemplateSlotNumericValuator(valuatorSettings);
         case FormEntryType.Boolean:
-            return TemplateSlotBooleanValuator.makeProvider(valuatorSettings);
+            return new TemplateSlotBooleanValuator(valuatorSettings);
         case FormEntryType.String:
         default:
-            return TemplateSlotTextualValuator.makeProvider(valuatorSettings);
+            return new TemplateSlotTextualValuator(valuatorSettings);
     }
 }
 
-const slotKeysToValuatorProviders: Record<string, TemplateSlotValuatorProvider> = {
-    "a": createValuatorProvider("a", FormEntryType.Number),
-    "b": createValuatorProvider("b", FormEntryType.String),
-    "c": createValuatorProvider("c", FormEntryType.String),
-    "d": createValuatorProvider("d", FormEntryType.Boolean),
+const slotKeysToValuators: Record<string, TemplateSlotValuator> = {
+    "a": createValuator("a", FormEntryType.Number),
+    "b": createValuator("b", FormEntryType.String),
+    "c": createValuator("c", FormEntryType.String),
+    "d": createValuator("d", FormEntryType.Boolean),
 };
 
 const testFormTemplate = new TreePatternTemplate(
@@ -148,10 +147,10 @@ const testFormTemplate = new TreePatternTemplate(
                 return {
                     key: key,
                     node: valueNode,
-                    valuatorProvider: slotKeysToValuatorProviders[key]
+                    valuator: slotKeysToValuators[key]
                 }
             })
-            .filter(slotSpecification => slotSpecification.key in slotKeysToValuatorProviders)
+            .filter(slotSpecification => slotSpecification.key in slotKeysToValuators)
     },
 
     {

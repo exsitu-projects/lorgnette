@@ -1,6 +1,4 @@
-import { TemplateSlot } from "../TemplateSlot";
 import { TemplateSlotValuatorSettings, TemplateSlotValueType, deriveTemplateSlotValuatorSettingsFromDefaults, TemplateSlotValuator } from "./TemplateSlotValuator";
-import { TemplateSlotValuatorProvider } from "./TemplateSlotValuatorProvider";
 
 export interface TemplateSlotBooleanValuatorSettings extends TemplateSlotValuatorSettings<TemplateSlotValueType.Boolean> {
     // Text to use when writing a true or false value in a document.
@@ -29,30 +27,20 @@ export class TemplateSlotBooleanValuator extends TemplateSlotValuator<
 > {
     readonly type = TemplateSlotValueType.Boolean;
 
-    constructor(
-        slot: TemplateSlot,
-        partialSettings: Partial<TemplateSlotValuatorSettings<TemplateSlotValueType.Boolean>> = {}
-    ) {
+    constructor(partialSettings: Partial<TemplateSlotValuatorSettings<TemplateSlotValueType.Boolean>> = {}) {
         super(
-            slot,
             partialSettings,
             deriveTemplateSlotBooleanValuatorSettingsFromDefaults
         );
     }
 
-    convertTextToValue(text: string): boolean {
+    protected convertRawValueToValue(text: string): boolean {
         return this.settings.isTextTruthful(text);
     }
 
-    convertValueToText(newValue: boolean): string {
+    protected convertValueToRawValue(newValue: boolean): string {
         return newValue
             ? this.settings.trueSymbol
             : this.settings.falseSymbol;
-    }
-
-    static makeProvider(partialSettings: Partial<TemplateSlotBooleanValuatorSettings> = {}): TemplateSlotValuatorProvider {
-        return {
-            provideValuatorForSlot: (slot: TemplateSlot) => new TemplateSlotBooleanValuator(slot, partialSettings)
-        };
     }
 }

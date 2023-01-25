@@ -1,6 +1,4 @@
-import { TemplateSlot } from "../TemplateSlot";
 import { TemplateSlotValuatorSettings, TemplateSlotValueType, deriveTemplateSlotValuatorSettingsFromDefaults, TemplateSlotValuator } from "./TemplateSlotValuator";
-import { TemplateSlotValuatorProvider } from "./TemplateSlotValuatorProvider";
 
 export interface TemplateSlotTextualValuatorSettings extends TemplateSlotValuatorSettings<TemplateSlotValueType.Text> {
     // List of delimiters that must be trimmed from the start and the end of the value.
@@ -24,24 +22,20 @@ export class TemplateSlotTextualValuator extends TemplateSlotValuator<
 > {
     readonly type = TemplateSlotValueType.Text;
 
-    constructor(
-        slot: TemplateSlot,
-        partialSettings: Partial<TemplateSlotValuatorSettings<TemplateSlotValueType.Text>> = {},
-    ) {
+    constructor(partialSettings: Partial<TemplateSlotTextualValuatorSettings> = {}) {
         super(
-            slot,
             partialSettings,
             deriveTemplateSlotTextualValuatorSettingsFromDefaults
         );
     }
 
-    convertTextToValue(text: string): string {
+    protected convertRawValueToValue(text: string): string {
         return this.settings.ignorePairsOfDelimiters
             ? TemplateSlotTextualValuator.trimPairsOfIdentificDelimitersOff(text, this.settings.ignorePairsOfDelimiters)
             : text;
     }
 
-    convertValueToText(newValue: string): string {
+    protected convertValueToRawValue(newValue: string): string {
         if (this.settings.ignorePairsOfDelimiters) {
             const delimiter = this.settings.ignorePairsOfDelimiters[0];
             return `${delimiter}${newValue}${delimiter}`;
@@ -69,11 +63,5 @@ export class TemplateSlotTextualValuator extends TemplateSlotValuator<
         }
 
         return text;
-    }
-
-    static makeProvider(partialSettings: Partial<TemplateSlotTextualValuatorSettings> = {}): TemplateSlotValuatorProvider {
-        return {
-            provideValuatorForSlot: (slot: TemplateSlot) => new TemplateSlotTextualValuator(slot, partialSettings)
-        };
     }
 }
