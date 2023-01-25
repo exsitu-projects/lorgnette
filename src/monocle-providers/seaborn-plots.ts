@@ -11,6 +11,10 @@ import { Input, StyleInspector } from "../core/user-interfaces/style-inspector/S
 import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMonocleProvider";
 import { createNamedArgumentProcesser, convertColorFromExpression, createNamedArgumentModifyer } from "../utilities/languages/python";
 import { ValueWithUnit } from "../utilities/ValueWithUnit";
+import { PythonFunctionCallNamedArgumentsTemplate } from "../utilities/languages/python/FunctionCallNamedArgumentsTemplate";
+import { TemplateSlotTextualValuator } from "../core/templates/valuators/TextualTemplateSlotValuator";
+import { Color } from "../utilities/Color";
+import { TemplateSlotNumericValuator } from "../core/templates/valuators/NumericTemplateSlotValuator";
 
 export const seabornBarplotStyleInspectorProvider = new SyntacticMonocleProvider({
     name: "Seaborn style (barplots)",
@@ -127,6 +131,90 @@ export const seabornBarplotStyleInspectorProvider = new SyntacticMonocleProvider
         documentEditor.applyEdits();
     }),
 
+    userInterfaceProvider: StyleInspector.makeProvider(),
+    
+    rendererProvider: AsideRenderer.makeProvider({
+        onlyShowWhenCursorIsInRange: true,
+        position: AsideRendererPosition.RightSideOfCode,
+        positionOffset: 150
+    })
+});
+
+const colorValuator = new TemplateSlotTextualValuator({
+    transformGetterValue: text => Color.fromCss(text),
+    transformSetterValue: (color: Color) => color.css
+});
+
+const pixelLengthValuator = new TemplateSlotNumericValuator({
+    transformGetterValue: value => new ValueWithUnit(value, "px"),
+    transformSetterValue: (length: ValueWithUnit) => length.value
+});
+
+const lineStyleValuator = new TemplateSlotTextualValuator({
+    transformGetterValue: value => {
+        return {
+            "-": "solid",
+            "--": "dashed",
+            ":": "dotted"
+        }[value] ?? value;
+    }
+});
+
+const barplotCallTemplate = new PythonFunctionCallNamedArgumentsTemplate(
+    "barplot",
+    [
+        { key: "color", valuator: colorValuator },
+        { key: "edgecolor", valuator: colorValuator },
+        { key: "linewidth", valuator: pixelLengthValuator, defaultValue: 0 },
+        { key: "linestyle", valuator: lineStyleValuator, defaultValue: "solid" },
+        { key: "ls", valuator: lineStyleValuator },
+    ],
+    {
+        transformTemplateData: data => {
+            const background: any = {};
+            if (data.color) { background.color = data.color; }
+
+            const border: any = {};
+            if (data.edgecolor) { border.color = data.edgecolor; }
+            if (data.linewidth) { border.thickness = data.linewidth; }
+            if (data.linestyle || data.ls) { border.color = data.linestyle ?? data.ls; }
+
+            return {
+                style: { background, border },
+                settings: {
+                    inspectors: { font: { show: false } }
+                }
+            }
+        },
+
+        transformUserInterfaceOutput: output => {
+            const modifiedData: any = {};
+
+            const background = output.styleChange.background;
+            if (background) {
+                if (background.color) { modifiedData.color = background.color; }
+            }
+
+            const border = output.styleChange.border;
+            if (border) {
+                if (border.color) { modifiedData.edgecolor = border.color; }
+                if (border.thickness) { modifiedData.linewidth = border.thickness; }
+                if (border.type) { modifiedData.linestyle = border.type; }
+            }
+
+            return modifiedData;
+        }
+    }
+);
+
+export const seabornBarplotStyleInspectorProvider2 = new SyntacticMonocleProvider({
+    name: "Seaborn style (barplots)",
+
+    usageRequirements: { languages: ["python"] },
+
+    ...barplotCallTemplate.monocleProviderProperties,
+
+    // userInterfaceProvider: InputPrinter.makeProvider(),
     userInterfaceProvider: StyleInspector.makeProvider(),
     
     rendererProvider: AsideRenderer.makeProvider({
