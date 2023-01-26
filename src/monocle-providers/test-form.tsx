@@ -18,8 +18,9 @@ import { StringInput } from "../core/user-interfaces/form/form-elements/StringIn
 import { Switch } from "../core/user-interfaces/form/form-elements/Switch";
 import { FormEntry, FormEntryType } from "../core/user-interfaces/form/FormEntry";
 import { Button } from "../core/user-interfaces/form/form-elements/Button";
-import { Color } from "../utilities/Color";
+import { BLUE, Color, GREEN, RED } from "../utilities/Color";
 import { ButtonColorPicker } from "../core/user-interfaces/form/form-elements/ButtonColorPicker";
+import { ButtonGroup } from "../core/user-interfaces/form/form-elements/ButtonGroup";
 
 export const testFormProvider = new SyntacticMonocleProvider({
     name: "Form test",
@@ -196,13 +197,43 @@ export const testFormProvider2 = new SyntacticMonocleProvider({
         Some text explaining the purpose of the next form element.<br/>
 
         <Switch formEntryKey="d" label="Some boolean" />
-        <ButtonColorPicker formEntryKey="color" />
-        <Button
+        
+        {/* <Button<FormEntryType.Color>
             formEntryKey="color"
-            text="Set color to red"
-            value={Color.fromCss("red")}
+            text={color => color.equals(RED) ? "Make it blue" : "Make it red"}
+            value={color => color.equals(RED) ? Color.fromCss("blue") : Color.fromCss("red")}
+            activateOn={color => color.equals(RED)}
+            style={{ margin: "0 1ex" }}
+        /> */}
+
+        Test of a button colour picker followed by a group of buttons: <br/>
+        <ButtonColorPicker
+            formEntryKey="color"
             style={{ margin: "0 1ex" }}
         />
+        <ButtonGroup>
+            <Button<FormEntryType.Color>
+                formEntryKey="color"
+                text="Red"
+                value={RED}
+                activateOn={color => color.equals(RED)}
+                style={{ color: "darkred" }}
+            />
+            <Button<FormEntryType.Color>
+                formEntryKey="color"
+                text="Green"
+                value={GREEN}
+                activateOn={color => color.equals(GREEN)}
+                style={{ color: "darkgreen" }}
+            />
+            <Button<FormEntryType.Color>
+                formEntryKey="color"
+                text="Blue"
+                value={BLUE}
+                activateOn={color => color.equals(BLUE)}
+                style={{ color: "darkblue" }}
+            />
+        </ButtonGroup>
         <br/>
 
         Some conclusive text...<br/>
