@@ -40,6 +40,13 @@ export class Color {
 
         return `#${r}${g}${b}${a}`;
     }
+
+    equals(otherColor: Color): boolean {
+        return this.r === otherColor.r 
+            && this.g === otherColor.g 
+            && this.b === otherColor.b 
+            && this.a === otherColor.a;
+    }
     
     static fromRgb(rgbColor: RgbColor): Color {
         return new Color(rgbColor.r, rgbColor.g, rgbColor.b, 1);
@@ -98,4 +105,9 @@ export class Color {
 
 export const BLACK = new Color(0, 0, 0, 1);
 export const WHITE = new Color(255, 255, 255, 1);
+
+export const RED = new Color(255, 0, 0, 1);
+export const GREEN = new Color(0, 255, 0, 1);
+export const BLUE = new Color(0, 0, 255, 1);
+
 export const TRANSPARENT = new Color(0, 0, 0, 0);
