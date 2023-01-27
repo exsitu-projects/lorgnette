@@ -21,6 +21,7 @@ import { Button } from "../core/user-interfaces/form/form-elements/Button";
 import { BLUE, Color, GREEN, RED } from "../utilities/Color";
 import { ButtonColorPicker } from "../core/user-interfaces/form/form-elements/ButtonColorPicker";
 import { ButtonGroup } from "../core/user-interfaces/form/form-elements/ButtonGroup";
+import { JavascriptLiteralObjectTemplate } from "../utilities/languages/javascript/JavascriptLiteralObjectTemplate";
 
 export const testFormProvider = new SyntacticMonocleProvider({
     name: "Form test",
@@ -134,38 +135,14 @@ function createValuator(key: string, type: FormEntryType): Valuator {
     }
 }
 
-const slotKeysToValuators: Record<string, Valuator> = {
-    "a": createValuator("a", FormEntryType.Number),
-    "b": createValuator("b", FormEntryType.String),
-    "c": createValuator("c", FormEntryType.String),
-    "d": createValuator("d", FormEntryType.Boolean),
-    "color": createValuator("color", FormEntryType.Color),
-};
-
-const testFormTemplate = new TreePatternTemplate(
-    new SyntaxTreePattern(
-        n => n.type === "ObjectLiteralExpression",
-        SKIP_MATCH_DESCENDANTS
-    ),
-
-    (fragment, document) => {
-        const objectBodyNode = fragment.node.childNodes[1];
-        return objectBodyNode.childNodes
-            .filter(node => node.type === "PropertyAssignment")
-            .map(node => {
-                const keyNode = node.childNodes[0];
-                const key = keyNode.getTextIn(document);
-                const valueNode = node.childNodes[2];
-
-                return {
-                    key: key,
-                    node: valueNode,
-                    valuator: slotKeysToValuators[key]
-                }
-            })
-            .filter(slotSpecification => slotSpecification.key in slotKeysToValuators)
-    },
-
+const testFormTemplate = new JavascriptLiteralObjectTemplate(
+    [
+        { key: "a", valuator: createValuator("a", FormEntryType.Number) },
+        { key: "b", valuator: createValuator("b", FormEntryType.String) },
+        { key: "c", valuator: createValuator("c", FormEntryType.String) },
+        { key: "d", valuator: createValuator("d", FormEntryType.Boolean) },
+        { key: "color", valuator: createValuator("color", FormEntryType.Color) }
+    ],
     {
         transformTemplateData: data => { return { data: [...Object.values(data)] }; },
         transformUserInterfaceOutput: output => {
@@ -197,14 +174,6 @@ export const testFormProvider2 = new SyntacticMonocleProvider({
         Some text explaining the purpose of the next form element.<br/>
 
         <Switch formEntryKey="d" label="Some boolean" />
-        
-        {/* <Button<FormEntryType.Color>
-            formEntryKey="color"
-            text={color => color.equals(RED) ? "Make it blue" : "Make it red"}
-            value={color => color.equals(RED) ? Color.fromCss("blue") : Color.fromCss("red")}
-            activateOn={color => color.equals(RED)}
-            style={{ margin: "0 1ex" }}
-        /> */}
 
         Test of a button colour picker followed by a group of buttons: <br/>
         <ButtonColorPicker
