@@ -1,6 +1,6 @@
 import "./color-picker.css";
 
-import React, { ReactElement } from "react";
+import React from "react";
 import { Button } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import { Color } from "../../Color";
@@ -15,17 +15,40 @@ type Props = {
     onChange?: (newColor: Color) => void;
     onDragStart?: () => void;
     onDragEnd?: () => void;
+    onOpen?: () => void;
+    onClose?: () => void;
 };
 
-export class ButtonColorPicker extends React.PureComponent<Props> {
+type State = {
+    color: Color;
+};
+
+export class ButtonColorPicker extends React.Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+        this.state = { color: this.props.color };
+    }
+
     private get shouldUseRgba(): boolean {
         return !!this.props.useRgba;
     }
+
+    private handleColorChange(newColor: Color): void {
+        if (this.props.onChange) {
+            this.props.onChange(newColor);
+        }
+
+        this.setState({ color: newColor });
+    }
     
     render() {
-        const colorPicker = this.shouldUseRgba
-            ? <RgbaColorPicker {...this.props} />
-            : <RgbColorPicker {...this.props} />;
+        const ColorPickerComponent = this.shouldUseRgba
+            ? RgbaColorPicker
+            : RgbColorPicker;
+        const colorPicker = <ColorPickerComponent
+            {...this.props }
+            onChange={newColor => this.handleColorChange(newColor)}
+        />;
 
         return <Popover2
             placement="bottom"
@@ -36,6 +59,8 @@ export class ButtonColorPicker extends React.PureComponent<Props> {
             usePortal={true}
             portalContainer={document.body}
             portalClassName="floating-color-picker-wrapper"
+            onOpened={node => this.props.onOpen && this.props.onOpen()}
+            onClosed={node => this.props.onClose && this.props.onClose()}
             content={colorPicker}
             renderTarget={({ isOpen, ref,  ...targetProps }) =>
                 <Button
@@ -47,7 +72,7 @@ export class ButtonColorPicker extends React.PureComponent<Props> {
                 >
                     <div
                         className="color-preview"
-                        style={{ backgroundColor: this.props.color.css }}
+                        style={{ backgroundColor: this.state.color.css }}
                     />
                 </Button>
             }

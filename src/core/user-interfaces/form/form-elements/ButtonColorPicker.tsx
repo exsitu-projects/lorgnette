@@ -28,8 +28,8 @@ export class ButtonColorPicker extends FormElement<SupportedEntryTypes, ButtonPr
         return <ButtonColorPickerComponent
             color={formEntry.value}
             buttonStyle={this.props.style}
-            onDragStart={() => beginTransientState()}
-            onDragEnd={() => endTransientState()}
+            onOpen={() => beginTransientState()}
+            onClose={() => endTransientState()}
             onChange={newColor => declareValueChange(newColor)}
         />
     };
