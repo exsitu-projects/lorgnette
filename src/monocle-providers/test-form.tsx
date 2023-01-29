@@ -135,7 +135,7 @@ function createValuator(key: string, type: FormEntryType): Valuator {
     }
 }
 
-const testFormTemplate = new JavascriptLiteralObjectTemplate(
+const testFormTemplate = JavascriptLiteralObjectTemplate.createForAnyContext(
     [
         { key: "a", valuator: createValuator("a", FormEntryType.Number) },
         { key: "b", valuator: createValuator("b", FormEntryType.String) },

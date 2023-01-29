@@ -12,10 +12,11 @@ export type TreePatternTemplateSlotProvider =
 export abstract class TreePatternTemplate extends Template<SyntacticTemplateSlot, SyntacticFragment, TemplateSettings> {
     protected treePatternFinder: TreePatternFinder;
 
-    constructor(pattern: SyntaxTreePattern, partialSettings: Partial<TemplateSettings> = {}) {
+    constructor(partialSettings: Partial<TemplateSettings> = {}) {
         super(partialSettings, deriveTemplateSettingsFromDefaults);
-        this.treePatternFinder = new TreePatternFinder(pattern);
+        this.treePatternFinder = new TreePatternFinder(this.createSyntaxTreePattern());
     }
+    protected abstract createSyntaxTreePattern(): SyntaxTreePattern;
 
     protected abstract provideSlotsForFragment(fragment: SyntacticFragment, document: Document): SyntacticTemplateSlot[];
 
@@ -38,15 +39,5 @@ export abstract class TreePatternTemplate extends Template<SyntacticTemplateSlot
         return {
             provideFragmentsForDocument: this.provideFragmentsForDocument.bind(this)
         };
-    }
-
-    static createWith(
-        pattern: SyntaxTreePattern,
-        slotProvider: TreePatternTemplateSlotProvider,
-        partialSettings: Partial<TemplateSettings> = {}
-    ): TreePatternTemplate {
-        return new (class extends TreePatternTemplate {
-            protected provideSlotsForFragment = slotProvider;
-        })(pattern, partialSettings);
     }
 }

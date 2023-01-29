@@ -29,29 +29,22 @@ export function createSlotSpecification(
     };
 }
 
-function createSyntaxTreePattern(funtionNameCondition: ValueCondition<string>): SyntaxTreePattern {
-    return new SyntaxTreePattern(node =>
-        node.type === "FunctionCall" &&
-        evaluateCondition(funtionNameCondition, (node as FunctionCallNode).callee.text)
-    );
-}
-
-export class PythonFunctionCallNamedArgumentsTemplate extends KeyValueListTemplate<PythonFunctionCallNamedArgumentsTemplateSlotSpecification> {
+export abstract class PythonFunctionCallNamedArgumentsTemplate extends KeyValueListTemplate<PythonFunctionCallNamedArgumentsTemplateSlotSpecification> {
     protected listElementSeparator: string = ", ";
     
     constructor(
-        funtionNameCondition: string,
         slotSpecifications: PythonFunctionCallNamedArgumentsTemplateSlotSpecification[],
         partialSettings: Partial<TemplateSettings> = {}
     ) {
         super(
-            createSyntaxTreePattern(funtionNameCondition),
             slotSpecifications,
             partialSettings
         );
     }
 
-    protected getListNode(fragment: SyntacticFragment): SyntaxTreeNode {
+    protected abstract createSyntaxTreePattern(): SyntaxTreePattern;
+
+    protected getKeyValueListNode(fragment: SyntacticFragment): SyntaxTreeNode {
         return (fragment.node as FunctionCallNode).arguments;
     }
 
@@ -92,5 +85,20 @@ export class PythonFunctionCallNamedArgumentsTemplate extends KeyValueListTempla
 
     protected formatListElementAsText(key: string, valueAsText: string): string {
         return `${key} = ${valueAsText}`;
+    }
+
+    static createForFunctionNamed(
+        functionNameCondition: ValueCondition<string>,
+        slotSpecifications: PythonFunctionCallNamedArgumentsTemplateSlotSpecification[],
+        partialSettings: Partial<TemplateSettings> = {}
+    ): PythonFunctionCallNamedArgumentsTemplate {
+        return new (class extends PythonFunctionCallNamedArgumentsTemplate {
+            protected createSyntaxTreePattern(): SyntaxTreePattern {
+                return new SyntaxTreePattern(node =>
+                    node.type === "FunctionCall" &&
+                    evaluateCondition(functionNameCondition, (node as FunctionCallNode).callee.text)
+                );
+            }
+        })(slotSpecifications, partialSettings);
     }
 }

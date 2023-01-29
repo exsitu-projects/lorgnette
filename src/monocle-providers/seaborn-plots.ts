@@ -160,8 +160,8 @@ const lineStyleValuator = new TextualValuator({
     }
 });
 
-const barplotCallTemplate = new PythonFunctionCallNamedArgumentsTemplate(
-    "barplot",
+const barplotCallTemplate = PythonFunctionCallNamedArgumentsTemplate.createForFunctionNamed(
+    name => name.endsWith("barplot"),
     [
         { key: "color", valuator: colorValuator },
         { key: "edgecolor", valuator: colorValuator },

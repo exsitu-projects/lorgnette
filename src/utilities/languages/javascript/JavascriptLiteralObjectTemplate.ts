@@ -1,3 +1,4 @@
+import { ts } from "ts-morph";
 import { Document } from "../../../core/documents/Document";
 import { SyntacticFragment } from "../../../core/fragments/syntactic/SyntacticFragment";
 import { NamedArgumentNode } from "../../../core/languages/python/nodes/NamedArgumentNode";
@@ -8,6 +9,7 @@ import { SyntacticTemplateSlot } from "../../../core/templates/syntactic/Syntact
 import { TemplateSettings } from "../../../core/templates/Template";
 import { TemplateSlotKey } from "../../../core/templates/TemplateSlot";
 import { Valuator, ValuatorValue } from "../../../core/templates/valuators/Valuator";
+import { evaluateCondition, ValueCondition } from "../../ValueCondition";
 
 export type JavascriptLiteralObjectTemplateSlotSpecification = {
     key: TemplateSlotKey;
@@ -27,10 +29,6 @@ export function createSlotSpecification(
     };
 }
 
-const syntaxTreePattern = new SyntaxTreePattern(node =>
-    node.type === "ObjectLiteralExpression"
-);
-
 export class JavascriptLiteralObjectTemplate extends KeyValueListTemplate<JavascriptLiteralObjectTemplateSlotSpecification> {
     protected readonly listElementSeparator: string = ", ";
 
@@ -38,10 +36,16 @@ export class JavascriptLiteralObjectTemplate extends KeyValueListTemplate<Javasc
         slotSpecifications: JavascriptLiteralObjectTemplateSlotSpecification[],
         partialSettings: Partial<TemplateSettings> = {}
     ) {
-        super(syntaxTreePattern, slotSpecifications, partialSettings);
+        super(slotSpecifications, partialSettings);
     }
 
-    protected getListNode(fragment: SyntacticFragment): SyntaxTreeNode {
+    protected createSyntaxTreePattern(): SyntaxTreePattern {
+        return new SyntaxTreePattern(node =>
+            node.type === "ObjectLiteralExpression"
+        );
+    }
+
+    protected getKeyValueListNode(fragment: SyntacticFragment): SyntaxTreeNode {
         return fragment.node.childNodes[1];
     }
 
@@ -59,7 +63,6 @@ export class JavascriptLiteralObjectTemplate extends KeyValueListTemplate<Javasc
     }
 
     protected provideSlotForKeyValueNode(keyValueNodes: SyntaxTreeNode[], document: Document): SyntacticTemplateSlot[] {
-        
         return keyValueNodes
             .map(node => {
                 const keyNode = node.childNodes[0];
@@ -87,5 +90,55 @@ export class JavascriptLiteralObjectTemplate extends KeyValueListTemplate<Javasc
 
     protected formatListElementAsText(key: string, valueAsText: string): string {
         return `${key}: ${valueAsText}`;
+    }
+
+    static createForAnyContext(
+        slotSpecifications: JavascriptLiteralObjectTemplateSlotSpecification[],
+        partialSettings: Partial<TemplateSettings> = {}
+    ): JavascriptLiteralObjectTemplate {
+        return new JavascriptLiteralObjectTemplate(slotSpecifications, partialSettings);
+    }
+
+    static createForAssignmentToVariableNamed(
+        variableNameCondition: ValueCondition<string>,
+        slotSpecifications: JavascriptLiteralObjectTemplateSlotSpecification[],
+        partialSettings: Partial<TemplateSettings> = {}
+    ): JavascriptLiteralObjectTemplate {
+        return new (class extends JavascriptLiteralObjectTemplate {
+            protected createSyntaxTreePattern(): SyntaxTreePattern {
+                // TODO: do this differently (avoid using the parser's node).
+                return new SyntaxTreePattern(node =>
+                    node.type === "VariableDeclaration" &&
+                    evaluateCondition(variableNameCondition, (node.childNodes[0].parserNode as ts.Node).getText()) &&
+                    node.childNodes[2].type === "ObjectLiteralExpression"
+                );
+            }
+        
+            protected getKeyValueListNode(fragment: SyntacticFragment): SyntaxTreeNode {
+                return fragment.node.childNodes[2].childNodes[1];
+            }
+        })(slotSpecifications, partialSettings);
+    }
+
+    static createForNthArgumentOfFunctionNamed(
+        functionNameCondition: ValueCondition<string>,
+        argumentIndex: number,
+        slotSpecifications: JavascriptLiteralObjectTemplateSlotSpecification[],
+        partialSettings: Partial<TemplateSettings> = {}
+    ): JavascriptLiteralObjectTemplate {
+        return new (class extends JavascriptLiteralObjectTemplate {
+            protected createSyntaxTreePattern(): SyntaxTreePattern {
+                // TODO: do this differently (avoid using the parser's node).
+                return new SyntaxTreePattern(node =>
+                    node.type === "CallExpression" &&
+                    evaluateCondition(functionNameCondition, (node.childNodes[0].parserNode as ts.Node).getText()) &&
+                    node.childNodes[2].childNodes[2 * argumentIndex].type === "ObjectLiteralExpression"
+                );
+            }
+        
+            protected getKeyValueListNode(fragment: SyntacticFragment): SyntaxTreeNode {
+                return fragment.node.childNodes[2].childNodes[2 * argumentIndex].childNodes[1];
+            }
+        })(slotSpecifications, partialSettings);
     }
 }

@@ -2,7 +2,6 @@ import { Document } from "../../../core/documents/Document";
 import { DocumentEditor } from "../../../core/documents/DocumentEditor";
 import { Range } from "../../../core/documents/Range";
 import { SyntacticFragment } from "../../../core/fragments/syntactic/SyntacticFragment";
-import { SyntaxTreePattern } from "../../../core/languages/SyntaxTreePattern";
 import { SyntacticTemplateSlot } from "../../../core/templates/syntactic/SyntacticTemplateSlot";
 import { TreePatternTemplate } from "../../../core/templates/syntactic/TreePatternTemplate";
 import { DELETE_SLOT, TemplateDataValue, TemplateSettings } from "../../../core/templates/Template";
@@ -24,18 +23,17 @@ export abstract class KeyValueListTemplate<
     protected readonly abstract listElementSeparator: string;
 
     constructor(
-        listPattern: SyntaxTreePattern,
         slotSpecifications: S[],
         partialSettings: Partial<TemplateSettings> = {}
     ) {
-        super(listPattern, partialSettings);
+        super(partialSettings);
         this.slotKeysToSpecifications = new Map(
             slotSpecifications.map(specification => [specification.key, specification])
         );
     }
 
-    protected abstract getListNode(fragment: SyntacticFragment): SyntaxTreeNode;
-    protected abstract getKeyValueNodes(listNode: SyntaxTreeNode): SyntaxTreeNode[];
+    protected abstract getKeyValueListNode(fragment: SyntacticFragment): SyntaxTreeNode;
+    protected abstract getKeyValueNodes(keyValueListNode: SyntaxTreeNode): SyntaxTreeNode[];
     protected abstract getIndexOfKeyValueNodeWithKey(keyValueNodes: SyntaxTreeNode[], key: string): number;
     protected abstract provideSlotForKeyValueNode(keyValueNodes: SyntaxTreeNode[], document: Document): SyntacticTemplateSlot[];
 
@@ -43,8 +41,8 @@ export abstract class KeyValueListTemplate<
     protected abstract formatListElementAsText(key: string, valueAsText: string): string;
 
     protected provideSlotsForFragment(fragment: SyntacticFragment, document: Document): SyntacticTemplateSlot[] {
-        const listNode = this.getListNode(fragment);
-        const keyValueNodes = this.getKeyValueNodes(listNode);
+        const keyValueListNode = this.getKeyValueListNode(fragment);
+        const keyValueNodes = this.getKeyValueNodes(keyValueListNode);
         return this.provideSlotForKeyValueNode(keyValueNodes, document);
     }
 
@@ -64,8 +62,8 @@ export abstract class KeyValueListTemplate<
     }
 
     protected createSlot(key: string, value: TemplateDataValue, fragment: SyntacticFragment, documentEditor: DocumentEditor, document: Document): void {
-        const listNode = this.getListNode(fragment);
-        const keyValueNodes = this.getKeyValueNodes(listNode);
+        const keyValueListNode = this.getKeyValueListNode(fragment);
+        const keyValueNodes = this.getKeyValueNodes(keyValueListNode);
         const nbKeyValueNodes = keyValueNodes.length;
 
         const specification = this.slotKeysToSpecifications.get(key)!;
@@ -75,7 +73,7 @@ export abstract class KeyValueListTemplate<
         // Case 1: there is a single key-value pair.
         if (nbKeyValueNodes === 0) {
             documentEditor.replace(
-                listNode.range,
+                keyValueListNode.range,
                 this.formatSingleElementListAsText(key, slotValueAsText)
             );
         }
@@ -85,7 +83,7 @@ export abstract class KeyValueListTemplate<
 
             const startOfRangeToCopyBeforeInsertion = nbKeyValueNodes > 1
                 ? keyValueNodes[nbKeyValueNodes - 2].range.end
-                : listNode.range.start.shiftBy(0, 1, 1);
+                : keyValueListNode.range.start.shiftBy(0, 1, 1);
             const endOfRangeToCopyBeforeInsertion = lastAssignment.range.start;
             const rangeToCopyBeforeInsertion = new Range(
                 startOfRangeToCopyBeforeInsertion,
@@ -97,7 +95,7 @@ export abstract class KeyValueListTemplate<
                 : this.listElementSeparator;
     
             const startOfRangeToCopyAfterInsertion = lastAssignment.range.end;
-            const endOfRangeToCopyAfterInsertion = listNode.range.end.shiftBy(0, -1, -1);
+            const endOfRangeToCopyAfterInsertion = keyValueListNode.range.end.shiftBy(0, -1, -1);
             const rangeToCopyAfterInsertion = new Range(
                 startOfRangeToCopyAfterInsertion,
                 endOfRangeToCopyAfterInsertion
@@ -127,13 +125,13 @@ export abstract class KeyValueListTemplate<
     }
 
     protected deleteSlot(slot: SyntacticTemplateSlot, newValue: TemplateDataValue, fragment: SyntacticFragment, documentEditor: DocumentEditor): void {
-        const listNode = this.getListNode(fragment);
-        const keyValueNodes = this.getKeyValueNodes(listNode);
+        const keyValueListNode = this.getKeyValueListNode(fragment);
+        const keyValueNodes = this.getKeyValueNodes(keyValueListNode);
         const nbKeyValueNodes = keyValueNodes.length;
 
         // Case 1: there is a single key-value pair.
         if (nbKeyValueNodes === 1) {
-            documentEditor.replace(listNode.range, "()");
+            documentEditor.replace(keyValueListNode.range, "()");
         }
         // Case 2: there is more than one key-value pair.
         else {
@@ -145,7 +143,7 @@ export abstract class KeyValueListTemplate<
             if (slotKeyValueNodeIndex === 0) {
                 const secondKeyValueNode = keyValueNodes[1];
                 documentEditor.delete(new Range(
-                    listNode.range.start.shiftBy(0, 1, 1),
+                    keyValueListNode.range.start.shiftBy(0, 1, 1),
                     secondKeyValueNode.range.start
                 ));
             }
@@ -154,7 +152,7 @@ export abstract class KeyValueListTemplate<
                 const secondToLastKeyValueNode = keyValueNodes[lastKeyValueNodeIndex - 1];
                 documentEditor.delete(new Range(
                     secondToLastKeyValueNode.range.end,
-                    listNode.range.end.shiftBy(0, -1, -1)
+                    keyValueListNode.range.end.shiftBy(0, -1, -1)
                 ));
             }
             // Case 2.3: The key-value pair to delete is neither the first nor the last key-value pair.
