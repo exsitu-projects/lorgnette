@@ -10,6 +10,7 @@ export interface NumberInputProps extends FormElementProps<SupportedEntryTypes> 
     min?: number;
     max?: number;
     step?: number;
+    hideButtons?: boolean;
 };
 
 export class NumberInput extends FormElement<SupportedEntryTypes, NumberInputProps> {
@@ -40,7 +41,11 @@ export class NumberInput extends FormElement<SupportedEntryTypes, NumberInputPro
             min={this.props.min}
             max={this.props.max}
             stepSize={this.props.step}
-            style={this.props.style}
+            buttonPosition={this.props.hideButtons ? "none" : "right"}
+            style={{
+                width: 60,
+                ...this.props.style
+            }}
         />
     };
 }

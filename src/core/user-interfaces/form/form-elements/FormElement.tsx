@@ -1,7 +1,7 @@
-import { Label } from "@blueprintjs/core";
 import React, { Component, ReactElement } from "react";
 import { FormContext, FormContextData } from "../FormContext";
 import { FormEntryType, FormEntryOfType, FormEntryValueOfType, FormEntryKey, formEntryHasType } from "../FormEntry";
+import { Label } from "./helpers/Label";
 
 export type FormElementValueChangeListener<T extends FormEntryType> =
     (newValue: FormEntryValueOfType<T>, newValueType: T) => void;
@@ -18,17 +18,6 @@ export interface FormElementState<T extends FormEntryType> {
 
 export const ANY_ENTRY_TYPES = Symbol("Any form element entry type");
 export type AnyEntryTypeSymbol = typeof ANY_ENTRY_TYPES;
-
-function wrapComponentWithinLabelIfDefined(label: string, component: ReactElement | null): ReactElement | null {
-    if (!component) {
-        return null;
-    }
-
-    return <Label>
-        <span className="label-text">{ label }</span>
-        { component }
-    </Label>;
-}
 
 export abstract class FormElement<
     T extends FormEntryType,
@@ -88,8 +77,9 @@ export abstract class FormElement<
             ? this.renderControl(formEntry.value, declareValueChange, beginTransientState, endTransientState)
             : this.renderControlWithoutValue(declareValueChange, beginTransientState, endTransientState);
 
-        return this.hasLabel
-            ? wrapComponentWithinLabelIfDefined(this.props.label!, controlComponent)
+        const label = this.props.label;
+        return label
+            ? Label.wrapNonEmptyComponentWithLabel(controlComponent, label)
             : controlComponent;
     }
 

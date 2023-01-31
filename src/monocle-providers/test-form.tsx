@@ -6,7 +6,6 @@ import { ProgrammableOutputMapping } from "../core/mappings/ProgrammableOutputMa
 import { SyntacticMonocleProvider } from "../core/monocles/syntactic/SyntacticMonocleProvider";
 import { AsideRenderer } from "../core/renderers/aside/AsideRenderer";
 import { AsideRendererPosition } from "../core/renderers/aside/AsideRendererSettings";
-import { TreePatternTemplate } from "../core/templates/syntactic/TreePatternTemplate";
 import { BooleanValuator } from "../core/templates/valuators/BooleanValuator";
 import { NumericValuator } from "../core/templates/valuators/NumericValuator";
 import { Valuator, ValuatorSettings } from "../core/templates/valuators/Valuator";
@@ -22,6 +21,7 @@ import { BLUE, Color, GREEN, RED } from "../utilities/Color";
 import { ButtonColorPicker } from "../core/user-interfaces/form/form-elements/ButtonColorPicker";
 import { ButtonGroup } from "../core/user-interfaces/form/form-elements/helpers/ButtonGroup";
 import { JavascriptLiteralObjectTemplate } from "../utilities/languages/javascript/JavascriptLiteralObjectTemplate";
+import { EditableText } from "../core/user-interfaces/form/form-elements/EditableText";
 
 export const testFormProvider = new SyntacticMonocleProvider({
     name: "Form test",
@@ -171,8 +171,9 @@ export const testFormProvider2 = new SyntacticMonocleProvider({
         <StringInput formEntryKey="b" label="Some string" />
         <Select formEntryKey="c" items={["foo", "bar"]} />
 
-        Some text explaining the purpose of the next form element.<br/>
+        Editable text can also be bound to slots: try changing <EditableText formEntryKey="b"></EditableText> for instance!<br/>
 
+        Some text explaining the purpose of the next form element.<br/>
         <Switch formEntryKey="d" label="Some boolean" />
 
         Test of a button colour picker followed by a group of buttons: <br/>

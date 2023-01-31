@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { Button as BlueprintsButton } from "@blueprintjs/core";
+import { Button as BlueprintButton } from "@blueprintjs/core";
 import { FormEntryType, FormEntryValueOfType } from "../FormEntry";
 import { AnyEntryTypeSymbol, ANY_ENTRY_TYPES, FormElement, FormElementProps, FormElementValueChangeListener } from "./FormElement";
 import { evaluateCondition, ValueCondition } from "../../../../utilities/ValueCondition";
@@ -44,12 +44,12 @@ export class Button<T extends SupportedEntryTypes> extends FormElement<Supported
         value: FormEntryValueOfType<SupportedEntryTypes> | null,
         declareValueChange: FormElementValueChangeListener<SupportedEntryTypes>
     ): ReactElement {
-        return <BlueprintsButton
+        return <BlueprintButton
             text={evaluate(this.props.text, value)}
             active={this.isButtonActive(value)}
             disabled={this.isButtonDisabled(value)}
             style={this.props.style}
-            onClick={event => declareValueChange(...evaluate(this.props.valueWithType, value))}
+            onClick={event => { console.log("CHANGE", this.props.valueWithType, value, evaluate(this.props.valueWithType, value)); declareValueChange(...evaluate(this.props.valueWithType, value))}}
         />;
     };
 }
