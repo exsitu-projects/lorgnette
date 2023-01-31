@@ -82,11 +82,6 @@ export abstract class Form extends UserInterface<Input, Output> {
         };
     }
 
-    protected declareModelChange(notifyImmediately?: boolean): void {
-        super.declareModelChange(notifyImmediately);
-        this.modifiedFormEntries = [];
-    }
-
     updateModel(input: Input): void {
         this.formEntries = input.data;
     }
