@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
-import { ItemRenderer, Select2, Select2Props } from "@blueprintjs/select";
-import { FormEntryOfType, FormEntryType, FormEntryValueOfType } from "../FormEntry";
-import { FormElement, FormElementProps } from "./FormElement";
+import { ItemRenderer, Select2 } from "@blueprintjs/select";
+import { FormEntryType, FormEntryValueOfType } from "../FormEntry";
+import { FormElement, FormElementProps, FormElementValueChangeListener } from "./FormElement";
 import { Button, MenuItem } from "@blueprintjs/core";
 
 type SupportedEntryTypes = FormEntryType.String;
@@ -26,34 +26,38 @@ const SelectItemRenderer: ItemRenderer<string> =
 
 export interface SelectProps extends FormElementProps<SupportedEntryTypes> {
     items: string[];
+    defaultItem?: string;
     enableSearch?: boolean;
 };
 
 export class Select extends FormElement<SupportedEntryTypes, SelectProps> {
     protected readonly supportedFormEntryTypes = [FormEntryType.String] as SupportedEntryTypes[];
 
-    private get inputConfigurationProps(): Partial<Select2Props<string>> {
-        return {
-            filterable: this.props.enableSearch ?? false
-        };
+    protected renderControlWithoutValue(
+        declareValueChange: FormElementValueChangeListener<SupportedEntryTypes>
+    ): ReactElement | null {
+        const defaultItem = this.props.defaultItem;
+        return defaultItem !== undefined
+            ? this.renderControl(defaultItem, declareValueChange)
+            : null;
     }
-
-    renderControl(
-        formEntry: FormEntryOfType<SupportedEntryTypes>,
-        declareValueChange: (newValue: FormEntryValueOfType<SupportedEntryTypes>) => void
+    
+    protected renderControl(
+        value: FormEntryValueOfType<SupportedEntryTypes>,
+        declareValueChange: FormElementValueChangeListener<SupportedEntryTypes>
     ): ReactElement {
-        const currentValue = formEntry.value;
+        const currentValue = value;
         return <Select2<string>
             items={this.props.items}
             itemRenderer={SelectItemRenderer}
-            onItemSelect={item => declareValueChange(item)}
+            onItemSelect={item => declareValueChange(item, this.supportedFormEntryTypes[0])}
             activeItem={currentValue}
             popoverProps={{
                 minimal: true,
                 usePortal: false,
                 portalContainer: document.body
             }}
-            {...this.inputConfigurationProps}
+            filterable={this.props.enableSearch ?? false}
         >
             <Button
                 text={currentValue}

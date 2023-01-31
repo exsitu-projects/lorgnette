@@ -4,7 +4,7 @@ import { FormContext, FormContextData } from "../FormContext";
 import { FormEntryType, FormEntryOfType, FormEntryValueOfType, FormEntryKey, formEntryHasType } from "../FormEntry";
 
 export type FormElementValueChangeListener<T extends FormEntryType> =
-    (newValue: FormEntryValueOfType<T>) => void;
+    (newValue: FormEntryValueOfType<T>, newValueType: T) => void;
 
 export interface FormElementProps<T extends FormEntryType> {
     formEntryKey: FormEntryKey;
@@ -18,6 +18,17 @@ export interface FormElementState<T extends FormEntryType> {
 
 export const ANY_ENTRY_TYPES = Symbol("Any form element entry type");
 export type AnyEntryTypeSymbol = typeof ANY_ENTRY_TYPES;
+
+function wrapComponentWithinLabelIfDefined(label: string, component: ReactElement | null): ReactElement | null {
+    if (!component) {
+        return null;
+    }
+
+    return <Label>
+        <span className="label-text">{ label }</span>
+        { component }
+    </Label>;
+}
 
 export abstract class FormElement<
     T extends FormEntryType,
@@ -49,42 +60,37 @@ export abstract class FormElement<
         return formEntry as FormEntryOfType<T>;
     }
 
-    // protected shouldRender(formEntry: FormEntryOfType<T>): boolean {
-    //     return true;
-    // }
-
-    abstract renderControl(
-        formEntry: FormEntryOfType<T>,
-        declareValueChange: (newValue: FormEntryValueOfType<T>) => void,
+    protected abstract renderControl(
+        value: FormEntryValueOfType<T>,
+        declareValueChange: FormElementValueChangeListener<T>,
         beginTransientState: () => void,
         endTransientState: () => void
-    ): ReactElement;
+    ): ReactElement | null;
 
-    private renderControlWithLabel(
-        formEntry: FormEntryOfType<T>,
-        declareValueChange: (newValue: FormEntryValueOfType<T>) => void,
+    // By default, no control is rendered when there is no value.
+    // This can be overriden by specific components.
+    protected renderControlWithoutValue(
+        declareValueChange: FormElementValueChangeListener<T>,
         beginTransientState: () => void,
         endTransientState: () => void
-    ): ReactElement {
-        return <Label>
-            <span className="label-text">{ this.props.label }</span>
-            { this.renderControl(formEntry, declareValueChange, beginTransientState, endTransientState) }
-        </Label>;
+    ): ReactElement | null {
+        return null;
     }
 
     private renderWithinContext(context: FormContextData): ReactElement | null {
+        const declareValueChange = (newValue: FormEntryValueOfType<T>, newValueType: T) =>
+            context.declareFormEntryValueChange(this.props.formEntryKey, newValue, newValueType);
+        const beginTransientState = context.beginTransientEdit;
+        const endTransientState = context.endTransientEdit;
+
         const formEntry = this.getFormEntryFromContext(context);
-        if (formEntry) {
-            const declareValueChange = (newValue: FormEntryValueOfType<T>) => context.declareFormEntryValueChange(formEntry, newValue);
-            const beginTransientState = context.beginTransientEdit;
-            const endTransientState = context.endTransientEdit;
+        const controlComponent = formEntry
+            ? this.renderControl(formEntry.value, declareValueChange, beginTransientState, endTransientState)
+            : this.renderControlWithoutValue(declareValueChange, beginTransientState, endTransientState);
 
-            return this.hasLabel
-                ? this.renderControlWithLabel(formEntry, declareValueChange, beginTransientState, endTransientState)
-                : this.renderControl(formEntry, declareValueChange, beginTransientState, endTransientState)
-        }
-
-        return null;
+        return this.hasLabel
+            ? wrapComponentWithinLabelIfDefined(this.props.label!, controlComponent)
+            : controlComponent;
     }
 
     render(): ReactElement {

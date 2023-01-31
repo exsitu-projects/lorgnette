@@ -184,22 +184,22 @@ export const testFormProvider2 = new SyntacticMonocleProvider({
             <Button<FormEntryType.Color>
                 formEntryKey="color"
                 text="Red"
-                value={RED}
-                activateOn={color => color.equals(RED)}
+                valueWithType={[RED, FormEntryType.Color]}
+                activateOn={color => (color && color.equals(RED)) ?? false}
                 style={{ color: "darkred" }}
             />
             <Button<FormEntryType.Color>
                 formEntryKey="color"
                 text="Green"
-                value={GREEN}
-                activateOn={color => color.equals(GREEN)}
+                valueWithType={[GREEN, FormEntryType.Color]}
+                activateOn={color => (color && color.equals(GREEN)) ?? false}
                 style={{ color: "darkgreen" }}
             />
             <Button<FormEntryType.Color>
                 formEntryKey="color"
                 text="Blue"
-                value={BLUE}
-                activateOn={color => color.equals(BLUE)}
+                valueWithType={[BLUE, FormEntryType.Color]}
+                activateOn={color => (color && color.equals(BLUE)) ?? false}
                 style={{ color: "darkblue" }}
             />
         </ButtonGroup>

@@ -3,7 +3,7 @@ import React, { ReactElement } from "react";
 import { Monocle } from "../../monocles/Monocle";
 import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../UserInterface";
 import { FormContext, FormContextData } from "./FormContext";
-import { FormEntry } from "./FormEntry";
+import { FormEntry, FormEntryKey, FormEntryOfType, FormEntryType, FormEntryValueOfType } from "./FormEntry";
 import { UserInterfaceProvider } from "../UserInterfaceProvider";
 
 export type FormData = FormEntry[];
@@ -22,26 +22,26 @@ export interface Output extends UserInterfaceOutput {
 export abstract class Form extends UserInterface<Input, Output> {
     readonly className = "form";
 
-    private data: FormData;
-    private lastDataChange: FormDataChange | null;
+    private formEntries: FormData;
+    private modifiedFormEntries: FormDataChange;
 
     constructor(monocle: Monocle) {
         super(monocle);
 
-        this.data = [];
-        this.lastDataChange = [];
+        this.formEntries = [];
+        this.modifiedFormEntries = [];
     }
 
     protected get modelOutput(): Output {
         return {
-            data: this.data,
-            modifiedData: this.lastDataChange ?? []
+            data: this.formEntries,
+            modifiedData: this.modifiedFormEntries ?? []
         };
     }
     
     protected get formContextData(): FormContextData {
         return {
-            formEntries: this.data,
+            formEntries: this.formEntries,
 
             beginTransientEdit: () => {
                 this.beginTransientState();
@@ -52,21 +52,43 @@ export abstract class Form extends UserInterface<Input, Output> {
                 this.declareModelChange();
             },
 
-            declareFormEntryValueChange: (formEntry, newValue) => {
-                const entryToModify = this.data.find(entry => entry.key === formEntry.key);
+            declareFormEntryValueChange: <T extends FormEntryType>(
+                formEntryKey: FormEntryKey,
+                newValue: FormEntryValueOfType<T>,
+                newValueType: T
+            ) => {
+                const entryToModify = this.formEntries.find(entry => entry.key === formEntryKey);
+
+                // Case 1: the form entry already exists and should be modified.
                 if (entryToModify) {
                     entryToModify.value = newValue;
-                    this.lastDataChange = [entryToModify];
-
-                    this.declareModelChange()
+                    this.modifiedFormEntries.push(entryToModify);
                 }
+                // Case 2: the form entry does not exist yet and must be created
+                // (e.g., when the form element was created using a default value).
+                else {
+                    const newFormEntry = {
+                        type: newValueType,
+                        key: formEntryKey,
+                        value: newValue
+                    } as FormEntryOfType<T>;
+
+                    this.formEntries.push(newFormEntry);
+                    this.modifiedFormEntries.push(newFormEntry);
+                }
+
+                this.declareModelChange();
             }
         };
     }
 
+    protected declareModelChange(notifyImmediately?: boolean): void {
+        super.declareModelChange(notifyImmediately);
+        this.modifiedFormEntries = [];
+    }
 
     updateModel(input: Input): void {
-        this.data = input.data;
+        this.formEntries = input.data;
     }
 
     protected abstract createFormBody(): ReactElement; 
@@ -79,7 +101,7 @@ export abstract class Form extends UserInterface<Input, Output> {
 
     static makeProvider(formBody: ReactElement): UserInterfaceProvider {
         const concreteFormUserInterface = class extends Form {
-            protected createFormBody(): React.ReactElement<any, string | React.JSXElementConstructor<any>> {
+            protected createFormBody(): React.ReactElement {
                 return formBody;
             }
         };

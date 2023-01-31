@@ -1,11 +1,12 @@
 import React, { ReactElement } from "react";
-import { NumericInput, NumericInputProps } from "@blueprintjs/core";
-import { FormEntryOfType, FormEntryType, FormEntryValueOfType } from "../FormEntry";
-import { FormElement, FormElementProps } from "./FormElement";
+import { NumericInput } from "@blueprintjs/core";
+import { FormEntryType, FormEntryValueOfType } from "../FormEntry";
+import { FormElement, FormElementProps, FormElementValueChangeListener } from "./FormElement";
 
 type SupportedEntryTypes = FormEntryType.Number;
 
 export interface NumberInputProps extends FormElementProps<SupportedEntryTypes> {
+    defaultValue?: number;
     min?: number;
     max?: number;
     step?: number;
@@ -14,27 +15,32 @@ export interface NumberInputProps extends FormElementProps<SupportedEntryTypes> 
 export class NumberInput extends FormElement<SupportedEntryTypes, NumberInputProps> {
     protected readonly supportedFormEntryTypes = [FormEntryType.Number] as SupportedEntryTypes[];
 
-    private get inputConfigurationProps(): Partial<NumericInputProps> {
-        return {
-            min: this.props.min,
-            max: this.props.max,
-            stepSize: this.props.step
-        };
+    protected renderControlWithoutValue(
+        declareValueChange: FormElementValueChangeListener<SupportedEntryTypes>,
+        beginTransientState: () => void,
+        endTransientState: () => void
+    ): ReactElement | null {
+        const defaultValue = this.props.defaultValue;
+        return defaultValue !== undefined
+            ? this.renderControl(defaultValue, declareValueChange, beginTransientState, endTransientState)
+            : null;
     }
 
-    renderControl(
-        formEntry: FormEntryOfType<SupportedEntryTypes>,
-        declareValueChange: (newValue: FormEntryValueOfType<SupportedEntryTypes>) => void,
+    protected renderControl(
+        value: FormEntryValueOfType<SupportedEntryTypes>,
+        declareValueChange: FormElementValueChangeListener<SupportedEntryTypes>,
         beginTransientState: () => void,
         endTransientState: () => void
     ): ReactElement {
         return <NumericInput
-            defaultValue={formEntry.value}
-            style={this.props.style}
-            onValueChange={newValue => declareValueChange(newValue)}
+            defaultValue={value}
+            onValueChange={newValue => declareValueChange(newValue, this.supportedFormEntryTypes[0])}
             onFocus={event => beginTransientState()}
             onBlur={event => endTransientState()}
-            {...this.inputConfigurationProps}
+            min={this.props.min}
+            max={this.props.max}
+            stepSize={this.props.step}
+            style={this.props.style}
         />
     };
 }

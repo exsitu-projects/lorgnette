@@ -6,7 +6,6 @@ export const enum FormEntryType {
     Boolean = "Boolean",
     Number = "Number",
     String = "String",
-    StringList = "StringList",
     Color = "Color"
 };
 
@@ -23,11 +22,6 @@ export type FormEntry =
         type: FormEntryType.String,
         key: FormEntryKey,
         value: string
-    } | {
-        type: FormEntryType.StringList,
-        key: FormEntryKey,
-        value: string,
-        valueOptions: string[]
     } | {
         type: FormEntryType.Color,
         key: FormEntryKey,

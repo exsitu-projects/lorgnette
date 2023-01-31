@@ -1,23 +1,34 @@
 import React, { ReactElement } from "react";
 import { Switch as BlueprintSwitch } from "@blueprintjs/core";
-import { FormEntryOfType, FormEntryType, FormEntryValueOfType } from "../FormEntry";
-import { FormElement, FormElementProps } from "./FormElement";
+import { FormEntryType, FormEntryValueOfType } from "../FormEntry";
+import { FormElement, FormElementProps, FormElementValueChangeListener } from "./FormElement";
 
 type SupportedEntryTypes = FormEntryType.Boolean;
 
-export interface SwitchProps extends FormElementProps<SupportedEntryTypes> {};
+export interface SwitchProps extends FormElementProps<SupportedEntryTypes> {
+    defaultValue?: boolean;
+};
 
 export class Switch extends FormElement<SupportedEntryTypes, SwitchProps> {
     protected readonly supportedFormEntryTypes = [FormEntryType.Boolean] as SupportedEntryTypes[];
 
-    renderControl(
-        formEntry: FormEntryOfType<SupportedEntryTypes>,
-        declareValueChange: (newValue: FormEntryValueOfType<SupportedEntryTypes>) => void
+    protected renderControlWithoutValue(
+        declareValueChange: FormElementValueChangeListener<SupportedEntryTypes>
+    ): ReactElement | null {
+        const defaultValue = this.props.defaultValue;
+        return defaultValue !== undefined
+            ? this.renderControl(defaultValue, declareValueChange)
+            : null;
+    }
+
+    protected renderControl(
+        value: FormEntryValueOfType<SupportedEntryTypes>,
+        declareValueChange: FormElementValueChangeListener<SupportedEntryTypes>
     ): ReactElement {
         return <BlueprintSwitch
-            defaultChecked={formEntry.value}
+            defaultChecked={value}
             style={this.props.style}
-            onChange={() => declareValueChange(!formEntry.value)}
+            onChange={() => declareValueChange(!value, this.supportedFormEntryTypes[0])}
             inline={true}
         />;
     };
