@@ -20,7 +20,7 @@ import { FormEntry, FormEntryType } from "../core/user-interfaces/form/FormEntry
 import { Button } from "../core/user-interfaces/form/form-elements/Button";
 import { BLUE, Color, GREEN, RED } from "../utilities/Color";
 import { ButtonColorPicker } from "../core/user-interfaces/form/form-elements/ButtonColorPicker";
-import { ButtonGroup } from "../core/user-interfaces/form/form-elements/ButtonGroup";
+import { ButtonGroup } from "../core/user-interfaces/form/form-elements/helpers/ButtonGroup";
 import { JavascriptLiteralObjectTemplate } from "../utilities/languages/javascript/JavascriptLiteralObjectTemplate";
 
 export const testFormProvider = new SyntacticMonocleProvider({

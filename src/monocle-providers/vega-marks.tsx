@@ -23,7 +23,7 @@ import { Form } from "../core/user-interfaces/form/Form";
 import { ButtonColorPicker } from "../core/user-interfaces/form/form-elements/ButtonColorPicker";
 import { NumberInput } from "../core/user-interfaces/form/form-elements/NumberInput";
 import { StringInput } from "../core/user-interfaces/form/form-elements/StringInput";
-import { ButtonGroup } from "../core/user-interfaces/form/form-elements/ButtonGroup";
+import { ButtonGroup } from "../core/user-interfaces/form/form-elements/helpers/ButtonGroup";
 import { Button } from "../core/user-interfaces/form/form-elements/Button";
 import { Select } from "../core/user-interfaces/form/form-elements/Select";
 
