@@ -4,30 +4,12 @@ import { FunctionCallNode } from "../../../core/languages/python/nodes/FunctionC
 import { NamedArgumentNode } from "../../../core/languages/python/nodes/NamedArgumentNode";
 import { SyntaxTreeNode } from "../../../core/languages/SyntaxTreeNode";
 import { SyntaxTreePattern } from "../../../core/languages/SyntaxTreePattern";
-import { KeyValueListTemplate } from "../../../core/templates/syntactic/KeyValueListTemplate";
+import { KeyValueListTemplate, KeyValueListTemplateSlotSpecification } from "../../../core/templates/syntactic/KeyValueListTemplate";
 import { SyntacticTemplateSlot } from "../../../core/templates/syntactic/SyntacticTemplateSlot";
 import { TemplateSettings } from "../../../core/templates/Template";
-import { TemplateSlotKey } from "../../../core/templates/TemplateSlot";
-import { Valuator, ValuatorValue } from "../../../core/templates/valuators/Valuator";
 import { evaluateCondition, ValueCondition } from "../../ValueCondition";
 
-export type PythonFunctionCallNamedArgumentsTemplateSlotSpecification = {
-    key: TemplateSlotKey;
-    valuator: Valuator;
-    defaultValue?: ValuatorValue;
-};
-
-export function createSlotSpecification(
-    key: TemplateSlotKey,
-    valuator: Valuator,
-    defaultValue?: ValuatorValue
-): PythonFunctionCallNamedArgumentsTemplateSlotSpecification {
-    return {
-        key: key,
-        valuator: valuator,
-        defaultValue: defaultValue
-    };
-}
+export type PythonFunctionCallNamedArgumentsTemplateSlotSpecification = KeyValueListTemplateSlotSpecification;
 
 export abstract class PythonFunctionCallNamedArgumentsTemplate extends KeyValueListTemplate<PythonFunctionCallNamedArgumentsTemplateSlotSpecification> {
     protected listElementSeparator: string = ", ";

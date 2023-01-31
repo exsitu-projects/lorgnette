@@ -7,16 +7,29 @@ import { TreePatternTemplate } from "../../../core/templates/syntactic/TreePatte
 import { DELETE_SLOT, TemplateDataValue, TemplateSettings } from "../../../core/templates/Template";
 import { TemplateSlotKey } from "../../../core/templates/TemplateSlot";
 import { Valuator, ValuatorValue } from "../../../core/templates/valuators/Valuator";
+import { evaluateCondition, ValueCondition } from "../../../utilities/ValueCondition";
 import { SyntaxTreeNode } from "../../languages/SyntaxTreeNode";
 
 export type KeyValueListTemplateSlotSpecification = {
     key: TemplateSlotKey;
     valuator: Valuator;
-    defaultValue?: ValuatorValue;
+    defaultValue?: ValueCondition<ValuatorValue>;
 };
 
+export function createSlotSpecification(
+    key: TemplateSlotKey,
+    valuator: Valuator,
+    defaultValue?: ValueCondition<ValuatorValue>
+): KeyValueListTemplateSlotSpecification {
+    return {
+        key: key,
+        valuator: valuator,
+        defaultValue: defaultValue
+    };
+}
+
 export abstract class KeyValueListTemplate<
-    S extends KeyValueListTemplateSlotSpecification
+    S extends KeyValueListTemplateSlotSpecification = KeyValueListTemplateSlotSpecification
 > extends TreePatternTemplate {
     protected slotKeysToSpecifications: Map<TemplateSlotKey, S>;
     
@@ -58,7 +71,7 @@ export abstract class KeyValueListTemplate<
         
         const specification = this.slotKeysToSpecifications.get(key);
         return specification !== undefined
-            && specification.defaultValue !== value;
+            && !evaluateCondition(specification.defaultValue, value);
     }
 
     protected createSlot(key: string, value: TemplateDataValue, fragment: SyntacticFragment, documentEditor: DocumentEditor, document: Document): void {
@@ -121,7 +134,7 @@ export abstract class KeyValueListTemplate<
         }
 
         const specification = this.slotKeysToSpecifications.get(slot.key)!;
-        return specification.defaultValue === newValue;
+        return evaluateCondition(specification.defaultValue, newValue);
     }
 
     protected deleteSlot(slot: SyntacticTemplateSlot, newValue: TemplateDataValue, fragment: SyntacticFragment, documentEditor: DocumentEditor): void {
