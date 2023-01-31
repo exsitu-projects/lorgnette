@@ -9,7 +9,7 @@ import { runtimeValueTracerProvider } from "./runtime-value-tracer";
 import { seabornBarplotStyleInspectorProvider, seabornBarplotStyleInspectorProvider2 } from "./seaborn-plots";
 import { markdownTableProvider } from "./markdown-tables";
 import { tsxComponentTreeProvider } from "./tsx-components";
-import { vegaMarksStyleInspectorProvider } from "./vega-marks";
+import { vegaMarksStyleInspectorProvider, vegaMarksStyleInspectorProvider2 } from "./vega-marks";
 import { pythonRuntimeDataframeTableProvider } from "./python-runtime-dataframe-tables";
 import { testFormProvider, testFormProvider2 } from "./test-form";
 
@@ -25,7 +25,8 @@ export const MONOCLE_PROVIDERS: MonocleProvider[] = [
     regexLiteralMonocleProvider,
     regexConstructorVisualisationProvider,
 
-    vegaMarksStyleInspectorProvider,
+    // vegaMarksStyleInspectorProvider,
+    vegaMarksStyleInspectorProvider2,
 
     cssPropertyStyleInspectorProvider,
 
