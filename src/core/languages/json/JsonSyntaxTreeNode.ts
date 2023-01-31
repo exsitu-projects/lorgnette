@@ -1,3 +1,4 @@
+import { Document } from "../../documents/Document";
 import { Range } from "../../documents/Range";
 import { SyntaxTreeNode } from "../SyntaxTreeNode";
 import { JsonParserContext } from "./JsonParser";
@@ -6,8 +7,8 @@ export abstract class JsonSyntaxTreeNode extends SyntaxTreeNode {
     readonly range: Range;
     readonly parserNode: any;
 
-    constructor(parserNode: any, range: Range) {
-        super();
+    constructor(parserNode: any, range: Range, sourceDocument: Document) {
+        super(sourceDocument);
 
         this.range = range;
         this.parserNode = parserNode;

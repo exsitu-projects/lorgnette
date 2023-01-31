@@ -2,6 +2,7 @@ import { Range } from "../../../documents/Range";
 import { convertParserNode } from "../MathSyntaxTree";
 import { MathSyntaxTreeNode } from "../MathSyntaxTreeNode";
 import { MathParserContext } from "../MathParser";
+import { Document } from "../../../documents/Document";
 
 export class DivisionNode extends MathSyntaxTreeNode {
     static readonly type = "Division";
@@ -14,9 +15,10 @@ export class DivisionNode extends MathSyntaxTreeNode {
         leftOperand: MathSyntaxTreeNode,
         rightOperand: MathSyntaxTreeNode,
         parserNode: any,
-        range: Range
+        range: Range,
+        sourceDocument: Document
     ) {
-        super(parserNode, range);
+        super(parserNode, range, sourceDocument);
         this.leftOperand = leftOperand;
         this.rightOperand = rightOperand;
     }
@@ -30,7 +32,8 @@ export class DivisionNode extends MathSyntaxTreeNode {
             convertParserNode(node.data[0], parserContext),
             convertParserNode(node.data[4], parserContext),
             node,
-            DivisionNode.computeRangeFromParserNode(node, parserContext)
+            DivisionNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

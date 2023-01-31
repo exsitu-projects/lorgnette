@@ -14,6 +14,7 @@ import { ArgumentListNode } from "./nodes/ArgumentListNode";
 import { PositionalArgumentNode } from "./nodes/PositionalArgumentNode";
 import { NamedArgumentNode } from "./nodes/NamedArgumentNode";
 import { IdentifierNode } from "./nodes/IdentifierNode";
+import { Document } from "../../documents/Document";
 
 export const PYTHON_NODE_CLASSES = [
     ProgramNode,
@@ -45,13 +46,6 @@ export function convertParserNode(
 }
 
 export class PythonSyntaxTree extends SyntaxTree<PythonSyntaxTreeNode> {
-    readonly root: PythonSyntaxTreeNode;
-
-    constructor(root: PythonSyntaxTreeNode) {
-        super();
-        this.root = root;
-    }
-
     static fromNearlyParserResult(result: any, parserContext: PythonParserContext): PythonSyntaxTree {
         const rootNode = ProgramNode.fromNearlyParserResultNode(result, parserContext);
         return new PythonSyntaxTree(rootNode);

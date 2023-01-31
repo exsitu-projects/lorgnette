@@ -48,7 +48,7 @@ export class JavascriptLiteralObjectTemplate extends KeyValueListTemplate<Javasc
         return keyValueNodes
             .map(node => {
                 const keyNode = node.childNodes[0];
-                const key = keyNode.getTextIn(document);
+                const key = keyNode.text;
 
                 const specification = this.slotKeysToSpecifications.get(key);
                 if (specification) {

@@ -12,7 +12,8 @@ export class NumberNode extends MathSyntaxTreeNode {
     static fromNearlyParserResultNode(node: any, parserContext: MathParserContext): MathSyntaxTreeNode {
         return new NumberNode(
             node,
-            NumberNode.computeRangeFromParserNode(node, parserContext)
+            NumberNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

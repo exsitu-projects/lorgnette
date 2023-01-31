@@ -1,6 +1,7 @@
 import { Range } from "../../../documents/Range";
 import { PythonSyntaxTreeNode } from "../PythonSyntaxTreeNode";
 import { PythonParserContext } from "../PythonParser";
+import { Document } from "../../../documents/Document";
 
 export class StringNode extends PythonSyntaxTreeNode {
     static readonly type = "String";
@@ -15,9 +16,10 @@ export class StringNode extends PythonSyntaxTreeNode {
         delimiter: string,
         content: string,
         parserNode: any,
-        range: Range
+        range: Range,
+        sourceDocument: Document
     ) {
-        super(parserNode, range);
+        super(parserNode, range, sourceDocument);
         // this.prefix = prefix;
         this.delimiter = delimiter;
         this.content = content;
@@ -39,7 +41,8 @@ export class StringNode extends PythonSyntaxTreeNode {
             node.delimiter,
             stringContent,
             node,
-            StringNode.computeRangeFromParserNode(node, parserContext)
+            StringNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

@@ -2,6 +2,7 @@ import { Range } from "../../../documents/Range";
 import { convertParserNode } from "../MathSyntaxTree";
 import { MathSyntaxTreeNode } from "../MathSyntaxTreeNode";
 import { MathParserContext } from "../MathParser";
+import { Document } from "../../../documents/Document";
 
 export class ExpressionNode extends MathSyntaxTreeNode {
     static readonly type = "Expression";
@@ -9,8 +10,13 @@ export class ExpressionNode extends MathSyntaxTreeNode {
 
     readonly content: MathSyntaxTreeNode;
 
-    constructor(content: MathSyntaxTreeNode, parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        content: MathSyntaxTreeNode,
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
         this.content = content;
     }
 
@@ -22,7 +28,8 @@ export class ExpressionNode extends MathSyntaxTreeNode {
         return new ExpressionNode(
             convertParserNode(node.data[1], parserContext),
             node,
-            ExpressionNode.computeRangeFromParserNode(node, parserContext)
+            ExpressionNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

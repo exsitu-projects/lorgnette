@@ -1,6 +1,7 @@
 import { Range } from "../../../documents/Range";
 import { JsonSyntaxTreeNode } from "../JsonSyntaxTreeNode";
 import { JsonParserContext } from "../JsonParser";
+import { Document } from "../../../documents/Document";
 
 export class NumberNode extends JsonSyntaxTreeNode {
     static readonly type = "Number";
@@ -8,8 +9,13 @@ export class NumberNode extends JsonSyntaxTreeNode {
 
     readonly value: number;
 
-    constructor(value: number, parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        value: number,
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
         this.value = value;
     }
 
@@ -21,7 +27,8 @@ export class NumberNode extends JsonSyntaxTreeNode {
         return new NumberNode(
             Number(node.value.text),
             node,
-            NumberNode.computeRangeFromParserNode(node, parserContext)
+            NumberNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

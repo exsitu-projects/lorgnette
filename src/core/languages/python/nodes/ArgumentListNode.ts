@@ -3,6 +3,7 @@ import { PythonSyntaxTreeNode } from "../PythonSyntaxTreeNode";
 import { PythonParserContext } from "../PythonParser";
 import { PositionalArgumentNode } from "./PositionalArgumentNode";
 import { NamedArgumentNode } from "./NamedArgumentNode";
+import { Document } from "../../../documents/Document";
 
 export class ArgumentListNode extends PythonSyntaxTreeNode {
     static readonly type = "ArgumentList";
@@ -11,8 +12,14 @@ export class ArgumentListNode extends PythonSyntaxTreeNode {
     readonly positionalArguments: PositionalArgumentNode[];
     readonly namedArguments: NamedArgumentNode[];
 
-    constructor(positionalArguments: PositionalArgumentNode[], namedArguments: NamedArgumentNode[], parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        positionalArguments: PositionalArgumentNode[],
+        namedArguments: NamedArgumentNode[],
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
         this.positionalArguments = positionalArguments;
         this.namedArguments = namedArguments;
     }
@@ -26,7 +33,8 @@ export class ArgumentListNode extends PythonSyntaxTreeNode {
             node.positionalArguments.map((n: any) => PositionalArgumentNode.fromNearlyParserResultNode(n, parserContext)),
             node.namedArguments.map((n: any) => NamedArgumentNode.fromNearlyParserResultNode(n, parserContext)),
             node,
-            ArgumentListNode.computeRangeFromParserNode(node, parserContext)
+            ArgumentListNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

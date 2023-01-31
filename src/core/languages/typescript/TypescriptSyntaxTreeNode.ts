@@ -2,6 +2,7 @@ import { SyntaxTreeNode } from "../SyntaxTreeNode";
 import { ts } from "ts-morph";
 import { Range } from "../../documents/Range";
 import { TypescriptParserContext } from "./TypescriptParser";
+import { Document } from "../../documents/Document";
 
 export class TypescriptSyntaxTreeNode extends SyntaxTreeNode {
     readonly type: string;
@@ -9,8 +10,14 @@ export class TypescriptSyntaxTreeNode extends SyntaxTreeNode {
     readonly childNodes: TypescriptSyntaxTreeNode[];
     readonly parserNode: ts.Node;
 
-    constructor(type: string, range: Range, childNodes: TypescriptSyntaxTreeNode[], parserNode: ts.Node) {
-        super();
+    constructor(
+        type: string,
+        range: Range,
+        childNodes: TypescriptSyntaxTreeNode[],
+        parserNode: ts.Node,
+        sourceDocument: Document
+    ) {
+        super(sourceDocument);
 
         this.type = type;
         this.range  = range;
@@ -44,7 +51,8 @@ export class TypescriptSyntaxTreeNode extends SyntaxTreeNode {
             parserNode.kind ? nameOfKind(parserNode.kind) : "UNKNOWN",
             TypescriptSyntaxTreeNode.computeRangeFromParserNode(parserNode, parserContext),
             childNodes,
-            parserNode
+            parserNode,
+            parserContext.sourceDocument
         );
 
         return node

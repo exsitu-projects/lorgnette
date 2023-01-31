@@ -3,6 +3,7 @@ import { PythonSyntaxTreeNode } from "../PythonSyntaxTreeNode";
 import { PythonParserContext } from "../PythonParser";
 import { ExpressionNode } from "./ExpressionNode";
 import { IdentifierNode } from "./IdentifierNode";
+import { Document } from "../../../documents/Document";
 
 export class NamedArgumentNode extends PythonSyntaxTreeNode {
     static readonly type = "NamedArgument";
@@ -11,8 +12,14 @@ export class NamedArgumentNode extends PythonSyntaxTreeNode {
     readonly name: IdentifierNode;
     readonly value: ExpressionNode;
 
-    constructor(name: IdentifierNode, value: ExpressionNode, parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        name: IdentifierNode,
+        value: ExpressionNode,
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
         this.name = name;
         this.value = value;
     }
@@ -26,7 +33,8 @@ export class NamedArgumentNode extends PythonSyntaxTreeNode {
             node.name,
             ExpressionNode.fromNearlyParserResultNode(node.value, parserContext),
             node,
-            NamedArgumentNode.computeRangeFromParserNode(node, parserContext)
+            NamedArgumentNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

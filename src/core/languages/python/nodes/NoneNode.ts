@@ -1,13 +1,18 @@
 import { Range } from "../../../documents/Range";
 import { PythonSyntaxTreeNode } from "../PythonSyntaxTreeNode";
 import { PythonParserContext } from "../PythonParser";
+import { Document } from "../../../documents/Document";
 
 export class NoneNode extends PythonSyntaxTreeNode {
     static readonly type = "None";
     readonly type = NoneNode.type;
 
-    constructor(parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
     }
 
     get childNodes(): PythonSyntaxTreeNode[] {
@@ -17,7 +22,8 @@ export class NoneNode extends PythonSyntaxTreeNode {
     static fromNearlyParserResultNode(node: any, parserContext: PythonParserContext): NoneNode {
         return new NoneNode(
             node,
-            NoneNode.computeRangeFromParserNode(node, parserContext)
+            NoneNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

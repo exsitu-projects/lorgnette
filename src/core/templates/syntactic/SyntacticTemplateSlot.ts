@@ -24,6 +24,6 @@ export class SyntacticTemplateSlot extends TemplateSlot {
     }
 
     getText(): string {
-        return this.node.getTextIn(this.sourceDocument);
+        return this.node.text;
     }
 }

@@ -2,6 +2,7 @@ import { Range } from "../../../documents/Range";
 import { convertParserNode } from "../MathSyntaxTree";
 import { MathSyntaxTreeNode } from "../MathSyntaxTreeNode";
 import { MathParserContext } from "../MathParser";
+import { Document } from "../../../documents/Document";
 
 export class ExponentNode extends MathSyntaxTreeNode {
     static readonly type = "Exponent";
@@ -14,9 +15,10 @@ export class ExponentNode extends MathSyntaxTreeNode {
         leftOperand: MathSyntaxTreeNode,
         rightOperand: MathSyntaxTreeNode,
         parserNode: any,
-        range: Range
+        range: Range,
+        sourceDocument: Document
     ) {
-        super(parserNode, range);
+        super(parserNode, range, sourceDocument);
         this.leftOperand = leftOperand;
         this.rightOperand = rightOperand;
     }
@@ -30,7 +32,8 @@ export class ExponentNode extends MathSyntaxTreeNode {
             convertParserNode(node.data[0], parserContext),
             convertParserNode(node.data[2], parserContext),
             node,
-            ExponentNode.computeRangeFromParserNode(node, parserContext)
+            ExponentNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

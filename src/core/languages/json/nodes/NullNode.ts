@@ -6,10 +6,6 @@ export class NullNode extends JsonSyntaxTreeNode {
     static readonly type = "Null";
     readonly type = NullNode.type;
 
-    constructor(parserNode: any, range: Range) {
-        super(parserNode, range);
-    }
-
     get childNodes(): JsonSyntaxTreeNode[] {
         return [];
     }
@@ -17,7 +13,8 @@ export class NullNode extends JsonSyntaxTreeNode {
     static fromNearlyParserResultNode(node: any, parserContext: JsonParserContext): JsonSyntaxTreeNode {
         return new NullNode(
             node,
-            NullNode.computeRangeFromParserNode(node, parserContext)
+            NullNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

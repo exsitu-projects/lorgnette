@@ -3,9 +3,11 @@ import grammar from "./grammar/math.grammar";
 import { Position } from "../../documents/Position";
 import { Parser } from "../Parser";
 import { MathSyntaxTree } from "./MathSyntaxTree";
+import { Document } from "../../documents/Document";
 
 export interface MathParserContext {
-    text: string,
+    text: string;
+    sourceDocument: Document;
     offsetToPositionConverter: (offset: number) => Position
 };
 
@@ -23,10 +25,12 @@ export class MathParser implements Parser {
         );
     }
 
-    async parse(text: string): Promise<MathSyntaxTree> {
+    async parse(document: Document): Promise<MathSyntaxTree> {
+        const text = document.content;
         const offsetToPositionConverter = Position.getOffsetToPositionConverterForText(text);
         const parsingContext = {
             text: text,
+            sourceDocument: document,
             offsetToPositionConverter: offsetToPositionConverter
         };
 

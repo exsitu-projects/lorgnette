@@ -1,4 +1,5 @@
 import { CssLocation, CssNode, List } from "css-tree";
+import { Document } from "../../documents/Document";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "../../documents/Position";
 import { Range } from "../../documents/Range";
 import { SyntaxTreeNode } from "../SyntaxTreeNode";
@@ -10,9 +11,14 @@ export class CssSyntaxTreeNode extends SyntaxTreeNode {
     readonly childNodes: CssSyntaxTreeNode[];
     readonly parserNode: CssNode;
 
-    constructor(type: string, range: Range, childNodes: CssSyntaxTreeNode[], parserNode: CssNode) {
-        super();
-
+    constructor(
+        type: string,
+        range: Range,
+        childNodes: CssSyntaxTreeNode[],
+        parserNode: CssNode,
+        sourceDocument: Document
+    ) {
+        super(sourceDocument);
         this.type = type;
         this.range  = range;
         this.childNodes = childNodes;
@@ -94,7 +100,7 @@ export class CssSyntaxTreeNode extends SyntaxTreeNode {
             CssSyntaxTreeNode.fromCssTreeNode(cssTreeNode, parserContext)
         );
 
-        return new CssSyntaxTreeNode(type, range, childNodes, parserNode);
+        return new CssSyntaxTreeNode(type, range, childNodes, parserNode, parserContext.sourceDocument);
     }
 
     private static getRangeFromCssTreeLocation(location: CssLocation): Range {

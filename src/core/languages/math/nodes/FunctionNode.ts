@@ -2,6 +2,7 @@ import { Range } from "../../../documents/Range";
 import { convertParserNode } from "../MathSyntaxTree";
 import { MathSyntaxTreeNode } from "../MathSyntaxTreeNode";
 import { MathParserContext } from "../MathParser";
+import { Document } from "../../../documents/Document";
 
 export class FunctionNode extends MathSyntaxTreeNode {
     static readonly type = "Function";
@@ -14,9 +15,10 @@ export class FunctionNode extends MathSyntaxTreeNode {
         name: string,
         args: MathSyntaxTreeNode[],
         parserNode: any,
-        range: Range
+        range: Range,
+        sourceDocument: Document
     ) {
-        super(parserNode, range);
+        super(parserNode, range, sourceDocument);
         this.name = name;
         this.arguments = args;
     }
@@ -31,7 +33,8 @@ export class FunctionNode extends MathSyntaxTreeNode {
             node.name,
             [convertParserNode(node.data[1], parserContext)],
             node,
-            FunctionNode.computeRangeFromParserNode(node, parserContext)
+            FunctionNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

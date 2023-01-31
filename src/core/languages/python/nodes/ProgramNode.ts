@@ -3,6 +3,7 @@ import { PythonSyntaxTreeNode } from "../PythonSyntaxTreeNode";
 import { PythonParserContext } from "../PythonParser";
 import { convertParserNode } from "../PythonSyntaxTree";
 import { ExpressionNode } from "./ExpressionNode";
+import { Document } from "../../../documents/Document";
 
 export type InstructionNode =
     | ExpressionNode;
@@ -13,8 +14,13 @@ export class ProgramNode extends PythonSyntaxTreeNode {
 
     readonly instructions: InstructionNode[];
 
-    constructor(instructions: InstructionNode[], parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        instructions: InstructionNode[],
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
         this.instructions = instructions;
     }
 
@@ -26,7 +32,8 @@ export class ProgramNode extends PythonSyntaxTreeNode {
         return new ProgramNode(
             node.instructions.map((n: any) => convertParserNode(n, parserContext)),
             node,
-            ProgramNode.computeRangeFromParserNode(node, parserContext)
+            ProgramNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

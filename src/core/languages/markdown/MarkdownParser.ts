@@ -4,18 +4,24 @@ import { gfm } from "micromark-extension-gfm";
 import { gfmFromMarkdown } from "mdast-util-gfm";
 import { Parser } from "../Parser";
 import { MarkdownSyntaxTree } from "./MarkdownSyntaxTree";
+import { Document } from "../../documents/Document";
 
 export interface MarkdownParserContext {
     text: string;
+    sourceDocument: Document;
 };
 
 export class MarkdownParser implements Parser {
-    async parse(text: string): Promise<MarkdownSyntaxTree> {
+    async parse(document: Document): Promise<MarkdownSyntaxTree> {
+        const text = document.content;
         const rootNode = fromMarkdown(text, {
             extensions: [gfm()],
             mdastExtensions: [gfmFromMarkdown()]
         });
 
-        return MarkdownSyntaxTree.fromMarkdownTreeRootNode(rootNode, { text: text });
+        return MarkdownSyntaxTree.fromMarkdownTreeRootNode(rootNode, {
+            text: text,
+            sourceDocument: document
+        });
     }
 }

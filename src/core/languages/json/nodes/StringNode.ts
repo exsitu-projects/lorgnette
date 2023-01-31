@@ -1,6 +1,7 @@
 import { Range } from "../../../documents/Range";
 import { JsonSyntaxTreeNode } from "../JsonSyntaxTreeNode";
 import { JsonParserContext } from "../JsonParser";
+import { Document } from "../../../documents/Document";
 
 export class StringNode extends JsonSyntaxTreeNode {
     static readonly type = "String";
@@ -8,8 +9,13 @@ export class StringNode extends JsonSyntaxTreeNode {
 
     readonly value: string;
 
-    constructor(value: string, parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        value: string,
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
         this.value = value;
     }
 
@@ -21,7 +27,8 @@ export class StringNode extends JsonSyntaxTreeNode {
         return new StringNode(
             node.value.text.slice(1, node.value.text.length - 1),
             node,
-            StringNode.computeRangeFromParserNode(node, parserContext)
+            StringNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

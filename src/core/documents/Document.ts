@@ -101,7 +101,7 @@ export class Document {
 
         // If there is no cached syntax tree but one can be computed, create a fresh one (and cache it).
         if (this.canBeParsed) {
-            return this.language.parser!.parse(this.content)
+            return this.language.parser!.parse(this)
                 .then(syntaxTree => {
                     this.cachedSyntaxTree = syntaxTree;
                     return syntaxTree;

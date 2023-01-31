@@ -1,6 +1,7 @@
 import { Range } from "../../../documents/Range";
 import { PythonSyntaxTreeNode } from "../PythonSyntaxTreeNode";
 import { PythonParserContext } from "../PythonParser";
+import { Document } from "../../../documents/Document";
 
 export class IdentifierNode extends PythonSyntaxTreeNode {
     static readonly type = "Identifier";
@@ -8,8 +9,13 @@ export class IdentifierNode extends PythonSyntaxTreeNode {
 
     readonly name: string;
 
-    constructor(name: string, parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        name: string,
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
         this.name = name;
     }
 
@@ -21,7 +27,8 @@ export class IdentifierNode extends PythonSyntaxTreeNode {
         return new IdentifierNode(
             node.name,
             node,
-            IdentifierNode.computeRangeFromParserNode(node, parserContext)
+            IdentifierNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

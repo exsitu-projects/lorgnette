@@ -9,6 +9,7 @@ import { NamedAccessNode } from "./NamedAccessNode";
 import { StringNode } from "./StringNode";
 import { NumberNode } from "./NumberNode";
 import { convertParserNode } from "../PythonSyntaxTree";
+import { Document } from "../../../documents/Document";
 
 export type IndexableExpressionNode =
     | IdentifierNode
@@ -26,8 +27,14 @@ export class IndexedAccessNode extends PythonSyntaxTreeNode {
     readonly expression: IndexableExpressionNode;
     readonly index: ExpressionNode;
 
-    constructor(expression: IndexableExpressionNode, index: ExpressionNode, parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        expression: IndexableExpressionNode,
+        index: ExpressionNode,
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
         this.expression = expression;
         this.index = index;
     }
@@ -41,7 +48,8 @@ export class IndexedAccessNode extends PythonSyntaxTreeNode {
             convertParserNode(node.expression, parserContext) as IndexableExpressionNode,
             ExpressionNode.fromNearlyParserResultNode(node.index, parserContext),
             node,
-            IndexedAccessNode.computeRangeFromParserNode(node, parserContext)
+            IndexedAccessNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

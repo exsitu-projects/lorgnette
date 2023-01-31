@@ -3,9 +3,11 @@ import grammar from "./grammar/json.grammar";
 import { Position } from "../../documents/Position";
 import { Parser } from "../Parser";
 import { JsonSyntaxTree } from "./JsonSyntaxTree";
+import { Document } from "../../documents/Document";
 
 export interface JsonParserContext {
     text: string;
+    sourceDocument: Document;
     offsetToPositionConverter: (offset: number) => Position;
 };
 
@@ -23,10 +25,12 @@ export class JsonParser implements Parser {
         );
     }
 
-    async parse(text: string): Promise<JsonSyntaxTree> {
+    async parse(document: Document): Promise<JsonSyntaxTree> {
+        const text = document.content;
         const offsetToPositionConverter = Position.getOffsetToPositionConverterForText(text);
         const parsingContext = {
             text: text,
+            sourceDocument: document,
             offsetToPositionConverter: offsetToPositionConverter
         };
 

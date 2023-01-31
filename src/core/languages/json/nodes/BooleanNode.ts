@@ -1,6 +1,7 @@
 import { Range } from "../../../documents/Range";
 import { JsonSyntaxTreeNode } from "../JsonSyntaxTreeNode";
 import { JsonParserContext } from "../JsonParser";
+import { Document } from "../../../documents/Document";
 
 export class BooleanNode extends JsonSyntaxTreeNode {
     static readonly type = "Boolean";
@@ -8,8 +9,13 @@ export class BooleanNode extends JsonSyntaxTreeNode {
 
     readonly value: boolean;
 
-    constructor(value: boolean, parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        value: boolean,
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
         this.value = value;
     }
 
@@ -21,7 +27,8 @@ export class BooleanNode extends JsonSyntaxTreeNode {
         return new BooleanNode(
             node.value,
             node,
-            BooleanNode.computeRangeFromParserNode(node, parserContext)
+            BooleanNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

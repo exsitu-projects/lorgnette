@@ -2,6 +2,7 @@ import { Range } from "../../../documents/Range";
 import { convertParserNode } from "../MathSyntaxTree";
 import { MathSyntaxTreeNode } from "../MathSyntaxTreeNode";
 import { MathParserContext } from "../MathParser";
+import { Document } from "../../../documents/Document";
 
 export class SubstractionNode extends MathSyntaxTreeNode {
     static readonly type = "Substraction";
@@ -14,9 +15,10 @@ export class SubstractionNode extends MathSyntaxTreeNode {
         leftOperand: MathSyntaxTreeNode,
         rightOperand: MathSyntaxTreeNode,
         parserNode: any,
-        range: Range
+        range: Range,
+        sourceDocument: Document
     ) {
-        super(parserNode, range);
+        super(parserNode, range, sourceDocument);
         this.leftOperand = leftOperand;
         this.rightOperand = rightOperand;
     }
@@ -30,7 +32,8 @@ export class SubstractionNode extends MathSyntaxTreeNode {
             convertParserNode(node.data[0], parserContext),
             convertParserNode(node.data[4], parserContext),
             node,
-            SubstractionNode.computeRangeFromParserNode(node, parserContext)
+            SubstractionNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

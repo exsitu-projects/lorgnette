@@ -7,6 +7,7 @@ import { NullNode } from "./NullNode";
 import { NumberNode } from "./NumberNode";
 import { StringNode } from "./StringNode";
 import { convertParserNode } from "../JsonSyntaxTree";
+import { Document } from "../../../documents/Document";
 
 export type ValueNode =
     | ObjectNode
@@ -22,8 +23,13 @@ export class ArrayNode extends JsonSyntaxTreeNode {
 
     readonly values: ValueNode[];
 
-    constructor(values: ValueNode[], parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        values: ValueNode[],
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
         this.values = values;
     }
 
@@ -35,7 +41,8 @@ export class ArrayNode extends JsonSyntaxTreeNode {
         return new ArrayNode(
             node.values.map((n: any) => convertParserNode(n, parserContext)),
             node,
-            ArrayNode.computeRangeFromParserNode(node, parserContext)
+            ArrayNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

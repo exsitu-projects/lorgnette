@@ -43,13 +43,6 @@ export function convertParserNode(
 }
 
 export class MathSyntaxTree extends SyntaxTree<MathSyntaxTreeNode> {
-    readonly root: MathSyntaxTreeNode;
-
-    constructor(root: MathSyntaxTreeNode) {
-        super();
-        this.root = root;
-    }
-
     static fromNearlyParserResult(result: any, parserContext: MathParserContext): MathSyntaxTree {
         const rootNode = convertParserNode(result, parserContext);
         return new MathSyntaxTree(rootNode);

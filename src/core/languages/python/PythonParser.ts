@@ -3,9 +3,11 @@ import grammar from "./grammar/python.grammar";
 import { Position } from "../../documents/Position";
 import { Parser } from "../Parser";
 import { PythonSyntaxTree } from "./PythonSyntaxTree";
+import { Document } from "../../documents/Document";
 
 export interface PythonParserContext {
     text: string;
+    sourceDocument: Document;
     offsetToPositionConverter: (offset: number) => Position;
 };
 
@@ -23,10 +25,12 @@ export class PythonParser implements Parser {
         );
     }
 
-    async parse(text: string): Promise<PythonSyntaxTree> {
+    async parse(document: Document): Promise<PythonSyntaxTree> {
+        const text = document.content;
         const offsetToPositionConverter = Position.getOffsetToPositionConverterForText(text);
         const parsingContext = {
             text: text,
+            sourceDocument: document,
             offsetToPositionConverter: offsetToPositionConverter
         };
 

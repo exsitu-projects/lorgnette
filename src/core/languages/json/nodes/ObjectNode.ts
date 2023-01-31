@@ -3,6 +3,7 @@ import { JsonSyntaxTreeNode } from "../JsonSyntaxTreeNode";
 import { JsonParserContext } from "../JsonParser";
 import { PropertyNode } from "./PropertyNode";
 import { convertParserNode } from "../JsonSyntaxTree";
+import { Document } from "../../../documents/Document";
 
 export class ObjectNode extends JsonSyntaxTreeNode {
     static readonly type = "Object";
@@ -10,8 +11,13 @@ export class ObjectNode extends JsonSyntaxTreeNode {
 
     readonly properties: PropertyNode[];
 
-    constructor(properties: PropertyNode[], parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        properties: PropertyNode[],
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
         this.properties = properties;
     }
 
@@ -23,7 +29,8 @@ export class ObjectNode extends JsonSyntaxTreeNode {
         return new ObjectNode(
             node.properties.map((n: any) => convertParserNode(n, parserContext)),
             node,
-            ObjectNode.computeRangeFromParserNode(node, parserContext)
+            ObjectNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

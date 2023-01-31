@@ -1,3 +1,4 @@
+import { Document } from "../../documents/Document";
 import { Position } from "../../documents/Position";
 import { Range } from "../../documents/Range";
 import { SyntaxTreeNode } from "../SyntaxTreeNode";
@@ -23,16 +24,20 @@ export interface ParserNode {
 export class MarkdownSyntaxTreeNode extends SyntaxTreeNode {
     readonly type: string;
     readonly range: Range;
-    readonly text: string;
     readonly childNodes: MarkdownSyntaxTreeNode[];
     readonly parserNode: ParserNode;
 
-    constructor(type: string, range: Range, text: string, childNodes: MarkdownSyntaxTreeNode[], parserNode: ParserNode) {
-        super();
+    constructor(
+        type: string,
+        range: Range,
+        childNodes: MarkdownSyntaxTreeNode[],
+        parserNode: ParserNode,
+        sourceDocument: Document
+    ) {
+        super(sourceDocument);
 
         this.type = type;
         this.range  = range;
-        this.text = text;
         this.childNodes = childNodes;
         this.parserNode = parserNode;
     }
@@ -40,14 +45,14 @@ export class MarkdownSyntaxTreeNode extends SyntaxTreeNode {
     static fromParserNode(parserNode: ParserNode, parserContext: MarkdownParserContext): MarkdownSyntaxTreeNode {
         const type = parserNode.type;
         const range = MarkdownSyntaxTreeNode.getRangeFromParserNode(parserNode);
-        const text = parserContext.text.slice(range.start.offset, range.end.offset);
+        // const text = parserContext.text.slice(range.start.offset, range.end.offset);
         const childNodes = parserNode.children
             ? parserNode.children.map(
                 childParserNode => MarkdownSyntaxTreeNode.fromParserNode(childParserNode, parserContext)
             )
             : [];
 
-        return new MarkdownSyntaxTreeNode(type, range, text, childNodes, parserNode);
+        return new MarkdownSyntaxTreeNode(type, range, childNodes, parserNode, parserContext.sourceDocument);
     }
 
 

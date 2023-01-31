@@ -2,6 +2,7 @@ import { Range } from "../../../documents/Range";
 import { PythonSyntaxTreeNode } from "../PythonSyntaxTreeNode";
 import { PythonParserContext } from "../PythonParser";
 import { ExpressionNode } from "./ExpressionNode";
+import { Document } from "../../../documents/Document";
 
 export class PositionalArgumentNode extends PythonSyntaxTreeNode {
     static readonly type = "PositionalArgument";
@@ -9,8 +10,13 @@ export class PositionalArgumentNode extends PythonSyntaxTreeNode {
 
     readonly value: ExpressionNode;
 
-    constructor(value: ExpressionNode, parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        value: ExpressionNode,
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
         this.value = value;
     }
 
@@ -22,7 +28,8 @@ export class PositionalArgumentNode extends PythonSyntaxTreeNode {
         return new PositionalArgumentNode(
             ExpressionNode.fromNearlyParserResultNode(node.value, parserContext),
             node,
-            PositionalArgumentNode.computeRangeFromParserNode(node, parserContext)
+            PositionalArgumentNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

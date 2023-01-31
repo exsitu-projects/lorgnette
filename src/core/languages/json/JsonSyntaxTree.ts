@@ -35,13 +35,6 @@ export function convertParserNode(
 }
 
 export class JsonSyntaxTree extends SyntaxTree<JsonSyntaxTreeNode> {
-    readonly root: JsonSyntaxTreeNode;
-
-    constructor(root: JsonSyntaxTreeNode) {
-        super();
-        this.root = root;
-    }
-
     static fromNearlyParserResult(result: any, parserContext: JsonParserContext): JsonSyntaxTree {
         const rootNode = convertParserNode(result[0], parserContext);
         return new JsonSyntaxTree(rootNode);

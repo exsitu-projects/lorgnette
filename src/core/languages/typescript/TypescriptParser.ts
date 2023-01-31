@@ -1,12 +1,13 @@
 import { Parser } from "../Parser";
-import { Project, Node, ts } from "ts-morph";
+import { Project } from "ts-morph";
 import { Position } from "../../documents/Position";
 import { TypescriptSyntaxTree } from "./TypescriptSyntaxTree";
 import { TypescriptSyntaxTreeNode } from "./TypescriptSyntaxTreeNode";
-import { Range } from "../../documents/Range";
+import { Document } from "../../documents/Document";
 
 export interface TypescriptParserContext {
     text: string;
+    sourceDocument: Document;
     offsetToPositionConverter: (offset: number) => Position;
 };
 
@@ -19,17 +20,17 @@ export class TypescriptParser implements Parser {
         });
     }
 
-    async parse(text: string): Promise<TypescriptSyntaxTree> {
+    async parse(document: Document): Promise<TypescriptSyntaxTree> {
+        const text = document.content;
         const sourceFile = this.project.createSourceFile(
             "code-in-editor.tsx",
             text,
-            {
-                overwrite: true
-            }
+            { overwrite: true }
         );
 
         const parserContext: TypescriptParserContext = {
             text: text,
+            sourceDocument: document,
             offsetToPositionConverter: Position.getOffsetToPositionConverterForText(text)
         };
 

@@ -41,7 +41,7 @@ export const testFormProvider = new SyntacticMonocleProvider({
 
         // Create one form entry per property.
         for (let node of propertyAssignmentNodes) {
-            const key = node.childNodes[0].getTextIn(document);
+            const key = node.childNodes[0].text;
             const valueNode = node.childNodes[2];
 
             switch (valueNode.type) {
@@ -49,7 +49,7 @@ export const testFormProvider = new SyntacticMonocleProvider({
                     formEntries.push({
                         type: FormEntryType.Number,
                         key: key,
-                        value: Number(valueNode.getTextIn(document))
+                        value: Number(valueNode.text)
                     });
                     break;
                 
@@ -57,7 +57,7 @@ export const testFormProvider = new SyntacticMonocleProvider({
                     formEntries.push({
                         type: FormEntryType.String,
                         key: key,
-                        value: valueNode.getTextIn(document).slice(1, -1)
+                        value: valueNode.text.slice(1, -1)
                     });
                     break;
                 

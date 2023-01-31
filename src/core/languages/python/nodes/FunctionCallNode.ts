@@ -6,6 +6,7 @@ import { ArgumentListNode } from "./ArgumentListNode";
 import { IndexedAccessNode } from "./IndexedAccessNode";
 import { NamedAccessNode } from "./NamedAccessNode";
 import { IdentifierNode } from "./IdentifierNode";
+import { Document } from "../../../documents/Document";
 
 export type CallableExpressionNode =
     | IdentifierNode
@@ -20,8 +21,14 @@ export class FunctionCallNode extends PythonSyntaxTreeNode {
     readonly callee: CallableExpressionNode;
     readonly arguments: ArgumentListNode;
 
-    constructor(callee: CallableExpressionNode, argumentList: ArgumentListNode, parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        callee: CallableExpressionNode,
+        argumentList: ArgumentListNode,
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
         this.callee = callee;
         this.arguments = argumentList;
     }
@@ -35,7 +42,8 @@ export class FunctionCallNode extends PythonSyntaxTreeNode {
             convertParserNode(node.callee, parserContext) as CallableExpressionNode,
             ArgumentListNode.fromNearlyParserResultNode(node.argumentList, parserContext),
             node,
-            FunctionCallNode.computeRangeFromParserNode(node, parserContext)
+            FunctionCallNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

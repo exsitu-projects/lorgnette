@@ -9,6 +9,7 @@ import { NumberNode } from "./NumberNode";
 import { StringNode } from "./StringNode";
 import { KeyNode } from "./KeyNode";
 import { convertParserNode } from "../JsonSyntaxTree";
+import { Document } from "../../../documents/Document";
 
 export type ValueNode =
     | ObjectNode
@@ -25,8 +26,14 @@ export class PropertyNode extends JsonSyntaxTreeNode {
     readonly key: KeyNode;
     readonly value: ValueNode;
 
-    constructor(key: KeyNode, value: ValueNode, parserNode: any, range: Range) {
-        super(parserNode, range);
+    constructor(
+        key: KeyNode,
+        value: ValueNode,
+        parserNode: any,
+        range: Range,
+        sourceDocument: Document
+    ) {
+        super(parserNode, range, sourceDocument);
         this.key = key;
         this.value = value;
     }
@@ -40,7 +47,8 @@ export class PropertyNode extends JsonSyntaxTreeNode {
             convertParserNode(node.key, parserContext) as KeyNode,
             convertParserNode(node.value, parserContext) as ValueNode,
             node,
-            PropertyNode.computeRangeFromParserNode(node, parserContext)
+            PropertyNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }

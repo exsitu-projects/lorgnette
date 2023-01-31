@@ -14,7 +14,8 @@ export class WhitespaceNode extends MathSyntaxTreeNode {
     static fromNearlyParserResultNode(node: any, parserContext: MathParserContext): MathSyntaxTreeNode {
         return new WhitespaceNode(
             node,
-            WhitespaceNode.computeRangeFromParserNode(node, parserContext)
+            WhitespaceNode.computeRangeFromParserNode(node, parserContext),
+            parserContext.sourceDocument
         );
     }
 }
