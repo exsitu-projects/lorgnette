@@ -44,12 +44,6 @@ export class TableComponent extends Component<Props, State> {
         };
     }
 
-    setTableData(content: TableContent): void {
-        this.setState({
-            content: content
-        });
-    }
-
     private updateHansontableDimensions(): void {
         this.handsontable?.hotInstance?.refreshDimensions();
     }
