@@ -12,6 +12,7 @@ import { tsxComponentTreeProvider } from "./tsx-components";
 import { vegaMarksStyleInspectorProvider, vegaMarksStyleInspectorProvider2 } from "./vega-marks";
 import { pythonRuntimeDataframeTableProvider } from "./python-runtime-dataframe-tables";
 import { testFormProvider, testFormProvider2 } from "./test-form";
+import { pythonBarplotFormProvider } from "./python-barplot-form";
 
 export const MONOCLE_PROVIDERS: MonocleProvider[] = [
     // hexadecimalColorPickerProvider,
@@ -28,11 +29,12 @@ export const MONOCLE_PROVIDERS: MonocleProvider[] = [
     // vegaMarksStyleInspectorProvider,
     vegaMarksStyleInspectorProvider2,
 
-    cssPropertyStyleInspectorProvider,
+    // cssPropertyStyleInspectorProvider,
 
     // seabornBarplotStyleInspectorProvider,
-    seabornBarplotStyleInspectorProvider2,
-    matplotlibTextPropertiesStyleInspectorProvider,
+    // seabornBarplotStyleInspectorProvider2,
+    // matplotlibTextPropertiesStyleInspectorProvider,
+    pythonBarplotFormProvider,
 
     runtimeValueTracerProvider,
     markdownTableProvider,
