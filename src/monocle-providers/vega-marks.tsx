@@ -339,18 +339,20 @@ function blockOfLength(size: number) {
 }
 
 const form = <>
-    <Section title="Background/fill">
+    {/* <Section title="Background/fill">
         <ButtonColorPicker formEntryKey="fill" defaultValue={Color.fromHexString("#4682b4")} label="Fill color" />
-    </Section>
+    </Section> */}
 
-    <Section title="Border/stroke">
-        <SingleRow gapSize="1em">
+    <Section title="Fill and stroke">
+        <SingleRow gapSize={25}>
+            <ButtonColorPicker formEntryKey="fill" defaultValue={Color.fromHexString("#4682b4")} label="Fill color" />
+
             <ButtonColorPicker formEntryKey="stroke" defaultValue={Color.fromHexString("#4682b4")} label="Stroke color" />
 
             <SingleRow label="Thickness (px)">
                 <NumberInput formEntryKey="strokeWidth" defaultValue={0} min={0} />
 
-                <ButtonGroup>
+                {/* <ButtonGroup>
                     <Button
                         formEntryKey="strokeWidth"
                         text={<Icon id="disable" />}
@@ -386,7 +388,7 @@ const form = <>
                         activateOn={10}
                         showWithoutValue={true}
                     />
-                </ButtonGroup>
+                </ButtonGroup> */}
             </SingleRow>
 
             <ButtonGroup label="Line style">
@@ -413,7 +415,7 @@ const form = <>
     </Section>
 
     <Section title="Text">
-        <SingleRow gapSize="1em">
+        <SingleRow gapSize={25}>
             <SingleRow label="Thickness (px)">
                 <Button<FormEntryType.Number>
                     formEntryKey="fontSize"
