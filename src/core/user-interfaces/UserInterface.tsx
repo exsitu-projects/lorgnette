@@ -1,49 +1,56 @@
 import React, { ReactElement } from "react";
 import { Observer } from "../../utilities/Observer";
 import { FixedThrottler } from "../../utilities/tasks/FixedThrottler";
-import { Monocle } from "../monocles/Monocle";
+import { Projection } from "../projections/Projection";
+import { UserInterfaceSettings } from "./UserInterfaceSettings";
+import { UserInterfaceProvider } from "./UserInterfaceProvider";
+import { UserInterfaceError } from "./error/UserInterfaceError";
+import { UserInterfaceErrorCatcherAndDisplay } from "./error/UserInterfaceErrorCatcherAndDisplay";
 
-export type UserInterfaceInput = {};
+export type UserInterfaceInput = any | UserInterfaceError;
 
 export type UserInterfaceOutput = any;
-
-export type PartialUserInterfaceOutput =
-    Omit<UserInterfaceOutput, "data">;
 
 export abstract class UserInterface<
     I extends UserInterfaceInput = UserInterfaceInput,
     O extends UserInterfaceOutput = UserInterfaceOutput
 > {
     abstract readonly className: string;
-    protected monocle: Monocle;
+    protected projection: Projection;
+    protected error: UserInterfaceError | null;
     
     private modelChangeObservers: Set<Observer<O>>;
     private modelChangeNotificationThrottler: FixedThrottler;
 
-    constructor(monocle: Monocle) {
-        this.monocle = monocle;
+    private errorCatcherAndDisplayRef: React.RefObject<UserInterfaceErrorCatcherAndDisplay>;
+
+    constructor(projection: Projection) {
+        this.projection = projection;
+        this.error = null;
 
         this.modelChangeObservers = new Set();
         this.modelChangeNotificationThrottler = new FixedThrottler(
             () => this.notifyModelChangeObservers(),
             this.minDelayBetweenModelChangeNotifications
-        )
+        );
+
+        this.errorCatcherAndDisplayRef = React.createRef();
     }
 
     protected abstract get modelOutput(): O;
-    abstract createViewContent(): ReactElement;
-    abstract updateModel(input: I): void;
+    protected abstract processInput(input: I): void;
+    protected abstract createViewContent(): ReactElement;
 
-    protected get isTransient(): boolean {
-        return this.monocle.isTransient;
+    protected get isInTransientState(): boolean {
+        return this.projection.isTransient;
     }
 
     protected beginTransientState(): void {
-        this.monocle.beginTransientState();
+        this.projection.beginTransientState();
     }
 
     protected endTransientState(): void {
-        this.monocle.endTransientState();
+        this.projection.endTransientState();
     }
 
     protected get minDelayBetweenModelChangeNotifications(): number {
@@ -64,23 +71,38 @@ export abstract class UserInterface<
         }
     }
     
-    protected declareModelChange(notifyImmediately: boolean = false): void {
-        if (notifyImmediately) {
+    protected declareModelChange(clearQueuedChangeDeclarations: boolean = false): void {
+        if (clearQueuedChangeDeclarations) {
             this.modelChangeNotificationThrottler.throttler.clearTasks();
-            this.modelChangeNotificationThrottler.runTask();
         }
-        else {
-            this.modelChangeNotificationThrottler.runTask();
-        }
+        
+        this.modelChangeNotificationThrottler.runTask();
     }
 
-    createView(uiContainerProps: React.ComponentProps<"div"> = {}): ReactElement {
+    updateInput(input: I): void {
+        if (input instanceof UserInterfaceError) {
+            this.error = input;
+            this.errorCatcherAndDisplayRef.current?.setError(input);
+            return;
+        }
+
+        this.error = null;
+        this.errorCatcherAndDisplayRef.current?.setError(null);
+
+        this.processInput(input);
+    }
+
+    createView(): ReactElement {
         return <div
             className={`ui ${this.className}`}
-            data-monocle-uid={this.monocle.uid}
-            {...uiContainerProps}
+            data-projection-uid={this.projection.uid}
         >
-            {this.createViewContent()}
-        </div>
+            <UserInterfaceErrorCatcherAndDisplay
+                ref={this.errorCatcherAndDisplayRef}
+                initialError={this.error}
+            >
+                { this.createViewContent() }
+            </UserInterfaceErrorCatcherAndDisplay>
+        </div>;
     }
 }

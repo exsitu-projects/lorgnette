@@ -1,6 +1,6 @@
 import { Document } from "../../../core/documents/Document";
 import { SyntacticFragment } from "../../../core/fragments/syntactic/SyntacticFragment";
-import { PropertyNode } from "../../../core/languages/json/nodes/PropertyNode";
+import { PropertyNode } from "../../../presets/languages/json/nodes/PropertyNode";
 import { SyntaxTreeNode } from "../../../core/languages/SyntaxTreeNode";
 import { SyntaxTreePattern } from "../../../core/languages/SyntaxTreePattern";
 import { KeyValueListTemplate, KeyValueListTemplateSlotSpecification } from "../../../core/templates/syntactic/KeyValueListTemplate";
@@ -51,7 +51,7 @@ export class JsonObjectTemplate extends KeyValueListTemplate {
                         valueNode,
                         document,
                         specification.key,
-                        specification.valuator
+                        specification.evaluator
                     );
                 }
 

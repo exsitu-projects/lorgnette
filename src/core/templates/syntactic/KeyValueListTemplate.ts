@@ -6,24 +6,24 @@ import { SyntacticTemplateSlot } from "../../../core/templates/syntactic/Syntact
 import { TreePatternTemplate } from "../../../core/templates/syntactic/TreePatternTemplate";
 import { DELETE_SLOT, TemplateDataValue, TemplateSettings } from "../../../core/templates/Template";
 import { TemplateSlotKey } from "../../../core/templates/TemplateSlot";
-import { Valuator, ValuatorValue } from "../../../core/templates/valuators/Valuator";
+import { Evaluator, EvaluatorValue } from "../evaluators/Evaluator";
 import { evaluateCondition, ValueCondition } from "../../../utilities/ValueCondition";
 import { SyntaxTreeNode } from "../../languages/SyntaxTreeNode";
 
 export type KeyValueListTemplateSlotSpecification = {
     key: TemplateSlotKey;
-    valuator: Valuator;
-    defaultValue?: ValueCondition<ValuatorValue>;
+    evaluator: Evaluator;
+    defaultValue?: ValueCondition<EvaluatorValue>;
 };
 
 export function createSlotSpecification(
     key: TemplateSlotKey,
-    valuator: Valuator,
-    defaultValue?: ValueCondition<ValuatorValue>
+    evaluator: Evaluator,
+    defaultValue?: ValueCondition<EvaluatorValue>
 ): KeyValueListTemplateSlotSpecification {
     return {
         key: key,
-        valuator: valuator,
+        evaluator: evaluator,
         defaultValue: defaultValue
     };
 }
@@ -80,7 +80,7 @@ export abstract class KeyValueListTemplate<
         const nbKeyValueNodes = keyValueNodes.length;
 
         const specification = this.slotKeysToSpecifications.get(key)!;
-        const slotValueAsText = specification.valuator.convertValueToText(value);
+        const slotValueAsText = specification.evaluator.convertValueToText(value);
 
 
         // Case 1: there is a single key-value pair.

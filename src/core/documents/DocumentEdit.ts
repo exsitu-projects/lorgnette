@@ -5,7 +5,7 @@ import { Range } from "./Range";
 export enum DocumentEditKind {
     Insertion,
     Replacement,
-    Deletetion
+    Deletion
 }
 
 export class DocumentEdit {
@@ -33,7 +33,7 @@ export class DocumentEdit {
             case DocumentEditKind.Replacement:
                 return this.newContent.length - getSizeOfContentToEdit();
         
-            case DocumentEditKind.Deletetion:
+            case DocumentEditKind.Deletion:
                 return -getSizeOfContentToEdit();
         }
     }
@@ -56,7 +56,7 @@ export class DocumentEdit {
 
     static createDeletion(range: Range): DocumentEdit {
         return new DocumentEdit(
-            DocumentEditKind.Deletetion,
+            DocumentEditKind.Deletion,
             range
         );
     }

@@ -1,0 +1,58 @@
+.projection-renderer.popup {
+    position: absolute;
+    /* z-index: 200; */
+}
+
+.projection-renderer.popup > button.bp4-button,
+.projection-renderer.popup > button.bp4-button:active,
+.projection-renderer.popup > button.bp4-button.bp4-active,
+.projection-renderer.popup > button.bp4-button:hover {
+    display: block;
+    min-width: auto;
+    min-height: auto;
+    margin: 0;
+    padding: 0 0.5ex;
+    background: none;
+    border: 1px solid #aaa;
+    outline: none;
+    box-shadow: none;
+    color: #aaa;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+.projection-renderer.popup > button.bp4-button > span {
+    display: inline-block;
+}
+
+.projection-renderer.popup > button.bp4-button:hover,
+.projection-renderer.popup > button.bp4-button:active,
+.projection-renderer.popup > button.bp4-button.bp4-active {
+    background: #eee;
+    border: 1px solid #888;
+    color: #666;
+}
+
+.projection-popup-content-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    z-index: 800;
+}
+
+.projection-popup-content-panel {
+    max-width: calc(100vw - 50px);
+    max-height: calc(100vh - 50px);
+    padding: 2em;
+    overflow: auto;
+    background-color: #eee;
+    border: 2px solid #ccc;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.projection-popup-content-panel * {
+    z-index: 1000;
+}

@@ -6,7 +6,7 @@ import { DocumentPosition } from "./DocumentPosition";
 import { DocumentRange } from "./DocumentRange";
 import { Position } from "./Position";
 import { Range } from "./Range";
-import { Monocle } from "../monocles/Monocle";
+import { Projection } from "../projections/Projection";
 
 function splitTextByLine(text: string): string[] {
     return text.split("\n");
@@ -14,16 +14,16 @@ function splitTextByLine(text: string): string[] {
 
 export enum DocumentChangeOrigin {
     UserEdit = "User edit",
-    Monocle = "Monocle"
+    Projection = "Projection"
 }
 
 export type DocumentChangeContext = {
     origin: DocumentChangeOrigin.UserEdit;
 } | {
-    origin: DocumentChangeOrigin.Monocle;
-    monocle: Monocle;
+    origin: DocumentChangeOrigin.Projection;
+    projection: Projection;
     isTransientChange: boolean;
-    preservesMonocle: boolean;
+    preservesProjection: boolean;
 };
 
 export interface DocumentChangeEvent {

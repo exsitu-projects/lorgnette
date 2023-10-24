@@ -1,0 +1,42 @@
+.projection-renderer.popover {
+    position: absolute;
+    /* z-index: 200; */
+}
+
+.projection-renderer.popover > button.bp4-button,
+.projection-renderer.popover > button.bp4-button:active,
+.projection-renderer.popover > button.bp4-button.bp4-active,
+.projection-renderer.popover > button.bp4-button:hover {
+    display: block;
+    min-width: auto;
+    min-height: auto;
+    margin: 0;
+    padding: 0 0.5ex;
+    background: none;
+    border: 1px solid #aaa;
+    outline: none;
+    box-shadow: none;
+    color: #aaa;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+.projection-renderer.popover > button.bp4-button > span {
+    display: inline-block;
+}
+
+.projection-renderer.popover > button.bp4-button:hover,
+.projection-renderer.popover > button.bp4-button:active,
+.projection-renderer.popover > button.bp4-button.bp4-active {
+    background: #eee;
+    border: 1px solid #888;
+    color: #666;
+}
+
+.projection-popover-content-wrapper {
+    padding: 10px;
+    background-color: #FAFAFA;
+    border: 1px solid #CCC;
+    box-shadow: 0 0 10px rgba(120, 120, 120, 0.4);
+    z-index: 500;
+}

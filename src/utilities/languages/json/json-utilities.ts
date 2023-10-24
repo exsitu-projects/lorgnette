@@ -1,8 +1,8 @@
 import { Document } from "../../../core/documents/Document";
 import { DocumentEditor } from "../../../core/documents/DocumentEditor";
 import { Range } from "../../../core/documents/Range";
-import { ObjectNode } from "../../../core/languages/json/nodes/ObjectNode";
-import { PropertyNode } from "../../../core/languages/json/nodes/PropertyNode";
+import { ObjectNode } from "../../../presets/languages/json/nodes/ObjectNode";
+import { PropertyNode } from "../../../presets/languages/json/nodes/PropertyNode";
 
 // Search for the index of a property in a JSON object and returns it (or -1 if none were found).
 // If several property names are specified, each name is compared against all the keys,

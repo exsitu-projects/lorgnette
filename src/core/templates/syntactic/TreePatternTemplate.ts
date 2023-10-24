@@ -1,5 +1,6 @@
 import { Document } from "../../documents/Document";
 import { FragmentProvider } from "../../fragments/FragmentProvider"
+import { FragmentType } from "../../fragments/FragmentType";
 import { SyntacticFragment } from "../../fragments/syntactic/SyntacticFragment";
 import { TreePatternFinder } from "../../fragments/syntactic/TreePatternFinder";
 import { SyntaxTreePattern } from "../../languages/SyntaxTreePattern";
@@ -37,6 +38,7 @@ export abstract class TreePatternTemplate extends Template<SyntacticTemplateSlot
 
     protected getFragmentProvider(): FragmentProvider<SyntacticFragment> {
         return {
+            type: FragmentType.Syntactic,
             provideFragmentsForDocument: this.provideFragmentsForDocument.bind(this)
         };
     }

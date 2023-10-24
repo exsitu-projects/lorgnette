@@ -1,36 +1,33 @@
-type F<I, O> = (arg: I) => O;
+export type ProgrammableFunctionException = any;
 
-export type ProgrammableFunctionOf<F extends (argument: any) => any> =
-    ProgrammableFunction<
-        Parameters<F>[0],
-        ReturnType<F>
-    >;
+export type ProgrammableFunctionExceptionHandler = (exception: ProgrammableFunctionException) => void;
 
-export type ExceptionHandler = (exception: any) => void;
-
-const DEFAULT_EXCEPTION_HANDLER = (exception: any) => {
+const DEFAULT_PROGRAMMABLE_FUNCTION_EXCEPTION_HANDLER = (exception: ProgrammableFunctionException) => {
     console.error("An exception was caught in a programmable function:", exception);
 };
 
-export class ProgrammableFunction<I = any, O = any> {
-    private function: F<I, O>;
-    private exceptionHandler: ExceptionHandler;
+export type ProgrammableFunctionSource<I = any, O = any> =
+    string | ((argument: I) => O);
 
-    // constructor(functionBody: string);
-    // constructor(functionRef: F<I, O>);
+export class ProgrammableFunction<I = any, O = any> {
+    private function: (argument: I) => O;
+    private exceptionHandler: ProgrammableFunctionExceptionHandler;
+
     constructor(
-        functionBodyOrRef: string | F<I, O>,
-        exceptionHandler: ExceptionHandler = DEFAULT_EXCEPTION_HANDLER
+        source: ProgrammableFunctionSource<I, O>,
+        exceptionHandler: ProgrammableFunctionExceptionHandler = DEFAULT_PROGRAMMABLE_FUNCTION_EXCEPTION_HANDLER
     ) {
-        this.function = typeof functionBodyOrRef === "string"
-            ? this.createFunctionFromBody(functionBodyOrRef)
-            : functionBodyOrRef;
+        this.function = typeof source === "string"
+            ? this.createFunctionFromTextualDescription(source)
+            : source;
         this.exceptionHandler = exceptionHandler;
     }
 
-    private createFunctionFromBody(functionBody: string, argumentName: string = "argument"): F<I, O> {
-        // eslint-disable-next-line
-        return new Function(argumentName, functionBody) as F<I, O>;
+    private createFunctionFromTextualDescription(
+        functionBody: string,
+        argumentName: string = "argument"
+    ): (argument: I) => O {
+        return new Function(argumentName, functionBody) as (argument: I) => O;
     }
     
     call(argument: I): O {
@@ -42,3 +39,9 @@ export class ProgrammableFunction<I = any, O = any> {
         }
     }
 }
+
+export type ProgrammableFunctionOf<F extends (argument: any) => any> =
+    ProgrammableFunction<
+        Parameters<F>[0],
+        ReturnType<F>
+    >;

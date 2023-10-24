@@ -51,7 +51,7 @@ export class DocumentEditor {
             case DocumentEditKind.Replacement:
                 return `${contentBefore}${edit.newContent}${contentAfter}`;
             
-            case DocumentEditKind.Deletetion:
+            case DocumentEditKind.Deletion:
                 return `${contentBefore}${contentAfter}`;
         }
     }

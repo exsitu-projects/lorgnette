@@ -1,0 +1,16 @@
+.ui-error {
+    border: 2px solid #f00;
+    background-color: #ffefef;
+    padding: 1em;
+}
+
+.ui-error .title {
+    display: block;
+    margin: 0 0 1ex 0;
+    font-weight: bold;
+    text-align: center;
+}
+
+.ui-error .body {
+    font-size: 0.9em;
+}

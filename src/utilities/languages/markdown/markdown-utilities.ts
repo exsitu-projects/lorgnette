@@ -2,7 +2,7 @@ import { fromMarkdown } from "mdast-util-from-markdown";
 import { toMarkdown } from "mdast-util-to-markdown";
 import { gfmFromMarkdown, gfmToMarkdown } from "mdast-util-gfm";
 import { gfm } from "micromark-extension-gfm";
-import { TableContent } from "../../../core/user-interfaces/table/Table";
+import { TableContent } from "../../../presets/user-interfaces/table/Table";
 
 function parse(text: string): MdastParentNode {
     return fromMarkdown(text, {

@@ -1,7 +1,7 @@
 import { ts } from "ts-morph";
 import { Document } from "../../../core/documents/Document";
 import { SyntacticFragment } from "../../../core/fragments/syntactic/SyntacticFragment";
-import { NamedArgumentNode } from "../../../core/languages/python/nodes/NamedArgumentNode";
+import { NamedArgumentNode } from "../../../presets/languages/python/nodes/NamedArgumentNode";
 import { SyntaxTreeNode } from "../../../core/languages/SyntaxTreeNode";
 import { SyntaxTreePattern } from "../../../core/languages/SyntaxTreePattern";
 import { KeyValueListTemplate, KeyValueListTemplateSlotSpecification } from "../../../core/templates/syntactic/KeyValueListTemplate";
@@ -57,7 +57,7 @@ export class JavascriptLiteralObjectTemplate extends KeyValueListTemplate<Javasc
                         valueNode,
                         document,
                         specification.key,
-                        specification.valuator
+                        specification.evaluator
                     );
                 }
 

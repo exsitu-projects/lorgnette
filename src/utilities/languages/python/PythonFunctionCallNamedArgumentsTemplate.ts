@@ -1,7 +1,7 @@
 import { Document } from "../../../core/documents/Document";
 import { SyntacticFragment } from "../../../core/fragments/syntactic/SyntacticFragment";
-import { FunctionCallNode } from "../../../core/languages/python/nodes/FunctionCallNode";
-import { NamedArgumentNode } from "../../../core/languages/python/nodes/NamedArgumentNode";
+import { FunctionCallNode } from "../../../presets/languages/python/nodes/FunctionCallNode";
+import { NamedArgumentNode } from "../../../presets/languages/python/nodes/NamedArgumentNode";
 import { SyntaxTreeNode } from "../../../core/languages/SyntaxTreeNode";
 import { SyntaxTreePattern } from "../../../core/languages/SyntaxTreePattern";
 import { KeyValueListTemplate, KeyValueListTemplateSlotSpecification } from "../../../core/templates/syntactic/KeyValueListTemplate";
@@ -52,7 +52,7 @@ export abstract class PythonFunctionCallNamedArgumentsTemplate extends KeyValueL
                         namedArgumentNode.value,
                         document,
                         specification.key,
-                        specification.valuator
+                        specification.evaluator
                     );
                 }
 
