@@ -13,7 +13,6 @@ import { LorgnetteEnvironmentState } from "../../core/lorgnette/LorgnetteEnviron
 type Props = {};
 type State = {
     showSyntaxTree: boolean;
-    currentExample: Example;
 };
 
 export class Playground extends React.Component<Props, State> {
@@ -21,8 +20,7 @@ export class Playground extends React.Component<Props, State> {
         super(props);
         this.state = {
             showSyntaxTree: false,
-            currentExample: DEFAULT_EXAMPLE
-        }
+        };
     }
 
     private renderPlaygroundTitle(): ReactElement {
@@ -44,7 +42,6 @@ export class Playground extends React.Component<Props, State> {
                 key={example.name}
                 text={example.name}
                 onClick={() => {
-                    this.setState({ currentExample: example });
                     environment.setDocument(new Document(example.language, example.content))
                 }}
             />;
