@@ -1,7 +1,6 @@
 import React, { ReactElement } from "react";
 import Split from "react-split";
-import { ItemRenderer, Select } from "@blueprintjs/select";
-import { Button, Checkbox, Label, Menu, MenuItem, Popover } from "@blueprintjs/core";
+import { Alignment, Button, Divider, Menu, MenuItem, Popover, Switch } from "@blueprintjs/core";
 import { Language } from "../../core/languages/Language";
 import { SyntaxTree } from "./syntax-tree/SyntaxTree";
 import { MonacoEditorWithProjections } from "../../utilities/monaco-editor/MonacoEditorWithProjections";
@@ -26,39 +25,17 @@ export class Playground extends React.Component<Props, State> {
         }
     }
 
-    private renderLanguageSelector(environment: LorgnetteEnvironmentState): ReactElement {
-        const renderLanguageSelectorItem: ItemRenderer<Language> = (
-            language,
-            { handleClick, modifiers }
-        ) => {
-            if (!modifiers.matchesPredicate) {
-                return null;
-            }
-            
-            return <MenuItem
-                active={modifiers.active}
-                key={language.id}
-                text={language.name}
-                label={language.id}
-                onClick={handleClick}
-            />;
-        };
-            
-        return <Select<Language>
-            items={environment.languages}
-            itemRenderer={renderLanguageSelectorItem}
-            onItemSelect={newLanguage => environment.setDocument(new Document(newLanguage, environment.document.content))}
-            activeItem={environment.document.language}
-            popoverProps={{
-                minimal: true,
-                usePortal: true,
-                portalContainer: document.body
-            }}
-            className="language-selector"
-        >
-            <Button text={environment.document.language.name} rightIcon="caret-down" />
-        </Select>;
-        
+    private renderPlaygroundTitle(): ReactElement {
+        return <>
+            <a
+                href="https://github.com/exsitu-projects/lorgnette"
+                target="_blank"
+                className="project-information-link"
+            >
+                <h1 className="title">The Lorgnette playground</h1>
+                <span className="subtitle">a code editor with malleable projections</span>
+            </a>
+        </>;
     }
 
     private renderExampleSelector(environment: LorgnetteEnvironmentState): ReactElement {
@@ -73,27 +50,30 @@ export class Playground extends React.Component<Props, State> {
             />;
         };
         
-        const menu = <Menu className="bp5-menu">
+        const menu = <Menu>
             {EXAMPLES.map(example => renderExampleMenuItem(example))}
         </Menu>;
             
         return <Popover
             content={menu}
             position="bottom"
-            minimal={true}
-            popoverClassName="bp5-popover"
-            usePortal={true}
-            portalContainer={document.body}
+            modifiers={{ preventOverflow: { options: { padding: 10 }} }}
+            transitionDuration={100}
         >
-            <Button text="Load example..." rightIcon="caret-down" intent="primary" />
+            <Button
+                text="Load example..."
+                rightIcon="caret-down"
+                intent="primary"
+            />
         </Popover>
     }
 
     private renderProjectionInfoText(projection: Projection): ReactElement {
         const range = projection.range.toPrettyString();
         return <li key={projection.uid}>
-            [#{projection.uid}] {projection.provider.name} ({range})
+            {/* [#{projection.uid}] {projection.provider.name} ({range}) */}
             {/* [#{projection.uid}] {projection.provider.name} */}
+            {projection.provider.name}
         </li>;
     }
 
@@ -106,31 +86,63 @@ export class Playground extends React.Component<Props, State> {
             }
         }
 
-        if (activeProjections.length === 0) {
-            return null;
-        }
-        else {
-            return <>
+        const content = activeProjections.length === 0
+            ? null
+            : <>
                 <strong>Projections at current position: </strong>
                 <ul>
                     {activeProjections.map(projection => this.renderProjectionInfoText(projection))}
                 </ul>
-            </>
-        }
+            </>;
+
+        return <div className="active-projections-information">
+            { content }
+        </div>;
+    }
+
+    private renderLanguageSelector(environment: LorgnetteEnvironmentState): ReactElement {
+        const renderLanguageMenuItem = (language: Language): ReactElement => {
+            return <MenuItem
+                key={language.name}
+                text={language.name}
+                label={language.id}
+                onClick={() => {
+                    environment.setDocument(
+                        new Document(language, environment.document.content)
+                    );
+                }}
+            />;
+        };
+
+        const menu = <Menu>
+            {environment.languages.map(language => renderLanguageMenuItem(language))}
+        </Menu>;
+
+        return <Popover
+            content={menu}
+            position="top"
+            modifiers={{ preventOverflow: { options: { padding: 10 }} }}
+            transitionDuration={100}
+        >
+                <Button
+                    text={environment.document.language.name}
+                    className="language-selector-button"
+                    rightIcon="caret-down"
+                    minimal={true}
+                />
+        </Popover>;
     }
 
     private renderSyntaxTree(environment: LorgnetteEnvironmentState): ReactElement {
-        return <>
-            <SyntaxTree
-                document={environment.document}
-                cursorPosition={environment.codeEditorCursorPosition}
-                onMouseTargetNodeChange={node =>
-                    node
-                        ? environment.setCodeEditorHoveredRanges([node.range])
-                        : environment.setCodeEditorHoveredRanges([])
-                }
-            />
-        </>;
+        return <SyntaxTree
+            document={environment.document}
+            cursorPosition={environment.codeEditorCursorPosition}
+            onMouseTargetNodeChange={node =>
+                node
+                    ? environment.setCodeEditorHoveredRanges([node.range])
+                    : environment.setCodeEditorHoveredRanges([])
+            }
+        />;
     }
     
     render() {
@@ -152,40 +164,42 @@ export class Playground extends React.Component<Props, State> {
         return <LorgnetteContext.Consumer>{ environment => (
             <div className="lorgnette-playground">
                 <div className="menu-bar">
-                    <Label className="language-selector bp5-inline">
-                        Language
-                        {this.renderLanguageSelector(environment)}
-                    </Label>
                     <div className="example-selector">
-                        {this.renderExampleSelector(environment)}
+                        { this.renderExampleSelector(environment) }
                     </div>
-                    <Label className="show-syntax-tree-checkbox bp5-inline">
-                        Show syntax tree
-                        <Checkbox
+                    <div className="playground-title">
+                        { this.renderPlaygroundTitle() }
+                    </div>
+                    <div className="syntax-tree-visibility-switch">
+                        <Switch
+                            label="Show syntax tree"
                             defaultChecked={this.state.showSyntaxTree}
                             onChange={event => this.setState({
                                 showSyntaxTree: !this.state.showSyntaxTree
                             })}
                             inline={true}
+                            alignIndicator={Alignment.RIGHT}
                         />
-                    </Label>
+                    </div>
                 </div>
                 <OptionalSplitPanels>
                     <div className="code-editor-panel">
-                        <MonacoEditorWithProjections/>
-                        <div className="status-bar">
-                            <div className="active-projections-information">
-                                {this.renderActiveProjectionInfoText(environment)}
-                            </div>
-                            <div className="cursor-position">
-                                {environment.codeEditorCursorPosition.toPrettyString()}
-                            </div>
-                        </div>
+                        <MonacoEditorWithProjections />
                     </div>
-                    { this.state.showSyntaxTree ? <div className="syntax-tree-panel">
-                        {this.renderSyntaxTree(environment)}
-                    </div> : null }
+                    {
+                        this.state.showSyntaxTree 
+                            ? <div className="syntax-tree-panel">{ this.renderSyntaxTree(environment) }</div>
+                            : null
+                    }
                 </OptionalSplitPanels>
+                <div className="status-bar">
+                    { this.renderActiveProjectionInfoText(environment) }
+                    <div className="cursor-position">
+                        { environment.codeEditorCursorPosition.toPrettyString() }
+                    </div>
+                    <Divider />
+                    { this.renderLanguageSelector(environment) }
+                </div>
             </div>
         )}</LorgnetteContext.Consumer>
     }
