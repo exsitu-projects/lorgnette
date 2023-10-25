@@ -1,6 +1,5 @@
 import React, { ReactElement } from "react";
 import { Range } from "../documents/Range";
-import "./code-editor.css";
 import { DecoratedRangeId } from "./DecoratedRange";
 
 export interface CodeEditorProps {
@@ -15,18 +14,11 @@ export abstract class CodeEditor<
     P extends CodeEditorProps = CodeEditorProps,
     S extends CodeEditorState = CodeEditorState
 > extends React.Component<P, S> {
-    // React ref to the wrapper around the Monaco editor.
-    protected editorWrapperRef: React.RefObject<HTMLDivElement>;
-    
     constructor(props: P) {
         super(props);
-        this.editorWrapperRef = React.createRef();
     }
 
-    abstract renderEditor(): ReactElement;
-
     abstract getVisibleRange(): Range;
-
     abstract getEditorBoundingBox(): DOMRect;
     abstract getEditorTextAreaBoundingBox(): DOMRect;
     abstract getDecorationElementsWithId(id: DecoratedRangeId): Element[];
@@ -56,17 +48,6 @@ export abstract class CodeEditor<
             minMarkerTop,
             maxMarkerRight - minMarkerLeft,
             maxMarkerTop - minMarkerTop
-        );
-    }
-
-    render() {
-        return (
-            <div
-                className="code-editor-wrapper"
-                ref={this.editorWrapperRef}
-            >
-                { this.renderEditor() }
-            </div>
         );
     }
 }

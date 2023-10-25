@@ -4,7 +4,7 @@ import { ItemRenderer, Select } from "@blueprintjs/select";
 import { Button, Checkbox, Label, Menu, MenuItem, Popover } from "@blueprintjs/core";
 import { Language } from "../../core/languages/Language";
 import { SyntaxTree } from "./syntax-tree/SyntaxTree";
-import { PlaygroundEditor } from "./PlaygroundEditor";
+import { MonacoEditorWithProjections } from "../../utilities/monaco-editor/MonacoEditorWithProjections";
 import { DEFAULT_EXAMPLE, Example, EXAMPLES } from "./examples/Example";
 import { Projection } from "../../core/projections/Projection";
 import { Document } from "../../core/documents/Document";
@@ -172,7 +172,7 @@ export class Playground extends React.Component<Props, State> {
                 </div>
                 <OptionalSplitPanels>
                     <div className="code-editor-panel">
-                        <PlaygroundEditor/>
+                        <MonacoEditorWithProjections/>
                         <div className="status-bar">
                             <div className="active-projections-information">
                                 {this.renderActiveProjectionInfoText(environment)}

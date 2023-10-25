@@ -1,13 +1,14 @@
+import "./monaco-editor.css";
 import React from "react";
 import * as monaco from "monaco-editor";
 import Editor, { Monaco, loader } from "@monaco-editor/react";
-import { Position } from "../core/documents/Position";
-import { Language } from "../core/languages/Language";
-import { DecoratedRange, DecoratedRangeId } from "../core/code-editor/DecoratedRange";
-import { Document, DocumentChangeOrigin } from "../core/documents/Document";
-import { EMPTY_RANGE, Range } from "../core/documents/Range";
-import { CodeEditor } from "../core/code-editor/CodeEditor";
-import { PLAIN_TEXT_LANGUAGE } from "../core/languages/plain-text";
+import { Position } from "../../core/documents/Position";
+import { Language } from "../../core/languages/Language";
+import { DecoratedRange, DecoratedRangeId } from "../../core/code-editor/DecoratedRange";
+import { Document, DocumentChangeOrigin } from "../../core/documents/Document";
+import { EMPTY_RANGE, Range } from "../../core/documents/Range";
+import { CodeEditor } from "../../core/code-editor/CodeEditor";
+import { PLAIN_TEXT_LANGUAGE } from "../../core/languages/plain-text";
 
 // TODO: make what follows work with Vite!
 
@@ -135,6 +136,7 @@ type State = {
 
 export class MonacoEditor extends CodeEditor<Props, State> {
     private document: Document;
+    private wrapperRef: React.RefObject<HTMLDivElement>;
 
     // Flag indicating whether changes in the content of the editor should be notified or not.
     private notifyContentChanges: boolean;
@@ -150,6 +152,7 @@ export class MonacoEditor extends CodeEditor<Props, State> {
         super(props);
 
         this.document = new Document(PLAIN_TEXT_LANGUAGE, "Loading...");
+        this.wrapperRef = React.createRef();
 
         this.notifyContentChanges = false;
         
@@ -162,20 +165,6 @@ export class MonacoEditor extends CodeEditor<Props, State> {
             cursorPosition: null
         };
     }
-
-    // private setCursorPosition(newCursorPosition: Position): void {
-    //     if (!this.editor) {
-    //         return;
-    //     }
-
-    //     const model = this.editor.getModel();
-    //     if (model) {
-    //         model.applyEdits([{
-    //             range: convertRangeToMonacoRange(Range.fromSinglePosition(newCursorPosition)),
-    //             text: ""
-    //         }]);
-    //     }
-    // }
 
     private setDocument(newDocument: Document): void {
         newDocument.addChangeObserver({
@@ -321,7 +310,7 @@ export class MonacoEditor extends CodeEditor<Props, State> {
     }
 
     private get editorElement(): Element {
-        const editorWrapperElement = this.editorWrapperRef.current;
+        const editorWrapperElement = this.wrapperRef.current;
         if (!editorWrapperElement) {
             throw Error("The code editor cannot be retrieved: the ref to the code editor wrapper does not exist.");
         }
@@ -386,24 +375,29 @@ export class MonacoEditor extends CodeEditor<Props, State> {
         this.updateDecorations();
     }
     
-    renderEditor() {
-        return <Editor
-            className="code-editor"
-            onMount={(editor, monaco) => {
-                this.onEditorDidMount(editor, monaco);
-                
-                // For now, disable errors in TypeScript.
-                // Adapted from https://stackoverflow.com/a/57044804.
-                monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-                    noSyntaxValidation: true,
-                    noSemanticValidation: true
-                });
-            }}
-            options={{
-                theme: "light",
-                fontSize: 11,
-                colorDecorators: false
-            }}
-        />;
+    render() {
+        return <div
+            className="monaco-editor-wrapper"
+            ref={this.wrapperRef}
+        >
+            <Editor
+                className="monaco-editor"
+                onMount={(editor, monaco) => {
+                    this.onEditorDidMount(editor, monaco);
+                    
+                    // For now, disable errors in TypeScript.
+                    // Adapted from https://stackoverflow.com/a/57044804.
+                    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+                        noSyntaxValidation: true,
+                        noSemanticValidation: true
+                    });
+                }}
+                options={{
+                    theme: "light",
+                    fontSize: 11,
+                    colorDecorators: false
+                }}
+            />
+        </div>;
     }
 };

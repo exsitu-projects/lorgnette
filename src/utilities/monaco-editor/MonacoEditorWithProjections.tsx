@@ -1,5 +1,6 @@
+import "./monaco-editor-with-projections.css";
 import React, { ReactElement } from "react";
-import { MonacoEditor } from "../../utilities/MonacoEditor";
+import { MonacoEditor } from "./MonacoEditor";
 import { Projection } from "../../core/projections/Projection";
 import { DecoratedRange } from "../../core/code-editor/DecoratedRange";
 import { Range } from "../../core/documents/Range";
@@ -11,7 +12,7 @@ export type Props = {
 
 };
 
-export class PlaygroundEditor extends React.PureComponent<Props> {
+export class MonacoEditorWithProjections extends React.PureComponent<Props> {
     private codeEditorRef: React.RefObject<MonacoEditor>;
     private projectionContainerRef: React.RefObject<HTMLDivElement>;
 
@@ -22,20 +23,18 @@ export class PlaygroundEditor extends React.PureComponent<Props> {
         this.projectionContainerRef = React.createRef();
     }
 
-    private renderEmbeddedProjections(environment: LorgnetteEnvironmentState): ReactElement {
-        const renderedProjections = environment.projections.map(
-            projection => <projection.renderer
-                key={projection.uid}
-                projection={projection}
-                codeEditorRef={this.codeEditorRef}
-                codeEditorVisibleRange={environment.codeEditorVisibleRange}
-                codeEditorCursorPosition={environment.codeEditorCursorPosition}
-            />
-        );
-
-        return <>
-            {renderedProjections}
-        </>;
+    private renderProjections(environment: LorgnetteEnvironmentState): ReactElement {
+        return <>{
+            environment.projections.map(
+                projection => <projection.renderer
+                    key={projection.uid}
+                    projection={projection}
+                    codeEditorRef={this.codeEditorRef}
+                    codeEditorVisibleRange={environment.codeEditorVisibleRange}
+                    codeEditorCursorPosition={environment.codeEditorCursorPosition}
+                />
+            )
+        }</>;
     }
 
     private createDecoratedRanges(projections: Projection[], hoveredRanges: Range[], cursorPosition: Position): DecoratedRange[] {
@@ -57,20 +56,18 @@ export class PlaygroundEditor extends React.PureComponent<Props> {
 
     render() {
         return <LorgnetteContext.Consumer>{ environment => (
-            <div className="playground-editor-wrapper">
+            <div className="monaco-editor-with-projections">
                 <MonacoEditor
                     document={environment.document}
-                    // language={environment.document.language}
                     content={environment.document.content}
-                    // selections={environment.codeEditorRanges.selected}
                     decorations={this.createDecoratedRanges(
                         environment.projections,
                         environment.codeEditorHoveredRanges,
                         environment.codeEditorCursorPosition
                     )}
-                    ref={this.codeEditorRef}
-
-                    onContentChange={newContent => environment.setDocumentContent(newContent)}
+                    onContentChange={newContent =>
+                        environment.setDocumentContent(newContent)
+                    }
                     onCursorPositionChange={newPosition =>
                         environment.setCodeEditorCursorPosition(newPosition)
                     }
@@ -81,12 +78,13 @@ export class PlaygroundEditor extends React.PureComponent<Props> {
                         environment.setCodeEditorVisibleRange(newVisibleRange)
                     }
                     onLayoutChange={() => { /* TODO: update the projection renderers */}}
+                    ref={this.codeEditorRef}
                 />
                 <div
                     className="projections"
                     ref={this.projectionContainerRef}
                 >
-                    {this.renderEmbeddedProjections(environment)}
+                    {this.renderProjections(environment)}
                 </div>
             </div>
         )}</LorgnetteContext.Consumer>
