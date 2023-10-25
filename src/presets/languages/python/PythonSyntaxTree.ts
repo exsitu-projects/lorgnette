@@ -4,7 +4,6 @@ import { PythonParserContext } from "./PythonParser";
 import { FunctionCallNode } from "./nodes/FunctionCallNode";
 import { ExpressionNode } from "./nodes/ExpressionNode";
 import { StringNode } from "./nodes/StringNode";
-import { NumberNode } from "../math/nodes/NumberNode";
 import { BooleanNode } from "./nodes/BooleanNode";
 import { NoneNode } from "./nodes/NoneNode";
 import { NamedAccessNode } from "./nodes/NamedAccessNode";
@@ -15,6 +14,7 @@ import { PositionalArgumentNode } from "./nodes/PositionalArgumentNode";
 import { NamedArgumentNode } from "./nodes/NamedArgumentNode";
 import { IdentifierNode } from "./nodes/IdentifierNode";
 import { Document } from "../../../core/documents/Document";
+import { NumberNode } from "./nodes/NumberNode";
 
 export const PYTHON_NODE_CLASSES = [
     ProgramNode,
