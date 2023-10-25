@@ -1,13 +1,13 @@
-import React, { ReactElement } from "react";
+import React, { PropsWithChildren, ReactElement } from "react";
 import { ButtonGroup as BlueprintButtonGroup } from "@blueprintjs/core";
 import { AnyEntryTypeSymbol, ANY_ENTRY_TYPES } from "../FormElement";
 import { Label } from "./Label";
 
-export interface ButtonGroupProps {
+export type ButtonGroupProps = PropsWithChildren<{
     label?: string;
     fill?: boolean;
     vertical?: boolean;
-}
+}>;
 
 export class ButtonGroup extends React.PureComponent<ButtonGroupProps> {
     protected readonly supportedFormEntryTypes: AnyEntryTypeSymbol = ANY_ENTRY_TYPES;

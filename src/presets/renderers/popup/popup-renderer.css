@@ -3,10 +3,10 @@
     /* z-index: 200; */
 }
 
-.projection-renderer.popup > button.bp4-button,
-.projection-renderer.popup > button.bp4-button:active,
-.projection-renderer.popup > button.bp4-button.bp4-active,
-.projection-renderer.popup > button.bp4-button:hover {
+.projection-renderer.popup > button.bp5-button,
+.projection-renderer.popup > button.bp5-button:active,
+.projection-renderer.popup > button.bp5-button.bp5-active,
+.projection-renderer.popup > button.bp5-button:hover {
     display: block;
     min-width: auto;
     min-height: auto;
@@ -21,13 +21,13 @@
     font-size: 0.9em;
 }
 
-.projection-renderer.popup > button.bp4-button > span {
+.projection-renderer.popup > button.bp5-button > span {
     display: inline-block;
 }
 
-.projection-renderer.popup > button.bp4-button:hover,
-.projection-renderer.popup > button.bp4-button:active,
-.projection-renderer.popup > button.bp4-button.bp4-active {
+.projection-renderer.popup > button.bp5-button:hover,
+.projection-renderer.popup > button.bp5-button:active,
+.projection-renderer.popup > button.bp5-button.bp5-active {
     background: #eee;
     border: 1px solid #888;
     color: #666;

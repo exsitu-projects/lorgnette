@@ -1,8 +1,7 @@
 import React, { ReactElement } from "react";
 import Split from "react-split";
-import { Popover2 } from "@blueprintjs/popover2";
-import { ItemRenderer, Select2 } from "@blueprintjs/select";
-import { Button, Checkbox, Label, Menu, MenuItem } from "@blueprintjs/core";
+import { ItemRenderer, Select } from "@blueprintjs/select";
+import { Button, Checkbox, Label, Menu, MenuItem, Popover } from "@blueprintjs/core";
 import { Language } from "../../core/languages/Language";
 import { SyntaxTree } from "./syntax-tree/SyntaxTree";
 import { PlaygroundEditor } from "./PlaygroundEditor";
@@ -45,8 +44,7 @@ export class Playground extends React.Component<Props, State> {
             />;
         };
             
-        const LanguageSelect = Select2.ofType<Language>();
-        return <LanguageSelect
+        return <Select<Language>
             items={environment.languages}
             itemRenderer={renderLanguageSelectorItem}
             onItemSelect={newLanguage => environment.setDocument(new Document(newLanguage, environment.document.content))}
@@ -59,7 +57,7 @@ export class Playground extends React.Component<Props, State> {
             className="language-selector"
         >
             <Button text={environment.document.language.name} rightIcon="caret-down" />
-        </LanguageSelect>;
+        </Select>;
         
     }
 
@@ -75,20 +73,20 @@ export class Playground extends React.Component<Props, State> {
             />;
         };
         
-        const menu = <Menu className="bp4-menu">
+        const menu = <Menu className="bp5-menu">
             {EXAMPLES.map(example => renderExampleMenuItem(example))}
         </Menu>;
             
-        return <Popover2
+        return <Popover
             content={menu}
             position="bottom"
             minimal={true}
-            popoverClassName="bp4-popover"
+            popoverClassName="bp5-popover"
             usePortal={true}
             portalContainer={document.body}
         >
             <Button text="Load example..." rightIcon="caret-down" intent="primary" />
-        </Popover2>
+        </Popover>
     }
 
     private renderProjectionInfoText(projection: Projection): ReactElement {
@@ -154,14 +152,14 @@ export class Playground extends React.Component<Props, State> {
         return <LorgnetteContext.Consumer>{ environment => (
             <div className="lorgnette-playground">
                 <div className="menu-bar">
-                    <Label className="language-selector bp4-inline">
+                    <Label className="language-selector bp5-inline">
                         Language
                         {this.renderLanguageSelector(environment)}
                     </Label>
                     <div className="example-selector">
                         {this.renderExampleSelector(environment)}
                     </div>
-                    <Label className="show-syntax-tree-checkbox bp4-inline">
+                    <Label className="show-syntax-tree-checkbox bp5-inline">
                         Show syntax tree
                         <Checkbox
                             defaultChecked={this.state.showSyntaxTree}

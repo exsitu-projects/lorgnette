@@ -1,12 +1,12 @@
-import React, { ReactElement } from "react";
+import React, { PropsWithChildren, ReactElement } from "react";
 import { AnyEntryTypeSymbol, ANY_ENTRY_TYPES } from "../FormElement";
 import { Label } from "./Label";
 
-export interface SingleRowProps {
+export type SingleRowProps = PropsWithChildren<{
     label?: string;
     style?: React.CSSProperties;
     gapSize?: number | string;
-}
+}>;
 
 export class SingleRow extends React.PureComponent<SingleRowProps> {
     protected readonly supportedFormEntryTypes: AnyEntryTypeSymbol = ANY_ENTRY_TYPES;

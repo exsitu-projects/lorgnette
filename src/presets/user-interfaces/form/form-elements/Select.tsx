@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { ItemRenderer, Select2 } from "@blueprintjs/select";
+import { ItemRenderer, Select as BlueprintSelect } from "@blueprintjs/select";
 import { FormEntryType, FormEntryValueOfType } from "../FormEntry";
 import { FormElement, FormElementProps, FormElementValueChangeListener } from "./FormElement";
 import { Button, MenuItem } from "@blueprintjs/core";
@@ -47,7 +47,7 @@ export class Select extends FormElement<SupportedEntryTypes, SelectProps> {
         declareValueChange: FormElementValueChangeListener<SupportedEntryTypes>
     ): ReactElement {
         const currentValue = value;
-        return <Select2<string>
+        return <BlueprintSelect<string>
             items={this.props.items}
             itemRenderer={SelectItemRenderer}
             onItemSelect={item => declareValueChange(item, this.supportedFormEntryTypes[0])}
@@ -64,6 +64,6 @@ export class Select extends FormElement<SupportedEntryTypes, SelectProps> {
                 rightIcon="caret-down"
                 style={this.props.style}
             />
-        </Select2>;
+        </BlueprintSelect>;
     };
 }

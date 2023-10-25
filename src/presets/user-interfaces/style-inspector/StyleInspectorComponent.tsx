@@ -94,7 +94,7 @@ export class StyleInspectorComponent extends React.PureComponent<Props> {
         }
     }
 
-    private renderSpecialisedInspectors(): ReactFragment {
+    private renderSpecialisedInspectors(): ReactElement {
         const stylePropertyKeysToInspectors: { [K in StyleKeys]: InspectorForStyleKey<K>} = {
             background: props => <BackgroundInspector {...props} />,
             border: props => <BorderInspector {...props} />,
@@ -106,7 +106,7 @@ export class StyleInspectorComponent extends React.PureComponent<Props> {
         const inspectors = Object.entries(stylePropertyKeysToInspectors)
             .map(([key, inspector]) => this.renderSpecialisedInspector(key as any, inspector));
         
-        return <>{inspectors}</>;
+        return <>{ inspectors }</>;
     }
 
     render() {

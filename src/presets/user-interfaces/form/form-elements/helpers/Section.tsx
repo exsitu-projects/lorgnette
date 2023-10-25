@@ -1,9 +1,10 @@
-import React, { ReactElement } from "react";
-export interface SectionProps {
+import React, { PropsWithChildren, ReactElement } from "react";
+
+export type SectionProps = PropsWithChildren<{
     title?: string;
     style?: React.CSSProperties;
     contentStyle?: React.CSSProperties;
-}
+}>;
 
 export class Section extends React.PureComponent<SectionProps> {
     render(): ReactElement | null {

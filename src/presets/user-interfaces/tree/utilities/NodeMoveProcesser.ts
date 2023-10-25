@@ -70,7 +70,7 @@ export class NodeMoveProcesser<T extends HasRange> {
             ));
 
             const insertPositionLineLeadingWhitespaceLength =
-                insertPositionLine.length - insertPositionLine.trimLeft().length;
+                insertPositionLine.length - insertPositionLine.trimStart().length;
             let leadingWhitespace = " ".repeat(insertPositionLineLeadingWhitespaceLength);
 
             movedNodeContent = moveData.targetPosition.linePosition === "top"

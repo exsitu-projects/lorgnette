@@ -1,7 +1,7 @@
-import "./style.css";
+import "./side-renderer.css";
 import React from "react";
 import { Renderer, RendererProps } from "../../../core/renderers/Renderer";
-import { ConfigurableRendererProvider, RendererProvider } from "../../../core/renderers/RendererProvider";
+import { ConfigurableRendererProvider } from "../../../core/renderers/RendererProvider";
 import { SideRendererPosition, SideRendererSettings, DEFAULT_ASIDE_RENDERER_SETTINGS, deriveSideRendererSettingsFrom } from "./SideRendererSettings";
 
 export class SideRenderer extends Renderer {

@@ -116,9 +116,6 @@ export function convertRangeToMonacoSelection(range: Range): MonacoSelection {
     );
 }
 
-// Type of the identifier of a Monaco editor decoration.
-type MonacoDecorationId = string;
-
 type Props = {
     document: Document;
     content: string;
@@ -132,7 +129,6 @@ type Props = {
 };
 
 type State = {
-    theme: string;
     document: Document;
     cursorPosition: MonacoPosition | null;
 }
@@ -147,8 +143,8 @@ export class MonacoEditor extends CodeEditor<Props, State> {
     private monaco: Monaco | null;
     private editor: monaco.editor.IStandaloneCodeEditor | null;
 
-    // List of the identifiers of the decorations currently displayed by the Monaco editor.
-    private currentEditorDecorationIds: MonacoDecorationId[];
+    // List of the decorations currently displayed by the Monaco editor.
+    private currentEditorDecorations: monaco.editor.IEditorDecorationsCollection | null;
     
     constructor(props: Props) {
         super(props);
@@ -159,10 +155,9 @@ export class MonacoEditor extends CodeEditor<Props, State> {
         
         this.monaco = null;
         this.editor = null;
-        this.currentEditorDecorationIds = [];
+        this.currentEditorDecorations = null;
 
         this.state = {
-            theme: "light",
             document: new Document(PLAIN_TEXT_LANGUAGE, "Loading..."),
             cursorPosition: null
         };
@@ -301,8 +296,11 @@ export class MonacoEditor extends CodeEditor<Props, State> {
                     }
                 });
 
-            const newEditorDecorationIds = this.editor.deltaDecorations(this.currentEditorDecorationIds, decorations);
-            this.currentEditorDecorationIds = newEditorDecorationIds;
+            if (this.currentEditorDecorations) {
+                this.currentEditorDecorations.clear();
+            }
+
+            this.currentEditorDecorations = this.editor.createDecorationsCollection(decorations);
         } 
     }
 
@@ -391,7 +389,6 @@ export class MonacoEditor extends CodeEditor<Props, State> {
     renderEditor() {
         return <Editor
             className="code-editor"
-            theme={this.state.theme}
             onMount={(editor, monaco) => {
                 this.onEditorDidMount(editor, monaco);
                 
@@ -403,7 +400,9 @@ export class MonacoEditor extends CodeEditor<Props, State> {
                 });
             }}
             options={{
-                fontSize: 11
+                theme: "light",
+                fontSize: 11,
+                colorDecorators: false
             }}
         />;
     }

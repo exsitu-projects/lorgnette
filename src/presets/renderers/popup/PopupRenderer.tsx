@@ -1,4 +1,4 @@
-import "./style.css";
+import "./popup-renderer.css";
 import React, { ReactElement } from "react";
 import { Renderer, RendererProps, RendererState } from "../../../core/renderers/Renderer";
 import { Overlay, OverlayProps } from "@blueprintjs/core";
@@ -52,14 +52,6 @@ export abstract class PopupRenderer extends Renderer<RendererProps, PopupRendere
         this.reposition();
     }
 
-    protected get overlayProps(): OverlayProps {
-        return {
-            isOpen: this.state.isPopupOpen,
-            canOutsideClickClose: true,
-            canEscapeKeyClose: true
-        };
-    }
-
     protected abstract renderPopupToggle(): ReactElement;
 
     protected renderPopupContent(): ReactElement {
@@ -79,7 +71,13 @@ export abstract class PopupRenderer extends Renderer<RendererProps, PopupRendere
     renderProjection() {
         return <>
             {this.renderPopupToggle()}
-            <Overlay {...this.overlayProps}>
+            <Overlay
+                isOpen={this.state.isPopupOpen}
+                canOutsideClickClose={true}
+                canEscapeKeyClose={true}
+                transitionDuration={200}
+                lazy={true}
+            >
                 {this.renderPopupContent()}
             </Overlay>
         </>;

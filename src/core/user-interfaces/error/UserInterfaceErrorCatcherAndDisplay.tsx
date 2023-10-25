@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+import React, { Component, PropsWithChildren } from "react";
 import { UserInterfaceError, UserInterfaceErrorOrigin } from "./UserInterfaceError";
 
-interface Props {
+type Props = PropsWithChildren<{
     initialError: UserInterfaceError | null;
-}
+}>;
 
 interface State {
     error: UserInterfaceError | null;

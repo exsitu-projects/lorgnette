@@ -1,8 +1,7 @@
 import "./color-picker.css";
 
 import React from "react";
-import { Button } from "@blueprintjs/core";
-import { Popover2 } from "@blueprintjs/popover2";
+import { Button, Popover } from "@blueprintjs/core";
 import { Color } from "../../Color";
 import { RgbaColorPicker } from "./RgbaColorPicker";
 import { RgbColorPicker } from "./RgbColorPicker";
@@ -50,7 +49,7 @@ export class ButtonColorPicker extends React.Component<Props, State> {
             onChange={newColor => this.handleColorChange(newColor)}
         />;
 
-        return <Popover2
+        return <Popover
             placement="bottom"
             modifiers={{
                 arrow: { enabled: false },
@@ -65,7 +64,7 @@ export class ButtonColorPicker extends React.Component<Props, State> {
             renderTarget={({ isOpen, ref,  ...targetProps }) =>
                 <Button
                     {...targetProps }
-                    elementRef={ref as any}
+                    ref={ref}
                     className="color-picker-button"
                     disabled={this.props.disabled}
                     style={this.props.buttonStyle}

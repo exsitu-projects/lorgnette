@@ -1,9 +1,9 @@
-import React, { ReactElement } from "react";
+import React, { PropsWithChildren, ReactElement } from "react";
 import { Label as BlueprintLabel } from "@blueprintjs/core";
 
-export interface LabelProps {
+export type LabelProps = PropsWithChildren<{
     title: string;
-}
+}>;
 
 export class Label extends React.PureComponent<LabelProps> {
     render(): ReactElement {

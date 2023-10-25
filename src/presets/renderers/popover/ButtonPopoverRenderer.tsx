@@ -1,6 +1,6 @@
+import "./popover-renderer.css";
 import React, { ReactElement } from "react";
-import { Button } from "@blueprintjs/core";
-import { Popover2TargetProps } from "@blueprintjs/popover2";
+import { Button, PopoverTargetProps } from "@blueprintjs/core";
 import { PopoverRenderer } from "./PopoverRenderer";
 import { ConfigurableRendererProvider, RendererProvider } from "../../../core/renderers/RendererProvider";
 import { ButtonPopoverRendererSettings, DEFAULT_BUTTON_POPOVER_RENDERER_SETTINGS, deriveButtonPopoverRendererSettingsFrom } from "./ButtonPopoverRendererSettings";
@@ -15,11 +15,11 @@ export class ButtonPopoverRenderer extends PopoverRenderer {
         this.settings = DEFAULT_BUTTON_POPOVER_RENDERER_SETTINGS;
     }
 
-    protected renderPopoverTarget(props: Popover2TargetProps): ReactElement {
+    protected renderPopoverTarget(props: PopoverTargetProps): ReactElement {
         const { isOpen, ref, ...targetProps } = props;
         return <Button
             {...this.settings.buttonProps}
-            elementRef={props.ref as any}
+            ref={props.ref as any}
             {...targetProps}
         >
             {this.settings.buttonContent}

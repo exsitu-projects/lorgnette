@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren, ReactElement } from "react";
 import { Document, DocumentChangeEvent, DocumentChangeOrigin } from "../documents/Document";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "../documents/Position";
 import { Projection } from "../projections/Projection";
@@ -14,7 +14,7 @@ import { ProjectionSpecification, RendererSpecification, UserInterfaceSpecificat
 import { UserInterfaceSettings } from "../user-interfaces/UserInterfaceSettings";
 import { RendererSettings } from "../renderers/RendererSettings";
 
-export type LorgnetteEnvironmentProps = {};
+export type LorgnetteEnvironmentProps = PropsWithChildren<{ }>;
 
 export interface LorgnetteEnvironmentState {
     codeEditorCursorPosition: Position;

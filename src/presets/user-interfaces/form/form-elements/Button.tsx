@@ -15,7 +15,7 @@ export interface ButtonProps<T extends SupportedEntryTypes> extends FormElementP
     showWithoutValue?: boolean;
 };
 
-export class Button<T extends SupportedEntryTypes> extends FormElement<SupportedEntryTypes, ButtonProps<T>> {
+export class Button<T extends SupportedEntryTypes> extends FormElement<T, ButtonProps<T>> {
     protected readonly supportedFormEntryTypes: AnyEntryTypeSymbol = ANY_ENTRY_TYPES;
 
     protected isButtonActive(value: FormEntryValueOfType<T> | null): boolean {
@@ -33,7 +33,7 @@ export class Button<T extends SupportedEntryTypes> extends FormElement<Supported
     }
 
     protected renderControlWithoutValue(
-        declareValueChange: FormElementValueChangeListener<SupportedEntryTypes>
+        declareValueChange: FormElementValueChangeListener<T>
     ): ReactElement | null {
         return this.props.showWithoutValue
             ? this.renderControl(null, declareValueChange)
@@ -41,15 +41,16 @@ export class Button<T extends SupportedEntryTypes> extends FormElement<Supported
     }
 
     protected renderControl(
-        value: FormEntryValueOfType<SupportedEntryTypes> | null,
-        declareValueChange: FormElementValueChangeListener<SupportedEntryTypes>
+        value: FormEntryValueOfType<T> | null,
+        declareValueChange: FormElementValueChangeListener<T>
     ): ReactElement {
+        const v = value;
         return <BlueprintButton
             text={evaluate(this.props.text, value)}
             active={this.isButtonActive(value)}
             disabled={this.isButtonDisabled(value)}
             style={this.props.style}
-            onClick={event => { console.log("CHANGE", this.props.valueWithType, value, evaluate(this.props.valueWithType, value)); declareValueChange(...evaluate(this.props.valueWithType, value))}}
+            onClick={event => { declareValueChange(...evaluate(this.props.valueWithType, value))}}
         />;
     };
 }

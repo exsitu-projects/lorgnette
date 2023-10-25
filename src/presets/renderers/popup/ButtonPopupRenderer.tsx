@@ -1,7 +1,8 @@
+import "./popup-renderer.css";
 import React, { ReactElement } from "react";
 import { Button } from "@blueprintjs/core";
 import { PopupRenderer } from "./PopupRenderer";
-import { ConfigurableRendererProvider, RendererProvider } from "../../../core/renderers/RendererProvider";
+import { ConfigurableRendererProvider } from "../../../core/renderers/RendererProvider";
 import { ButtonPopupRendererSettings, DEFAULT_BUTTON_POPUP_RENDERER_SETTINGS, deriveButtonPopupRendererSettingsFrom } from "./ButtonPopupRendererSettings";
 import { RendererProps } from "../../../core/renderers/Renderer";
 

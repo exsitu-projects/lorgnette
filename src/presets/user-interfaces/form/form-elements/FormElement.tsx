@@ -57,7 +57,7 @@ export abstract class FormElement<
     ): ReactElement | null;
 
     // By default, no control is rendered when there is no value.
-    // This can be overriden by specific components.
+    // This can be overridden by specific components.
     protected renderControlWithoutValue(
         declareValueChange: FormElementValueChangeListener<T>,
         beginTransientState: () => void,
@@ -74,7 +74,7 @@ export abstract class FormElement<
 
         const formEntry = this.getFormEntryFromContext(context);
         const controlComponent = formEntry
-            ? this.renderControl(formEntry.value, declareValueChange, beginTransientState, endTransientState)
+            ? this.renderControl(formEntry.value as FormEntryValueOfType<T>, declareValueChange, beginTransientState, endTransientState)
             : this.renderControlWithoutValue(declareValueChange, beginTransientState, endTransientState);
 
         const label = this.props.label;

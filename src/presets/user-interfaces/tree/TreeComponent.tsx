@@ -71,7 +71,7 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
                     },
                     canMove: node.canMove,
                     children: childNodeIndices,
-                    hasChildren: childNodeIndices.length > 0
+                    isFolder: childNodeIndices.length > 0
                 }
             );
 
@@ -92,7 +92,7 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
                     canMove: false,
                     canRename: false,
                     children: [1], // The given root node
-                    hasChildren: true
+                    isFolder: true
                 }
             );
         }
@@ -110,14 +110,16 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
 
         const treeId = this.state.treeId;
         const treeItems = this.createTreeItems(this.props.rootNode);
+        console.log("tree items", treeItems)
         const treeViewState = {
             [treeId]: {
                 // Expand all the items with children by default.
                 expandedItems: Object.values(treeItems)
-                    .filter(n => n.hasChildren)
-                    .map(n => n.index)
+                    .filter(item => item.children && item.children.length > 0)
+                    .map(item => item.index)
             }
         };
+        console.log("treeViewState", treeViewState)
 
         return <LorgnetteContext.Consumer>{ environment => (
             <ControlledTreeEnvironment
@@ -157,7 +159,7 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
         },
         environment: LorgnetteEnvironmentState
     ) {
-        // TODO; do this another way
+        // TODO: do this another way
         const hasItemRange = props.item.data.data && (props.item.data.data as any)["range"];
         const itemRange = (props.item.data.data as any)["range"];
 

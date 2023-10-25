@@ -1,7 +1,7 @@
-import "./style.css";
+import "./popover-renderer.css";
 import React, { ComponentProps, ReactElement } from "react";
-import { Popover2, Popover2Props, Popover2TargetProps } from "@blueprintjs/popover2";
 import { Renderer, RendererProps, RendererState } from "../../../core/renderers/Renderer";
+import { Popover, PopoverProps, PopoverTargetProps } from "@blueprintjs/core";
 
 export interface PopoverRendererState extends RendererState {
     isPopoverOpen: boolean;
@@ -9,7 +9,7 @@ export interface PopoverRendererState extends RendererState {
 
 export abstract class PopoverRenderer extends Renderer<RendererProps, PopoverRendererState> {
     readonly className: string = "popover";
-    private popoverRef: React.RefObject<Popover2<any>>;
+    private popoverRef: React.RefObject<Popover<any>>;
 
     constructor(props: RendererProps) {
         super(props);
@@ -59,19 +59,11 @@ export abstract class PopoverRenderer extends Renderer<RendererProps, PopoverRen
         this.reposition();
     }
 
-    protected get popoverProps(): Popover2Props {
-        return {
-            placement: "right",
-            minimal: true,
-            transitionDuration: 150
-        };
-    }
-
     protected get popoverContentWrapperProps(): ComponentProps<"div"> {
         return {};
     }
 
-    protected abstract renderPopoverTarget(props: Popover2TargetProps): ReactElement;
+    protected abstract renderPopoverTarget(props: PopoverTargetProps): ReactElement;
 
     protected renderPopoverContent(): ReactElement {
         return <div
@@ -83,16 +75,17 @@ export abstract class PopoverRenderer extends Renderer<RendererProps, PopoverRen
     }
 
     renderProjection() {
-        return <Popover2
-            {...this.popoverProps}
+        return <Popover
             content={this.renderPopoverContent()}
             renderTarget={props => this.renderPopoverTarget(props)}
             defaultIsOpen={this.state.isPopoverOpen}
             onOpened={() => this.setState({ isPopoverOpen: true })}
             onClosed={() => this.setState({ isPopoverOpen: false })}
             ref={this.popoverRef}
-            usePortal={true}
-            portalContainer={document.body}
+            lazy={true}
+            placement="right"
+            minimal={true}
+            transitionDuration={200}
         />;
     }
 }
