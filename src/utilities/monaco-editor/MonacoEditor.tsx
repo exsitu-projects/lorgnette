@@ -11,7 +11,7 @@ import { EMPTY_RANGE, Range } from "../../core/documents/Range";
 import { CodeEditor } from "../../core/code-editor/CodeEditor";
 import { PLAIN_TEXT_LANGUAGE } from "../../core/languages/plain-text";
 
-// TODO: make what follows work with Vite!
+// TODO: make what follows work with Vite?
 
 // Set up a function that creates the appropriate worker for the Monaco editor for a given "label".
 // Adapted from https://github.com/microsoft/monaco-editor/issues/2605.
@@ -47,10 +47,6 @@ import { PLAIN_TEXT_LANGUAGE } from "../../core/languages/plain-text";
 //       }
 //     },
 //   };
-
-// Use local files (?) to setup the Monaco editor instead of downloading them from a CDN. 
-// Assumption: the files are packaged by Webpack in a CRA-compliant way?
-loader.config({ monaco });
 
 // Types of the position, range and selection objects used by the Monaco editor.
 export type MonacoPosition = monaco.Position;
