@@ -20,5 +20,5 @@ export class Section extends React.PureComponent<SectionProps> {
                 { this.props.children }
             </div>
         </div>;
-    };
+    }
 }

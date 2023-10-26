@@ -4,16 +4,19 @@ import { Alignment, Button, Divider, Menu, MenuItem, Popover, Switch } from "@bl
 import { Language } from "../../core/languages/Language";
 import { SyntaxTree } from "./syntax-tree/SyntaxTree";
 import { MonacoEditorWithProjections } from "../../utilities/monaco-editor/MonacoEditorWithProjections";
-import { DEFAULT_EXAMPLE, Example, EXAMPLES } from "./examples/Example";
+import { Example, EXAMPLES } from "./examples/Example";
 import { Projection } from "../../core/projections/Projection";
 import { Document } from "../../core/documents/Document";
 import { LorgnetteContext } from "../../core/lorgnette/LorgnetteContext";
 import { LorgnetteEnvironmentState } from "../../core/lorgnette/LorgnetteEnvironment";
 
-type Props = {};
-type State = {
+interface Props {
+
+}
+
+interface State {
     showSyntaxTree: boolean;
-};
+}
 
 export class Playground extends React.Component<Props, State> {
     constructor(props: Props) {
@@ -42,7 +45,7 @@ export class Playground extends React.Component<Props, State> {
                 key={example.name}
                 text={example.name}
                 onClick={() => {
-                    environment.setDocument(new Document(example.language, example.content))
+                    environment.setDocument(new Document(example.language, example.content));
                 }}
             />;
         };
@@ -62,7 +65,7 @@ export class Playground extends React.Component<Props, State> {
                 rightIcon="caret-down"
                 intent="primary"
             />
-        </Popover>
+        </Popover>;
     }
 
     private renderProjectionInfoText(projection: Projection): ReactElement {
@@ -156,7 +159,7 @@ export class Playground extends React.Component<Props, State> {
             return hasSeveralChildren
                 ? <Split {...splitProps}>{props.children}</Split>
                 : <>{props.children}</>;
-        }
+        };
 
         return <LorgnetteContext.Consumer>{ environment => (
             <div className="lorgnette-playground">
@@ -198,6 +201,6 @@ export class Playground extends React.Component<Props, State> {
                     { this.renderLanguageSelector(environment) }
                 </div>
             </div>
-        )}</LorgnetteContext.Consumer>
+        )}</LorgnetteContext.Consumer>;
     }
-};
+}

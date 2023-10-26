@@ -41,7 +41,7 @@ export class JavascriptLiteralObjectTemplate extends KeyValueListTemplate<Javasc
         return keyValueNodes.findIndex(node =>
             node instanceof NamedArgumentNode &&
             node.name.text === key
-        )
+        );
     }
 
     protected provideSlotForKeyValueNode(keyValueNodes: SyntaxTreeNode[], document: Document): SyntacticTemplateSlot[] {

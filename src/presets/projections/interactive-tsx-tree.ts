@@ -62,7 +62,7 @@ const forwardMapping = new ProgrammableForwardMapping<SyntacticFragment>(({ frag
             default:
                 return null;
         }
-    }
+    };
     
     return findTsxTreeItems(fragment.node) as TreeNode;
 });

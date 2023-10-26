@@ -1,4 +1,3 @@
-import { Fragment } from "../fragments/Fragment";
 import { Projection } from "../projections/Projection";
 import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "./UserInterface";
 import { UserInterfaceSettings } from "./UserInterfaceSettings";

@@ -27,4 +27,4 @@ export class SplitRegex {
             getRegexFlags(regex)
         );
     }
-};
+}

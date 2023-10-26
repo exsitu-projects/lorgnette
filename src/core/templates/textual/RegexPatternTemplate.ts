@@ -1,9 +1,9 @@
 import { Document } from "../../documents/Document";
-import { FragmentProvider } from "../../fragments/FragmentProvider"
+import { FragmentProvider } from "../../fragments/FragmentProvider";
 import { FragmentType } from "../../fragments/FragmentType";
 import { RegexPatternFinder } from "../../fragments/textual/RegexPatternFinder";
-import { TextualFragment } from "../../fragments/textual/TextualFragment"
-import { Template, deriveTemplateSettingsFromDefaults, TemplateSettings } from "../Template"
+import { TextualFragment } from "../../fragments/textual/TextualFragment";
+import { Template, deriveTemplateSettingsFromDefaults, TemplateSettings } from "../Template";
 import { TemplateSlotKey } from "../TemplateSlot";
 import { Evaluator } from "../evaluators/Evaluator";
 import { TextualTemplateSlot } from "./TextualTemplateSlot";

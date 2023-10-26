@@ -1,4 +1,3 @@
-import { Range } from "../../../../core/documents/Range";
 import { JsonSyntaxTreeNode } from "../JsonSyntaxTreeNode";
 import { JsonParserContext } from "../JsonParser";
 

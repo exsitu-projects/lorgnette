@@ -55,7 +55,7 @@ export class TypescriptSyntaxTreeNode extends SyntaxTreeNode {
             parserContext.sourceDocument
         );
 
-        return node
+        return node;
     }
 }
 

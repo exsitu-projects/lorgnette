@@ -10,8 +10,8 @@ export class Label extends React.PureComponent<LabelProps> {
         return <BlueprintLabel>
             <span className="form-label-text">{ this.props.title }</span>
             { this.props.children }
-        </BlueprintLabel>
-    };
+        </BlueprintLabel>;
+    }
 
     static wrapNonEmptyComponentWithLabel(
         component: ReactElement | null,

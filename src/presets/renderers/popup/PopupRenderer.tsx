@@ -1,11 +1,11 @@
 import "./popup-renderer.css";
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 import { Renderer, RendererProps, RendererState } from "../../../core/renderers/Renderer";
-import { Overlay, OverlayProps } from "@blueprintjs/core";
+import { Overlay } from "@blueprintjs/core";
 
 export interface PopupRendererState extends RendererState {
     isPopupOpen: boolean;
-};
+}
 
 export abstract class PopupRenderer extends Renderer<RendererProps, PopupRendererState> {
     readonly className: string = "popup";

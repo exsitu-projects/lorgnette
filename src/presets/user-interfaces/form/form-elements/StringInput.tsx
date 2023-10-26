@@ -7,7 +7,7 @@ type SupportedEntryTypes = FormEntryType.String;
 
 export interface StringInputProps extends FormElementProps<SupportedEntryTypes> {
     defaultValue?: string;
-};
+}
 
 export class StringInput extends FormElement<SupportedEntryTypes, StringInputProps> {
     protected readonly supportedFormEntryTypes = [FormEntryType.String] as SupportedEntryTypes[];
@@ -36,5 +36,5 @@ export class StringInput extends FormElement<SupportedEntryTypes, StringInputPro
             onFocus={event => beginTransientState()}
             onBlur={event => endTransientState()}
         />;
-    };
+    }
 }

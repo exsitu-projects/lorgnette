@@ -1,4 +1,5 @@
 import "./monaco-editor.css";
+
 import React from "react";
 import * as monaco from "monaco-editor";
 import Editor, { Monaco, loader } from "@monaco-editor/react";
@@ -49,7 +50,7 @@ import { PLAIN_TEXT_LANGUAGE } from "../../core/languages/plain-text";
 
 // Use local files (?) to setup the Monaco editor instead of downloading them from a CDN. 
 // Assumption: the files are packaged by Webpack in a CRA-compliant way?
-// loader.config({ monaco });
+loader.config({ monaco });
 
 // Types of the position, range and selection objects used by the Monaco editor.
 export type MonacoPosition = monaco.Position;
@@ -282,7 +283,7 @@ export class MonacoEditor extends CodeEditor<Props, State> {
                         options: {
                             className: decoratedRange.className
                         }
-                    }
+                    };
                 });
 
             if (this.currentEditorDecorations) {
@@ -400,4 +401,4 @@ export class MonacoEditor extends CodeEditor<Props, State> {
             />
         </div>;
     }
-};
+}

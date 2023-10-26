@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     root.render(
         <React.StrictMode>
-            <PlaygroundLorgnetteEnvironment>
+            <PlaygroundLorgnetteEnvironment useLocalStore={true}>
                 <Playground />
             </PlaygroundLorgnetteEnvironment>
         </React.StrictMode>

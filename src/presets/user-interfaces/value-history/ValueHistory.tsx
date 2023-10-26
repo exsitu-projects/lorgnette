@@ -1,7 +1,6 @@
-import React from "react";
 import { Projection } from "../../../core/projections/Projection";
 import { UserInterface, UserInterfaceOutput } from "../../../core/user-interfaces/UserInterface";
-import { ConfigurableUserInterfaceProvider, UserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
+import { ConfigurableUserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
 import { ValueHistoryComponent } from "./ValueHistoryComponent";
 import { deriveValueHistorySettingsFrom, ValueHistorySettings } from "./ValueHistorySettings";
 
@@ -16,7 +15,7 @@ export type Input = {
     valueChanges: TimestampedValue[];
 };
 
-export interface Output extends UserInterfaceOutput {};
+export interface Output extends UserInterfaceOutput {}
 
 export class ValueHistory extends UserInterface<Input, Output> {
     readonly className = "value-history";

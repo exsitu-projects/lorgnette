@@ -37,7 +37,7 @@ export class JsonObjectTemplate extends KeyValueListTemplate {
     protected getIndexOfKeyValueNodeWithKey(keyValueNodes: SyntaxTreeNode[], key: string): number {
         return keyValueNodes.findIndex(node =>
             (node as PropertyNode).key.value === key
-        )
+        );
     }
 
     protected provideSlotForKeyValueNode(keyValueNodes: SyntaxTreeNode[], document: Document): SyntacticTemplateSlot[] {

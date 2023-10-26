@@ -6,7 +6,7 @@ import { ProgrammableBackwardMapping } from "../../core/mappings/ProgrammableBac
 import { SideRendererPosition } from "../renderers/side/SideRendererSettings";
 import { isEnabledAndDefined, DISABLED_PROPERTY } from "../user-interfaces/style-inspector/inspectors/SpecialisedStyleInspector";
 import { Input } from "../user-interfaces/style-inspector/StyleInspector";
-import { createNamedArgumentProcesser, convertColorFromExpression, createNamedArgumentModifyer } from "../../utilities/languages/python/python-utilities";
+import { createNamedArgumentProcesser, convertColorFromExpression, createNamedArgumentModifier } from "../../utilities/languages/python/python-utilities";
 import { ValueWithUnit } from "../../utilities/ValueWithUnit";
 import { ProjectionSpecification } from "../../core/projections/ProjectionSpecification";
 import { SyntacticFragment } from "../../core/fragments/syntactic/SyntacticFragment";
@@ -116,7 +116,7 @@ export const matplotlibTextPropertySetterConfiguratorSpecification: ProjectionSp
         const styleChange = userInterfaceOutput.styleChange;
 
         const barplotCallNode = fragment.node as FunctionCallNode;
-        const modifyNamedArgument = createNamedArgumentModifyer(document, documentEditor, barplotCallNode);
+        const modifyNamedArgument = createNamedArgumentModifier(document, documentEditor, barplotCallNode);
 
         const backgroundColorProperty = styleChange.background?.color;
         if (isEnabledAndDefined(backgroundColorProperty)) {

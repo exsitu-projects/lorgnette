@@ -7,7 +7,7 @@ import { NodeMoveData } from "../TreeComponent";
 
 interface HasRange {
     range: Range;
-};
+}
 
 export class NodeMoveProcesser<T extends HasRange> {
     private readonly document: Document;
@@ -27,7 +27,7 @@ export class NodeMoveProcesser<T extends HasRange> {
     }
 
     private flattenTree(): TreeNodeWithRange<T>[] {
-        return this.flattenTreeRootedIn(this.treeRoot)
+        return this.flattenTreeRootedIn(this.treeRoot);
     }
     
     private flattenTreeRootedIn(node: TreeNodeWithRange<T>): TreeNodeWithRange<T>[] {
@@ -71,7 +71,7 @@ export class NodeMoveProcesser<T extends HasRange> {
 
             const insertPositionLineLeadingWhitespaceLength =
                 insertPositionLine.length - insertPositionLine.trimStart().length;
-            let leadingWhitespace = " ".repeat(insertPositionLineLeadingWhitespaceLength);
+            const leadingWhitespace = " ".repeat(insertPositionLineLeadingWhitespaceLength);
 
             movedNodeContent = moveData.targetPosition.linePosition === "top"
                 ? `${movedNodeContent.trim()}\n${leadingWhitespace}`
@@ -92,7 +92,7 @@ export class NodeMoveProcesser<T extends HasRange> {
         const nodeMoveData = output.lastNodeMoveData;
 
         if (!rootNode || !nodeMoveData) {
-            console.log("No root node or move data: there is nothing to do in the backward mapping of this tree.")
+            console.log("No root node or move data: there is nothing to do in the backward mapping of this tree.");
             return;
         }
 

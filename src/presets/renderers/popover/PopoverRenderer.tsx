@@ -1,7 +1,7 @@
 import "./popover-renderer.css";
 import React, { ComponentProps, ReactElement } from "react";
 import { Renderer, RendererProps, RendererState } from "../../../core/renderers/Renderer";
-import { Popover, PopoverProps, PopoverTargetProps } from "@blueprintjs/core";
+import { Popover, PopoverTargetProps } from "@blueprintjs/core";
 
 export interface PopoverRendererState extends RendererState {
     isPopoverOpen: boolean;

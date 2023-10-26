@@ -8,9 +8,9 @@ import { Position } from "../../core/documents/Position";
 import { LorgnetteContext } from "../../core/lorgnette/LorgnetteContext";
 import { LorgnetteEnvironmentState } from "../../core/lorgnette/LorgnetteEnvironment";
 
-export type Props = {
+export interface Props {
 
-};
+}
 
 export class MonacoEditorWithProjections extends React.PureComponent<Props> {
     private codeEditorRef: React.RefObject<MonacoEditor>;
@@ -87,6 +87,6 @@ export class MonacoEditorWithProjections extends React.PureComponent<Props> {
                     {this.renderProjections(environment)}
                 </div>
             </div>
-        )}</LorgnetteContext.Consumer>
+        )}</LorgnetteContext.Consumer>;
     }
 }

@@ -29,6 +29,6 @@ export class UserInterfaceError {
             <div className="body">
                 { this.body }
             </div>
-        </div>
-    };
+        </div>;
+    }
 }

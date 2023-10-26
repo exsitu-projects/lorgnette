@@ -139,7 +139,7 @@ export abstract class Template<
 
             const templateData = this.createTemplateData(keysToSlots, fragment, document);
             return this.settings.transformTemplateData(templateData);
-        })
+        });
     }
 
     protected getBackwardMapping(): ProgrammableBackwardMapping<F> {
@@ -184,7 +184,7 @@ export abstract class Template<
             }
 
             documentEditor.applyEdits();
-        })
+        });
     }
 
     // Make template iterables so their fields of interest can be easily inserted

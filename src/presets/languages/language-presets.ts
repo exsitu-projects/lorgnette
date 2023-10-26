@@ -4,7 +4,6 @@ import { PYTHON_LANGUAGE } from "./python/language";
 import { TYPESCRIPT_LANGUAGE } from "./typescript/language";
 import { PLAIN_TEXT_LANGUAGE } from "../../core/languages/plain-text";
 import { MARKDOWN_LANGUAGE } from "./markdown/language";
-import { LorgnetteEnvironment } from "../../core/lorgnette/LorgnetteEnvironment";
 
 export const LANGUAGE_PRESETS = [
   TYPESCRIPT_LANGUAGE,

@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import ReactJson from "react-json-view"
+import React from "react";
+import ReactJson from "react-json-view";
 
 type Props = {
     initialInput: object;
@@ -9,7 +9,7 @@ type State = {
     input: object;
 };
 
-export class ObjectInspectorComponent extends Component<Props, State> {
+export class ObjectInspectorComponent extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -27,6 +27,6 @@ export class ObjectInspectorComponent extends Component<Props, State> {
             indentWidth={2}
             collapsed={3}
             collapseStringsAfterLength={8}
-        />
+        />;
     }
 }

@@ -6,7 +6,7 @@ import { CssSyntaxTree } from "./CssSyntaxTree";
 export interface CssParserContext {
     text: string;
     sourceDocument: Document;
-};
+}
 
 export class CssParser implements Parser {
     async parse(document: Document): Promise<CssSyntaxTree> {

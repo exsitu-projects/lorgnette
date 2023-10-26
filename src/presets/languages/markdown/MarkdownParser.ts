@@ -9,7 +9,7 @@ import { Document } from "../../../core/documents/Document";
 export interface MarkdownParserContext {
     text: string;
     sourceDocument: Document;
-};
+}
 
 export class MarkdownParser implements Parser {
     async parse(document: Document): Promise<MarkdownSyntaxTree> {

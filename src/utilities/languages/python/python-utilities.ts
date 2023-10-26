@@ -17,7 +17,7 @@ const processNamedArgument = (
     const argument = namedArguments.find(argument => argumentNames.includes(argument.name.text));
 
     if (argument) {
-        action(argument.value)
+        action(argument.value);
     }
 };
 
@@ -33,7 +33,7 @@ export function createNamedArgumentProcesser(namedArguments: NamedArgumentNode[]
         action: (value: ExpressionNode) => void
     ) => {
         processNamedArgument(namedArguments, nameOrNames, action);
-    }
+    };
 }
 
 
@@ -51,7 +51,7 @@ export function convertColorFromExpression(argument: ExpressionNode, action: (co
     catch (error) {
         // If the color could not be converted, do nothing.
     }
-};
+}
 
 
 
@@ -139,35 +139,35 @@ export function modifyNamedArgument(
         let rangeToDeleteStart = argument.range.start;
         let rangeToDeleteEnd = argument.range.end;
 
-        // If there is an argument before, the preceeding comma must be deleted too.
+        // If there is an argument before, the preceding comma must be deleted too.
         if (argumentGlobalIndex > 0) {
-            const preceedingArgument = allArguments[argumentGlobalIndex - 1];
-            rangeToDeleteStart = preceedingArgument.range.end;
+            const precedingArgument = allArguments[argumentGlobalIndex - 1];
+            rangeToDeleteStart = precedingArgument.range.end;
         }
 
         editor.delete(new Range(rangeToDeleteStart, rangeToDeleteEnd));
     }
-};
+}
 
 
 
 // Create a function that calls `modifyNamedArgument` with predefined parameters to make it easier to use.
-type NamedArgumentModifyer = (
+type NamedArgumentModifier = (
     nameOrNames: string | string[],
     newValueOrDeleteToken: string | typeof DELETE_ARGUMENT,
     shouldDelete?: (newValue: string) => boolean
 ) => void;
 
-export function createNamedArgumentModifyer(
+export function createNamedArgumentModifier(
     document: Document,
     editor: DocumentEditor,
     functionCallNode: FunctionCallNode
-): NamedArgumentModifyer {
+): NamedArgumentModifier {
     return (
         nameOrNames: string | string[],
         newValueOrDeleteToken: string | typeof DELETE_ARGUMENT,
         shouldDelete?: (newValue: string) => boolean
     ) => {
         modifyNamedArgument(document, editor, functionCallNode, nameOrNames, newValueOrDeleteToken, shouldDelete);
-    }
+    };
 }

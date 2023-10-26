@@ -1,6 +1,6 @@
 import { RawRuntimeRequest } from "../../core/runtime/RuntimeRequest";
 import { ArrayMap } from "../../utilities/ArrayMap";
-import { vscode } from "./VisualStudioCodeApi";
+import { vscode } from "./VscodeApi";
 
 export type MessageType = string;
 

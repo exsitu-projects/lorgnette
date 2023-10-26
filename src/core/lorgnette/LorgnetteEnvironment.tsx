@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, ReactElement } from "react";
+import React, { PropsWithChildren } from "react";
 import { Document, DocumentChangeEvent, DocumentChangeOrigin } from "../documents/Document";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "../documents/Position";
 import { Projection } from "../projections/Projection";
@@ -50,12 +50,11 @@ export interface LorgnetteEnvironmentState {
     unregisterProjection(name: string): void;
 
     projections: Projection[];
-};
+}
 
-export class LorgnetteEnvironment extends React.Component<
-    LorgnetteEnvironmentProps,
-    LorgnetteEnvironmentState
-> {
+export class LorgnetteEnvironment<
+    P extends LorgnetteEnvironmentProps = LorgnetteEnvironmentProps
+> extends React.Component<P, LorgnetteEnvironmentState> {
     private projectionUpdateDebouncer: Debouncer;
     private readonly documentChangeObserver = {
         processChange: (event: DocumentChangeEvent) => this.onDocumentChange(event)
@@ -104,7 +103,7 @@ export class LorgnetteEnvironment extends React.Component<
         return [];
     }
     
-    constructor(props: LorgnetteEnvironmentProps) {
+    constructor(props: P) {
         super(props);
         
         const initialProjectionUpdateDebounceDelay = 200; // ms
@@ -239,7 +238,7 @@ export class LorgnetteEnvironment extends React.Component<
 
     setDocument(document: Document): void {
         // Update the document change observers.
-        this.state.document.removeChangeObserver(this.documentChangeObserver)
+        this.state.document.removeChangeObserver(this.documentChangeObserver);
         document.addChangeObserver(this.documentChangeObserver);
 
         this.setEnvironment({ document: document });

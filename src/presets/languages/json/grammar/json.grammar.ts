@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import * as moo from "moo";
 
 // Generated automatically by nearley, version 2.20.1
@@ -87,7 +88,7 @@ declare var space: any;
 interface NearleyToken {
   value: any;
   [key: string]: any;
-};
+}
 
 interface NearleyLexer {
   reset: (chunk: string, info: any) => void;
@@ -95,13 +96,13 @@ interface NearleyLexer {
   save: () => any;
   formatError: (token: never) => string;
   has: (tokenType: string) => boolean;
-};
+}
 
 interface NearleyRule {
   name: string;
   symbols: NearleySymbol[];
   postprocess?: (d: any[], loc?: number, reject?: {}) => any;
-};
+}
 
 type NearleySymbol = string | { literal: any } | { test: (token: any) => boolean };
 
@@ -109,7 +110,7 @@ interface Grammar {
   Lexer: NearleyLexer | undefined;
   ParserRules: NearleyRule[];
   ParserStart: string;
-};
+}
 
 const grammar: Grammar = {
   Lexer: lexer,

@@ -9,7 +9,7 @@ export interface SideRendererSettings extends RendererSettings {
     onlyShowWhenCursorIsInRange: boolean;
     position: SideRendererPosition;
     positionOffset: number; // px
-};
+}
 
 export const DEFAULT_ASIDE_RENDERER_SETTINGS: SideRendererSettings = {
     onlyShowWhenCursorIsInRange: false,

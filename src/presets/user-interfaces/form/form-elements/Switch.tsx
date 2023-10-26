@@ -7,7 +7,7 @@ type SupportedEntryTypes = FormEntryType.Boolean;
 
 export interface SwitchProps extends FormElementProps<SupportedEntryTypes> {
     defaultValue?: boolean;
-};
+}
 
 export class Switch extends FormElement<SupportedEntryTypes, SwitchProps> {
     protected readonly supportedFormEntryTypes = [FormEntryType.Boolean] as SupportedEntryTypes[];
@@ -31,5 +31,5 @@ export class Switch extends FormElement<SupportedEntryTypes, SwitchProps> {
             onChange={() => declareValueChange(!value, this.supportedFormEntryTypes[0])}
             inline={true}
         />;
-    };
+    }
 }

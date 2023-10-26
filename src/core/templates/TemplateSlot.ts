@@ -31,7 +31,7 @@ export abstract class TemplateSlot {
 
     setText(text: string, documentEditor: DocumentEditor): void {
         documentEditor.replace(this.range, text);
-    };
+    }
 
     getValue(): EvaluatorValue {
         return this.evaluator.getValueFromSlot(this);

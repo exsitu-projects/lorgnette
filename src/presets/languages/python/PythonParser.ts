@@ -9,7 +9,7 @@ export interface PythonParserContext {
     text: string;
     sourceDocument: Document;
     offsetToPositionConverter: (offset: number) => Position;
-};
+}
 
 export class PythonParser implements Parser {
     private nearleyParser: nearley.Parser;

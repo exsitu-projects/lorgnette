@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React from "react";
 import { Range } from "../documents/Range";
 import { DecoratedRangeId } from "./DecoratedRange";
 

@@ -1,5 +1,5 @@
-import { Button, ButtonGroup, ControlGroup, FormGroup, InputGroup, NumericInput } from "@blueprintjs/core";
-import React, { ReactElement } from "react";
+import { Button, ButtonGroup } from "@blueprintjs/core";
+import { ReactElement } from "react";
 import { Color } from "../../../../utilities/Color";
 import { ButtonColorPicker } from "../../../../utilities/components/color-pickers/ButtonColorPicker";
 import { ValueWithUnit } from "../../../../utilities/ValueWithUnit";
@@ -15,26 +15,6 @@ export class BorderInspector extends SpecialisedStyleInspector<BorderProperties>
     protected readonly title = "Border";
     protected readonly className = "border";
 
-    // private renderThicknessEditor(): ReactElement | null {
-    //     const thickness = this.props.properties.thickness;
-    //     if (!thickness) {
-    //         return null;
-    //     }
-
-    //     return <FormGroup label="Thickness" className="thickness">
-    //         {/* <ControlGroup> */}
-    //             <NumericInput
-    //                 value={thickness.value}
-    //                 fill={false}
-    //             />
-    //             <InputGroup
-    //                 value={thickness.unit}
-    //                 fill={false}
-    //             />
-    //         {/* </ControlGroup> */}
-    //     </FormGroup>;
-    // }
-
     private renderThicknessEditor(): ReactElement | null {
         const thicknessValues = [1, 2, 3, 4, 5, 10]; // px
 
@@ -43,7 +23,7 @@ export class BorderInspector extends SpecialisedStyleInspector<BorderProperties>
             formGroup: { label: "Thickness", className: "thickness" },
             renderer: (propertyValue, isDisabled) => {
                 const hasZeroThicknessValue = propertyValue.value === 0;
-                let selectedThicknessValueIndex: number | null = propertyValue.unit === "px"
+                const selectedThicknessValueIndex: number | null = propertyValue.unit === "px"
                     ? thicknessValues.indexOf(propertyValue.value) ?? null
                     : null;
 
@@ -64,7 +44,7 @@ export class BorderInspector extends SpecialisedStyleInspector<BorderProperties>
                             <div className="thickness-preview" style={{ borderWidth: thicknessValue }} />
                         }</Button>
                     )}
-                </ButtonGroup>
+                </ButtonGroup>;
             }
         });
     }

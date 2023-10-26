@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import "./value-history.css";
+import React from "react";
 import { CartesianGrid, XAxis, YAxis, Tooltip, LineChart, Line } from "recharts";
 import { StringDiff } from "react-string-diff";
-import "./value-history.css";
 import { TimestampedValue, Value } from "./ValueHistory";
 import { round } from "../../../utilities/math";
 
@@ -24,7 +24,7 @@ type State = {
     valueChanges: TimestampedValue[];
 };
 
-export class ValueHistoryComponent extends Component<Props, State> {
+export class ValueHistoryComponent extends React.Component<Props, State> {
     private maximumNbValues: number | typeof UNLIMITED_NB_VALUES;
     private valuesAreNumericOnly: boolean;
     private lowestNumericValue: number;
@@ -105,8 +105,8 @@ export class ValueHistoryComponent extends Component<Props, State> {
                 timestamp: change.timestamp,
                 time: `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
                 value: round(change.value as number, maxValueNbDecimals)
-            }
-        })
+            };
+        });
     }
 
     private renderChartHistory(): React.ReactElement {
@@ -172,7 +172,7 @@ export class ValueHistoryComponent extends Component<Props, State> {
                     />
                 </div>
             </li>;
-        }
+        };
 
         return <ul className="string-differences">
             {valueDifferences.map(valueDifference => renderValueDifference(valueDifference))}

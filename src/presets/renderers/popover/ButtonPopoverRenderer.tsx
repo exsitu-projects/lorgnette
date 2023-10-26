@@ -2,7 +2,7 @@ import "./popover-renderer.css";
 import React, { ReactElement } from "react";
 import { Button, PopoverTargetProps } from "@blueprintjs/core";
 import { PopoverRenderer } from "./PopoverRenderer";
-import { ConfigurableRendererProvider, RendererProvider } from "../../../core/renderers/RendererProvider";
+import { ConfigurableRendererProvider } from "../../../core/renderers/RendererProvider";
 import { ButtonPopoverRendererSettings, DEFAULT_BUTTON_POPOVER_RENDERER_SETTINGS, deriveButtonPopoverRendererSettingsFrom } from "./ButtonPopoverRendererSettings";
 import { RendererProps } from "../../../core/renderers/Renderer";
 
@@ -32,7 +32,7 @@ export class ButtonPopoverRenderer extends PopoverRenderer {
                 provide: () => class extends ButtonPopoverRenderer {
                     protected settings = deriveButtonPopoverRendererSettingsFrom(settings);
                 }
-            }
+            };
         };
     }
 }

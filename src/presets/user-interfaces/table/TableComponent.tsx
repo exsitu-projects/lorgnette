@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { HotTable, HotTableProps } from "@handsontable/react";
 import "handsontable/dist/handsontable.full.css";
 import "./table.css";
@@ -29,7 +29,7 @@ type State = {
     columnNames: string[] | boolean;
 };
 
-export class TableComponent extends Component<Props, State> {
+export class TableComponent extends React.Component<Props, State> {
     private handsontable: HotTable | null;
 
     constructor(props: Props) {
@@ -72,7 +72,7 @@ export class TableComponent extends Component<Props, State> {
         }
     }
 
-    componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    componentDidCatch(error: Error): void {
         console.error("Error caught in TableComponent:", error);
     }
 
@@ -118,7 +118,7 @@ export class TableComponent extends Component<Props, State> {
                 }
 
                 selectionChangeHandler(coordinates);
-            }
+            };
         }
 
         return props;
@@ -149,7 +149,7 @@ export class TableComponent extends Component<Props, State> {
                         };
                     })
                 );
-            }
+            };
         }
 
         return props;
@@ -222,7 +222,7 @@ export class TableComponent extends Component<Props, State> {
                         const newContent = moveElementsByIndex(content, movedRowIndices, insertionIndex);
                         contentChangeHandler(newContent, []);
                     }
-                }
+                };
             }
         }
 
@@ -239,7 +239,7 @@ export class TableComponent extends Component<Props, State> {
                         const newContent = content.map(row => moveElementsByIndex(row, movedColumnIndices, insertionIndex));
                         contentChangeHandler(newContent as TableContent, []);
                     }
-                }
+                };
             }
         }
 
@@ -257,6 +257,6 @@ export class TableComponent extends Component<Props, State> {
             {...this.rowAndColumnReorderingProps}
             licenseKey="non-commercial-and-evaluation"
             ref={h => this.handsontable = h}
-        />
+        />;
     }
 }

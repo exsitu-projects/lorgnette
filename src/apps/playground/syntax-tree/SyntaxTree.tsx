@@ -1,5 +1,6 @@
-import React from "react";
+
 import "./syntax-tree.css";
+import React from "react";
 import { Document } from "../../../core/documents/Document";
 import { SyntaxTreeNode, SyntaxTreeNodeEventHandlerProps } from "./SyntaxTreeNode";
 import { Position } from "../../../core/documents/Position";
@@ -8,7 +9,7 @@ import { SyntaxTree as DocumentSyntaxTree } from "../../../core/languages/Syntax
 interface Props extends SyntaxTreeNodeEventHandlerProps {
     document: Document;
     cursorPosition: Position;
-};
+}
 
 
 interface State {

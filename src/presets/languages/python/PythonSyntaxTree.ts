@@ -13,7 +13,6 @@ import { ArgumentListNode } from "./nodes/ArgumentListNode";
 import { PositionalArgumentNode } from "./nodes/PositionalArgumentNode";
 import { NamedArgumentNode } from "./nodes/NamedArgumentNode";
 import { IdentifierNode } from "./nodes/IdentifierNode";
-import { Document } from "../../../core/documents/Document";
 import { NumberNode } from "./nodes/NumberNode";
 
 export const PYTHON_NODE_CLASSES = [

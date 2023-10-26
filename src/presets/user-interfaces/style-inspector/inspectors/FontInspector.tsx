@@ -1,5 +1,5 @@
-import React, { ReactElement } from "react";
-import { Button, ButtonGroup, ControlGroup, FormGroup, InputGroup, Label, NumericInput, TagInput } from "@blueprintjs/core";
+import { ReactElement } from "react";
+import { Button, ButtonGroup, ControlGroup, FormGroup, InputGroup, NumericInput, TagInput } from "@blueprintjs/core";
 import { Color } from "../../../../utilities/Color";
 import { ButtonColorPicker } from "../../../../utilities/components/color-pickers/ButtonColorPicker";
 import { SpecialisedStyleInspector, SpecialisedStyleInspectorProperties } from "./SpecialisedStyleInspector";

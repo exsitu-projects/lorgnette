@@ -63,7 +63,7 @@ export class ProjectionProvider {
 
         let bestMatchingFragment: Fragment | null = null;
         if (projectionToPreserve) {
-            const matcher = new ProjectionMatcher(projectionToPreserve)
+            const matcher = new ProjectionMatcher(projectionToPreserve);
             bestMatchingFragment = matcher.findBestMatchingFragment(newFragments);
         }
 

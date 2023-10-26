@@ -13,7 +13,7 @@ export interface ButtonProps<T extends SupportedEntryTypes> extends FormElementP
     activateOn?: ValueCondition<FormEntryValueOfType<T> | null>;
     disableOn?: ValueCondition<FormEntryValueOfType<T> | null>;
     showWithoutValue?: boolean;
-};
+}
 
 export class Button<T extends SupportedEntryTypes> extends FormElement<T, ButtonProps<T>> {
     protected readonly supportedFormEntryTypes: AnyEntryTypeSymbol = ANY_ENTRY_TYPES;
@@ -44,13 +44,12 @@ export class Button<T extends SupportedEntryTypes> extends FormElement<T, Button
         value: FormEntryValueOfType<T> | null,
         declareValueChange: FormElementValueChangeListener<T>
     ): ReactElement {
-        const v = value;
         return <BlueprintButton
             text={evaluate(this.props.text, value)}
             active={this.isButtonActive(value)}
             disabled={this.isButtonDisabled(value)}
             style={this.props.style}
-            onClick={event => { declareValueChange(...evaluate(this.props.valueWithType, value))}}
+            onClick={event => { declareValueChange(...evaluate(this.props.valueWithType, value));}}
         />;
-    };
+    }
 }

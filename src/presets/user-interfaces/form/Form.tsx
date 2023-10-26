@@ -4,7 +4,7 @@ import { Projection } from "../../../core/projections/Projection";
 import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../../../core/user-interfaces/UserInterface";
 import { FormContext, FormContextData } from "./FormContext";
 import { FormEntry, FormEntryKey, FormEntryOfType, FormEntryType, FormEntryValueOfType } from "./FormEntry";
-import { ConfigurableUserInterfaceProvider, UserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
+import { ConfigurableUserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
 import { FormSettings, deriveFormSettingsFrom } from "./FormSettings";
 
 export type FormData = FormEntry[];
@@ -13,12 +13,12 @@ export type FormDataChange = FormData;
 
 export interface Input extends UserInterfaceInput {
     data: FormData;
-};
+}
 
 export interface Output extends UserInterfaceOutput {
     data: FormData;
     modifiedData: FormData;
-};
+}
 
 export abstract class Form extends UserInterface<Input, Output> {
     readonly className = "form";

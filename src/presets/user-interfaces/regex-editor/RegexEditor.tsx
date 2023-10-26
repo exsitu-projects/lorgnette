@@ -1,19 +1,19 @@
-import React from "react";
+
 import { Range } from "../../../core/documents/Range";
 import { Projection } from "../../../core/projections/Projection";
 import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../../../core/user-interfaces/UserInterface";
-import { ConfigurableUserInterfaceProvider, UserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
+import { ConfigurableUserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
 import { RegexEditorComponent } from "./RegexEditorComponent";
 import { UserInterfaceSettings } from "../../../core/user-interfaces/UserInterfaceSettings";
 
 export interface Input extends UserInterfaceInput {
     regex: RegExp;
     range?: Range;
-};
+}
 
 export interface Output extends UserInterfaceOutput {
     regex: RegExp;
-};
+}
 
 export class RegexEditor extends UserInterface<Input, Output> {
     readonly className = "regex-editor";

@@ -1,18 +1,18 @@
-import React from "react";
+
 import { BLACK, Color } from "../../../utilities/Color";
 import { RgbColorPicker } from "../../../utilities/components/color-pickers/RgbColorPicker";
 import { Projection } from "../../../core/projections/Projection";
 import { UserInterface, UserInterfaceOutput } from "../../../core/user-interfaces/UserInterface";
-import { ConfigurableUserInterfaceProvider, UserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
+import { ConfigurableUserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
 import { UserInterfaceSettings } from "../../../core/user-interfaces/UserInterfaceSettings";
 
 export interface Input extends UserInterfaceOutput {
     color: Color
-};
+}
 
 export interface Output extends UserInterfaceOutput {
     color: Color
-};
+}
 
 export class ColorPicker extends UserInterface<Input, Output> {
     readonly className = "color-picker";

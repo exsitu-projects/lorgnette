@@ -1,4 +1,3 @@
-import { Document } from "../../../core/documents/Document";
 import { CSS_LANGUAGE } from "../../../presets/languages/css/language";
 
 // From https://astexplorer.net/#/gist/244e2fb4da940df52bf0f4b94277db44/e79aff44611020b22cfd9708f3a99ce09b7d67a8.

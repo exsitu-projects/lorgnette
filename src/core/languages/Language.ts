@@ -5,4 +5,4 @@ export interface Language {
   id: string;
   codeEditorLanguageId: string;
   parser?: Parser;
-};
+}

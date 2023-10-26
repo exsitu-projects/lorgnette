@@ -72,6 +72,38 @@ const forwardMapping = new ProgrammableForwardMapping<SyntacticFragment>(({ frag
         }
     };
 
+    const computeMarginFromCssValue = (cssNode: Raw): Margin => {
+        const marginValues = cssNode.value
+            .split(" ")
+            .map(valueWithUnitAsText => ValueWithUnit.fromText(valueWithUnitAsText));
+
+        let top, bottom, left, right;
+        switch (marginValues.length) {
+            case 1:
+                top = bottom = left = right = marginValues[0]!;
+                break;
+            case 2:
+                top = bottom = marginValues[0]!;
+                left = right = marginValues[1]!;
+                break;
+            case 3:
+                top = marginValues[0]!;
+                left = right = marginValues[1]!;
+                bottom = marginValues[2]!;
+                break;
+            case 4:
+                top = marginValues[0]!;
+                right = marginValues[1]!;
+                bottom = marginValues[2]!;
+                left = marginValues[3]!;
+                break;
+            default:
+                throw new Error("Unknown number of values for a margin/padding.");
+        }
+
+        return { top, bottom, left, right };
+    };
+
     for (let cssProperty of uniqueCssPropertyNamesAndValues) {
         // Background properties.
         addProperty(cssProperty, "background-color", "background", "color", cssNode => Color.fromCss(cssNode.value));
@@ -91,7 +123,7 @@ const forwardMapping = new ProgrammableForwardMapping<SyntacticFragment>(({ frag
                 color: Color.fromCss(borderProperties[2]),
                 type: borderType,
             };
-        })
+        });
 
         // Font properties.
         addProperty(cssProperty, "color", "font", "color", cssNode => Color.fromCss(cssNode.value));
@@ -113,38 +145,6 @@ const forwardMapping = new ProgrammableForwardMapping<SyntacticFragment>(({ frag
         addProperty(cssProperty, "text-decoration", "font", "underline", cssNode => cssNode.value.includes("underline"));
 
         // Margin properties.
-        function computeMarginFromCssValue(cssNode: Raw): Margin {
-            const marginValues = cssNode.value
-                .split(" ")
-                .map(valueWithUnitAsText => ValueWithUnit.fromText(valueWithUnitAsText));
-
-            let top, bottom, left, right;
-            switch (marginValues.length) {
-                case 1:
-                    top = bottom = left = right = marginValues[0]!;
-                    break;
-                case 2:
-                    top = bottom = marginValues[0]!;
-                    left = right = marginValues[1]!;
-                    break;
-                case 3:
-                    top = marginValues[0]!;
-                    left = right = marginValues[1]!;
-                    bottom = marginValues[2]!;
-                    break;
-                case 4:
-                    top = marginValues[0]!;
-                    right = marginValues[1]!;
-                    bottom = marginValues[2]!;
-                    left = marginValues[3]!;
-                    break;
-                default:
-                    throw new Error("Unknown number of values for a margin/padding.");
-            }
-
-            return { top, bottom, left, right };
-        };
-
         addProperty(cssProperty, "margin", "margin", "outer", cssNode => computeMarginFromCssValue(cssNode));
         addProperty(cssProperty, "padding", "margin", "inner", cssNode => computeMarginFromCssValue(cssNode));
     }
@@ -166,7 +166,7 @@ const forwardMapping = new ProgrammableForwardMapping<SyntacticFragment>(({ frag
 const backwardMapping = new ProgrammableBackwardMapping<SyntacticFragment>(({ userInterfaceOutput, document, documentEditor, fragment }) => {
     const styleChange = userInterfaceOutput.styleChange as Style;
 
-    console.log(styleChange)
+    console.log(styleChange);
 
     // Get the current properties of the CSS rule.
     const blockNode = fragment.node.childNodes[1];

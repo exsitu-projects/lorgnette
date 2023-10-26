@@ -1,4 +1,4 @@
-import React, { Component, PropsWithChildren } from "react";
+import React, { PropsWithChildren } from "react";
 import { UserInterfaceError, UserInterfaceErrorOrigin } from "./UserInterfaceError";
 
 type Props = PropsWithChildren<{
@@ -9,7 +9,7 @@ interface State {
     error: UserInterfaceError | null;
 }
 
-export class UserInterfaceErrorCatcherAndDisplay extends Component<Props, State> {
+export class UserInterfaceErrorCatcherAndDisplay extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -22,7 +22,7 @@ export class UserInterfaceErrorCatcherAndDisplay extends Component<Props, State>
         this.setState({ error: error });
     }
 
-    componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    componentDidCatch(error: Error) {
         this.setError(
             new UserInterfaceError(
                 UserInterfaceErrorOrigin.UserInterface,

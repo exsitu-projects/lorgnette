@@ -77,7 +77,7 @@ export const testFormSpecification_1: ProjectionSpecification<SyntacticFragment>
 
     backwardMapping: new ProgrammableBackwardMapping(({ userInterfaceOutput, documentEditor, fragment }) => {
         // TODO
-        console.log("Modified form entry:", userInterfaceOutput.modifiedData)
+        console.log("Modified form entry:", userInterfaceOutput.modifiedData);
     }),
 
     userInterface: {
@@ -154,10 +154,10 @@ const testFormTemplate = JavascriptLiteralObjectTemplate.createForAnyContext(
         transformUserInterfaceOutput: output => {
             return output.modifiedData.reduce(
                 (keysToModifiedEntries: any, entry: any) => {
-                    return { ...keysToModifiedEntries, [entry.key]: entry.value  }
+                    return { ...keysToModifiedEntries, [entry.key]: entry.value  };
                 },
                 {}
-            )
+            );
         },
     }
 );

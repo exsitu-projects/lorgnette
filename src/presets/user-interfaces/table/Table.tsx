@@ -1,8 +1,8 @@
-import React from "react";
+
 import { ensureArrayHasLength } from "../../../utilities/array";
 import { Projection } from "../../../core/projections/Projection";
 import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../../../core/user-interfaces/UserInterface";
-import { ConfigurableUserInterfaceProvider, UserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
+import { ConfigurableUserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
 import { TableComponent } from "./TableComponent";
 import { deriveTableSettingsFrom, TableSettings } from "./TableSettings";
 
@@ -14,25 +14,25 @@ export type TableContent = CellData[][]; // cells by row
 export const EMPTY_TABLE_HEADER = Symbol("Empty table header");
 export type TableHeader = string[] | typeof EMPTY_TABLE_HEADER;
 
-export type CellChange = {
+export interface CellChange {
     origin: string;
     coordinates: CellCoordinates;
     oldData: CellData;
     newData: CellData;
-};
+}
 
 export interface Input extends UserInterfaceInput {
     content?: TableContent;
     selection?: CellCoordinates[];
     rowHeader?: TableHeader;
     columnHeader?: TableHeader;
-};
+}
 
 export interface Output extends UserInterfaceOutput {
     content: TableContent;
     selection: CellCoordinates[];
     cellChanges: CellChange[] | null;
-};
+}
 
 export class Table extends UserInterface<Input, Output> {
     readonly className = "table";

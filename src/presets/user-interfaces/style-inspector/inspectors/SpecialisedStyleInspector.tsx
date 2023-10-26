@@ -1,5 +1,5 @@
-import { FormGroup, FormGroupProps } from "@blueprintjs/core";
 import React, { ReactElement } from "react";
+import { FormGroup, FormGroupProps } from "@blueprintjs/core";
 
 export const DISABLED_PROPERTY = Symbol("Disable property in a style inspector");
 export type SpecialisedStyleInspectorPropertyValue<T = any> = T | typeof DISABLED_PROPERTY;

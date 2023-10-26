@@ -1,7 +1,7 @@
-import React from "react";
+
 import { Projection } from "../../../core/projections/Projection";
 import { UserInterface, UserInterfaceInput, UserInterfaceOutput } from "../../../core/user-interfaces/UserInterface";
-import { ConfigurableUserInterfaceProvider, UserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
+import { ConfigurableUserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
 import { Style } from "./Style";
 import { StyleInspectorChangeHandler, StyleInspectorComponent } from "./StyleInspectorComponent";
 import { DEFAULT_STYLE_INSPECTOR_SETTINGS, deriveStyleInspectorSettingsFromDefaults, PartialStyleInspectorSettings, StyleInspectorSettings } from "./StyleInspectorSettings";
@@ -9,12 +9,12 @@ import { DEFAULT_STYLE_INSPECTOR_SETTINGS, deriveStyleInspectorSettingsFromDefau
 export interface Input extends UserInterfaceInput {
     style: Style;
     settings?: PartialStyleInspectorSettings;
-};
+}
 
 export interface Output extends UserInterfaceOutput {
     style: Style;
     styleChange: Style;
-};
+}
 
 export class StyleInspector extends UserInterface<Input, Output> {
     readonly className = "style-inspector";

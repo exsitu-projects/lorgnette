@@ -7,6 +7,6 @@ export type IconProps = {
 
 export class Icon extends React.PureComponent<IconProps> {
     render(): ReactElement {
-        return <BlueprintIcon icon={this.props.id} />
-    };
+        return <BlueprintIcon icon={this.props.id} />;
+    }
 }

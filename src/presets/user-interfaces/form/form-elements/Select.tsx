@@ -7,7 +7,7 @@ import { Button, MenuItem } from "@blueprintjs/core";
 type SupportedEntryTypes = FormEntryType.String;
 
 const SelectItemRenderer: ItemRenderer<string> =
-    (item, { handleClick, handleFocus, modifiers, query }) => {
+    (item, { handleClick, handleFocus, modifiers }) => {
         if (!modifiers.matchesPredicate) {
             return null;
         }
@@ -28,7 +28,7 @@ export interface SelectProps extends FormElementProps<SupportedEntryTypes> {
     items: string[];
     defaultItem?: string;
     enableSearch?: boolean;
-};
+}
 
 export class Select extends FormElement<SupportedEntryTypes, SelectProps> {
     protected readonly supportedFormEntryTypes = [FormEntryType.String] as SupportedEntryTypes[];
@@ -65,5 +65,5 @@ export class Select extends FormElement<SupportedEntryTypes, SelectProps> {
                 style={this.props.style}
             />
         </BlueprintSelect>;
-    };
+    }
 }

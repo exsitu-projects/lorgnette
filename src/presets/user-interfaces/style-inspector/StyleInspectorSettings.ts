@@ -12,7 +12,7 @@ export type SpecialisedInspectorSettings = {
 export interface StyleInspectorSettings extends UserInterfaceSettings {
     defaultStyle: FullStyle;
     inspectors: { [K in keyof FullStyle]: SpecialisedInspectorSettings };
-};
+}
 
 export type PartialStyleInspectorSettings = DeepOptionalProperties<StyleInspectorSettings>;
 

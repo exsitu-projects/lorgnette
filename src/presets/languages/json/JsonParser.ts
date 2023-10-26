@@ -9,7 +9,7 @@ export interface JsonParserContext {
     text: string;
     sourceDocument: Document;
     offsetToPositionConverter: (offset: number) => Position;
-};
+}
 
 export class JsonParser implements Parser {
     private nearleyParser: nearley.Parser;

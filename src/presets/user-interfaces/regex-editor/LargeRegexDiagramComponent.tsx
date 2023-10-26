@@ -38,7 +38,7 @@ export class LargeRegexDiagramComponent extends React.PureComponent<Props> {
 
     render() {
         const splitRegex = SplitRegex.fromRegex(this.props.regex);
-        const iframe = this.createLargeRegulexIframe(splitRegex)
+        const iframe = this.createLargeRegulexIframe(splitRegex);
 
         return <div className="regex-diagram large">
             {iframe}

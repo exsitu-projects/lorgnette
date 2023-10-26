@@ -1,4 +1,4 @@
-import React, { Component, ReactElement } from "react";
+import React, { ReactElement } from "react";
 import { FormContext, FormContextData } from "../FormContext";
 import { FormEntryType, FormEntryOfType, FormEntryValueOfType, FormEntryKey, formEntryHasType } from "../FormEntry";
 import { Label } from "./helpers/Label";
@@ -10,11 +10,11 @@ export interface FormElementProps<T extends FormEntryType> {
     formEntryKey: FormEntryKey;
     label?: string;
     style?: React.CSSProperties;
-};
+}
 
 export interface FormElementState<T extends FormEntryType> {
 
-};
+}
 
 export const ANY_ENTRY_TYPES = Symbol("Any form element entry type");
 export type AnyEntryTypeSymbol = typeof ANY_ENTRY_TYPES;
@@ -23,7 +23,7 @@ export abstract class FormElement<
     T extends FormEntryType,
     P extends FormElementProps<T> = FormElementProps<T>,
     S extends FormElementState<T> = FormElementState<T>
-> extends Component<P, S> {
+> extends React.Component<P, S> {
     protected abstract readonly supportedFormEntryTypes: T[] | AnyEntryTypeSymbol;
 
     protected get hasLabel(): boolean {
@@ -86,6 +86,6 @@ export abstract class FormElement<
     render(): ReactElement {
         return <FormContext.Consumer>{ context =>
             this.renderWithinContext(context)
-        }</FormContext.Consumer>
+        }</FormContext.Consumer>;
     }
 }

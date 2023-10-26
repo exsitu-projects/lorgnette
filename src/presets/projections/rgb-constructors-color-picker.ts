@@ -6,7 +6,7 @@ import { Range } from "../../core/documents/Range";
 import { SyntaxTreePattern, SKIP_MATCH_DESCENDANTS } from "../../core/languages/SyntaxTreePattern";
 import { TypescriptSyntaxTreeNode } from "../languages/typescript/TypescriptSyntaxTreeNode";
 import { ProgrammableBackwardMapping } from "../../core/mappings/ProgrammableBackwardMapping";
-import { RegexMatcher, RegexMatch } from "../../utilities/RegexMatcher"
+import { RegexMatcher, RegexMatch } from "../../utilities/RegexMatcher";
 import { ProjectionSpecification } from "../../core/projections/ProjectionSpecification";
 import { ProgrammableForwardMapping } from "../../core/mappings/ProgrammableForwardMapping";
 
@@ -25,7 +25,7 @@ function getTextualColorConstructorRgbRegexMatches(fragment: TextualFragment): R
         r: redRegexMatcher.match(text)!,
         g: greenRegexMatcher.match(text)!,
         b: blueRegexMatcher.match(text)!,
-    }
+    };
 }
 
 export const textualRgbConstructorColorPickerSpecification: ProjectionSpecification<TextualFragment> = {
@@ -81,7 +81,7 @@ function getSyntacticColorConstructorRgbNodes(fragment: SyntacticFragment): RgbT
         r: fragment.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[0] as TypescriptSyntaxTreeNode,
         g: fragment.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[1] as TypescriptSyntaxTreeNode,
         b: fragment.node.childNodes[3].childNodes.filter(c => c.type === "FirstLiteralToken")[2] as TypescriptSyntaxTreeNode
-    }
+    };
 }
 
 export const syntacticRgbConstructorColorPickerSpecification: ProjectionSpecification<SyntacticFragment> = {

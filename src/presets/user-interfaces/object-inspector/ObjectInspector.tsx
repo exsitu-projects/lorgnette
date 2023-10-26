@@ -1,12 +1,12 @@
-import React from "react";
+
 import { Projection } from "../../../core/projections/Projection";
 import { UserInterface, UserInterfaceOutput } from "../../../core/user-interfaces/UserInterface";
-import { ConfigurableUserInterfaceProvider, UserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
+import { ConfigurableUserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
 import { ObjectInspectorComponent } from "./ObjectInspectorComponent";
 import { UserInterfaceSettings } from "../../../core/user-interfaces/UserInterfaceSettings";
 
 export type Input = any;
-export interface Output extends UserInterfaceOutput {};
+export interface Output extends UserInterfaceOutput {}
 
 export class ObjectInspector extends UserInterface<Input, Output> {
     readonly className = "object-inspector";

@@ -20,7 +20,7 @@ export class ButtonPopupRenderer extends PopupRenderer {
         return <Button
             {...this.settings.buttonProps}
             onClick={() => {
-                this.setState({ isPopupOpen: !this.state.isPopupOpen })
+                this.setState({ isPopupOpen: !this.state.isPopupOpen });
             }}
         >
             {this.settings.buttonContent}
@@ -33,7 +33,7 @@ export class ButtonPopupRenderer extends PopupRenderer {
                 provide: () => class extends ButtonPopupRenderer {
                     protected settings = deriveButtonPopupRendererSettingsFrom(settings);
                 }
-            }
+            };
         };
     }
 }

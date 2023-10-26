@@ -14,7 +14,7 @@ const forwardMapping = new ProgrammableForwardMapping<SyntacticFragment>(({ frag
     const content: TableContent = [];
 
     for (let rowNode of tableNode.childNodes) {
-        const row: TableContent[number] = []
+        const row: TableContent[number] = [];
         content.push(row);
 
         for (let cellNode of rowNode.childNodes) {

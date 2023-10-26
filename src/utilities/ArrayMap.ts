@@ -10,9 +10,9 @@ export class ArrayMap<K, V> {
     }
 
     get values(): IterableIterator<V> {
-        const self = this;
+        const map = this.map;
         return (function*() {
-            for (let array of self.map.values()) {
+            for (let array of map.values()) {
                 for (let value of array) {
                     yield value;
                 }

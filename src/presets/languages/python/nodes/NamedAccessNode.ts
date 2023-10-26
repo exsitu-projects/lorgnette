@@ -2,7 +2,6 @@ import { Range } from "../../../../core/documents/Range";
 import { PythonSyntaxTreeNode } from "../PythonSyntaxTreeNode";
 import { PythonParserContext } from "../PythonParser";
 import { IdentifierNode } from "./IdentifierNode";
-import { ExpressionNode } from "./ExpressionNode";
 import { BooleanNode } from "./BooleanNode";
 import { FunctionCallNode } from "./FunctionCallNode";
 import { IndexedAccessNode } from "./IndexedAccessNode";

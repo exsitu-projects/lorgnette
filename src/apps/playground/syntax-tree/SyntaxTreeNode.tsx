@@ -1,8 +1,9 @@
-import React from "react";
+
 import "./syntax-tree.css";
 import { SyntaxTreeNode as Node } from "../../../core/languages/SyntaxTreeNode";
 import { CodeRange } from "../../../utilities/components/CodeRange";
 import { Position } from "../../../core/documents/Position";
+import { PureComponent } from "react";
 
 export interface SyntaxTreeNodeEventHandlerProps {
     onMouseTargetNodeChange?: (newTargetNode: Node | null) => void;
@@ -13,9 +14,9 @@ export interface Props extends SyntaxTreeNodeEventHandlerProps {
     node: Node;
     parentNode: Node | null;
     cursorPosition: Position;
-};
+}
 
-export class SyntaxTreeNode extends React.PureComponent<Props> {
+export class SyntaxTreeNode extends PureComponent<Props> {
     private get eventHandlerProps() {
         const props = this.props;
         return {

@@ -9,9 +9,9 @@ export interface RendererProps {
     codeEditorRef: React.RefObject<CodeEditor>;
     codeEditorVisibleRange: Range;
     codeEditorCursorPosition: Position;
-};
+}
 
-export interface RendererState {};
+export interface RendererState {}
 
 export abstract class Renderer<
     P extends RendererProps = RendererProps,

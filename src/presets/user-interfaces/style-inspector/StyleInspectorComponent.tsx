@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactFragment } from "react";
+import React, { ReactElement } from "react";
 import "./style-inspector.css";
 import { StyleInspectorSettings } from "./StyleInspectorSettings";
 import { Style } from "./Style";

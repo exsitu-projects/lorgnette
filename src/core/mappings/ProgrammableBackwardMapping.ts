@@ -1,6 +1,4 @@
 import { ProgrammableFunction, ProgrammableFunctionOf, ProgrammableFunctionSource } from "../../utilities/ProgrammableFunction";
-import { Document } from "../documents/Document";
-import { DocumentEditor } from "../documents/DocumentEditor";
 import { Fragment } from "../fragments/Fragment";
 import { UserInterfaceOutput } from "../user-interfaces/UserInterface";
 import { BackwardMapping, BackwardMappingContext, BackwardMappingFunction } from "./BackwardMapping";

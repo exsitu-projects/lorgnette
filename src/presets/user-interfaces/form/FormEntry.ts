@@ -7,7 +7,7 @@ export const enum FormEntryType {
     Number = "Number",
     String = "String",
     Color = "Color"
-};
+}
 
 export type FormEntry =
     {

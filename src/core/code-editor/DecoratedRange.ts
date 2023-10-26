@@ -24,7 +24,7 @@ export class DecoratedRange {
 
     get className(): string {
         const idClassName = this.id !== undefined ? DecoratedRange.classNameForId(this.id) : "";
-        return `${DecoratedRange.className} ${this.type} ${idClassName}`
+        return `${DecoratedRange.className} ${this.type} ${idClassName}`;
     }
 
     static classNameForId(id: DecoratedRangeId): string {

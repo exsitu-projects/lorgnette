@@ -1,8 +1,8 @@
-import React from "react";
+
 import { Range } from "../../../core/documents/Range";
 import { Projection } from "../../../core/projections/Projection";
 import { UserInterface, UserInterfaceOutput } from "../../../core/user-interfaces/UserInterface";
-import { ConfigurableUserInterfaceProvider, UserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
+import { ConfigurableUserInterfaceProvider } from "../../../core/user-interfaces/UserInterfaceProvider";
 import { NodeMoveData, TreeComponent } from "./TreeComponent";
 import { UserInterfaceSettings } from "../../../core/user-interfaces/UserInterfaceSettings";
 
@@ -14,7 +14,7 @@ export interface TreeNode<T = any> {
     data: T;
     children?: TreeNode<T>[];
     canMove?: boolean;
-};
+}
 
 export type TreeNodeWithRange<T = { data: Range; }> = TreeNode<T>;
 
@@ -22,7 +22,7 @@ export type Input<T> = TreeNode<T>;
 export interface Output<T> extends UserInterfaceOutput {
     rootNode: TreeNode<T> | null;
     lastNodeMoveData: NodeMoveData<T> | null;
-};
+}
 
 export class Tree<T = any> extends UserInterface<Input<T>, Output<T>> {
     readonly className = "tree";

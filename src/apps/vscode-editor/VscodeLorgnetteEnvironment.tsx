@@ -3,7 +3,7 @@ import { PLAIN_TEXT_LANGUAGE } from "../../core/languages/plain-text";
 import { Projection } from "../../core/projections/Projection";
 import { RawRuntimeRequest, RuntimeRequest, RuntimeRequestId } from "../../core/runtime/RuntimeRequest";
 import { RawRuntimeResponse, RuntimeResponse } from "../../core/runtime/RuntimeResponse";
-import { VisualStudioCodeExtensionMessenger } from "./VisualStudioCodeExtensionMessenger";
+import { VisualStudioCodeExtensionMessenger } from "./VscodeExtensionMessenger";
 import { LorgnetteEnvironment, LorgnetteEnvironmentProps, LorgnetteEnvironmentState } from "../../core/lorgnette/LorgnetteEnvironment";
 import { LANGUAGE_PRESETS } from "../../presets/languages/language-presets";
 import { RENDERER_PRESETS } from "../../presets/renderers/renderer-presets";
@@ -72,7 +72,7 @@ export class VscodeLorgnetteEnvironment extends LorgnetteEnvironment {
             // Projections using runtime information
             runtimeValueTracerSpecification,
             runtimePandasDataframeTableSpecification,
-        ] as ProjectionSpecification[];;
+        ] as ProjectionSpecification[];
     }
 
     private get runtimeRequests(): RuntimeRequest[] {
@@ -96,7 +96,7 @@ export class VscodeLorgnetteEnvironment extends LorgnetteEnvironment {
                 }
 
                 const document = new Document(language, message.payload.content);
-                this.setDocument(document)
+                this.setDocument(document);
             }
         );
 
@@ -156,7 +156,7 @@ export class VscodeLorgnetteEnvironment extends LorgnetteEnvironment {
                         languageId: this.state.document.language.id,
                         content: this.state.document.content,
                     }
-                })
+                });
             }
             else {
                 this.messenger.sendMessage({
@@ -164,7 +164,7 @@ export class VscodeLorgnetteEnvironment extends LorgnetteEnvironment {
                     payload: {
                         content: this.state.document.content
                     }
-                })
+                });
             }
         }
 

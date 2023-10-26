@@ -4,14 +4,9 @@ body {
     padding: 0;
 }
 
-#lorgnette-editor-app {
+#lorgnette-vscode-editor-app {
     width: 100vw;
     height: 100vh;
     font-family: "Roboto", sans-serif;
     font-size: 16px;
-}
-
-#lorgnette-editor-app .playground-editor-wrapper {
-    width: 100%;
-    height: 100%;
 }

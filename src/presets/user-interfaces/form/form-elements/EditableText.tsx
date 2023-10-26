@@ -8,7 +8,7 @@ type SupportedEntryTypes = FormEntryType.String;
 export interface EditableTextProps extends FormElementProps<SupportedEntryTypes> {
     defaultValue?: string;
     multiline?: boolean;
-};
+}
 
 export class EditableText extends FormElement<SupportedEntryTypes, EditableTextProps> {
     protected readonly supportedFormEntryTypes = [FormEntryType.String] as SupportedEntryTypes[];
@@ -45,5 +45,5 @@ export class EditableText extends FormElement<SupportedEntryTypes, EditableTextP
                 endTransientState();
             }}
         />;
-    };
+    }
 }

@@ -101,7 +101,7 @@ export class Color {
             ? Color.fromHexString(canvasFillStyle)
             : Color.fromRgbaString(canvasFillStyle);
     }
-};
+}
 
 export const BLACK = new Color(0, 0, 0, 1);
 export const WHITE = new Color(255, 255, 255, 1);

@@ -1,11 +1,11 @@
+
 import React from "react";
 import { Language } from "../languages/Language";
 import { Document } from "../documents/Document";
 import { ABSOLUTE_ORIGIN_POSITION, Position } from "../documents/Position";
 import { EMPTY_RANGE, Range } from "../documents/Range";
-import { ProjectionProvider } from "../projections/ProjectionProvider";
-import { ConfigurableRendererProvider, RendererProvider } from "../renderers/RendererProvider";
-import { ConfigurableUserInterfaceProvider, UserInterfaceProvider } from "../user-interfaces/UserInterfaceProvider";
+import { ConfigurableRendererProvider } from "../renderers/RendererProvider";
+import { ConfigurableUserInterfaceProvider } from "../user-interfaces/UserInterfaceProvider";
 import { PLAIN_TEXT_LANGUAGE } from "../languages/plain-text";
 import { LorgnetteEnvironmentState } from "./LorgnetteEnvironment";
 import { ProjectionSpecification } from "../projections/ProjectionSpecification";

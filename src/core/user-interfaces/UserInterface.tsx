@@ -2,8 +2,6 @@ import React, { ReactElement } from "react";
 import { Observer } from "../../utilities/Observer";
 import { FixedThrottler } from "../../utilities/tasks/FixedThrottler";
 import { Projection } from "../projections/Projection";
-import { UserInterfaceSettings } from "./UserInterfaceSettings";
-import { UserInterfaceProvider } from "./UserInterfaceProvider";
 import { UserInterfaceError } from "./error/UserInterfaceError";
 import { UserInterfaceErrorCatcherAndDisplay } from "./error/UserInterfaceErrorCatcherAndDisplay";
 

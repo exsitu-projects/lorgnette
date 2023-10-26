@@ -30,5 +30,5 @@ export class ButtonGroup extends React.PureComponent<ButtonGroupProps> {
         return label
             ? Label.wrapNonEmptyComponentWithLabel(this.renderGroup(), label)
             : this.renderGroup();
-    };
+    }
 }

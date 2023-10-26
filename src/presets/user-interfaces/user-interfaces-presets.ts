@@ -1,4 +1,3 @@
-import { LorgnetteEnvironment } from "../../core/lorgnette/LorgnetteEnvironment";
 import { ColorPicker } from "./color-picker/ColorPicker";
 import { Form } from "./form/Form";
 import { ObjectInspector } from "./object-inspector/ObjectInspector";

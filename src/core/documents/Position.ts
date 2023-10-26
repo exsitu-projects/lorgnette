@@ -90,7 +90,7 @@ export class Position {
             const row = lineEndOffsets.findIndex(lineEndOffset => lineEndOffset >= offset);
             const column = offset - lineStartOffsets[row];
             return new Position(row, column, offset);
-        }
+        };
     }
         
     static getLineAndColumnToPositionConverterForText(text: string): (row: number, column: number) => Position {
@@ -107,7 +107,7 @@ export class Position {
        return (row: number, column: number): Position => {
             const offset = lineStartOffsets[row] + column;
             return new Position(row, column, offset);
-        }
+        };
     }
 }
 

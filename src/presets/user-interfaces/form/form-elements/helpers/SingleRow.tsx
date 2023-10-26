@@ -28,5 +28,5 @@ export class SingleRow extends React.PureComponent<SingleRowProps> {
         return label ?
             Label.wrapNonEmptyComponentWithLabel(this.renderSingleRow(), label)
             : this.renderSingleRow();
-    };
+    }
 }

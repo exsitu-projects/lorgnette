@@ -1,7 +1,8 @@
-import React from "react";
+
 import "./tree-component.css";
 import "react-complex-tree/lib/style.css";
 
+import React from "react";
 import { Tree, TreeItem, TreeItemIndex, DraggingPosition, TreeItemRenderContext, TreeInformation, ControlledTreeEnvironment, TreeViewState } from "react-complex-tree";
 import { TreeNode } from "./Tree";
 import { LorgnetteContext } from "../../../core/lorgnette/LorgnetteContext";
@@ -101,7 +102,7 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
             [...nodesToTreeItems.values()]
                 .map(treeItem => [treeItem.index, treeItem])
         );
-    };
+    }
 
     render() {
         if (!this.props.rootNode) {
@@ -110,7 +111,7 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
 
         const treeId = this.state.treeId;
         const treeItems = this.createTreeItems(this.props.rootNode);
-        console.log("tree items", treeItems)
+        console.log("tree items", treeItems);
         const treeViewState = {
             [treeId]: {
                 // Expand all the items with children by default.
@@ -119,7 +120,7 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
                     .map(item => item.index)
             }
         };
-        console.log("treeViewState", treeViewState)
+        console.log("treeViewState", treeViewState);
 
         return <LorgnetteContext.Consumer>{ environment => (
             <ControlledTreeEnvironment
@@ -181,6 +182,6 @@ export class TreeComponent<T> extends React.Component<Props<T>, State> {
             <div className="range">
                 {hasItemRange ? itemRange.toString() : ""}
             </div>
-        </div>
-    };
+        </div>;
+    }
 }

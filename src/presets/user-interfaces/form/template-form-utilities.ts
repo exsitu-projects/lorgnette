@@ -50,7 +50,7 @@ export function createSlotSpecification<T extends FormEntryType>(
         key: key,
         evaluator: createEvaluator(key, type),
         ...defaultValue !== undefined ? { defaultValue } : {}
-    }
+    };
 }
 
 export const FORM_DATA_TEMPLATE_TRANSFORMERS: Partial<TemplateSettings> = {
@@ -60,12 +60,12 @@ export const FORM_DATA_TEMPLATE_TRANSFORMERS: Partial<TemplateSettings> = {
 
     // Turn the array of "modified form data" into template data (an object with key-value pairs).
     transformUserInterfaceOutput: output => {
-        console.log("output", output)
+        console.log("output", output);
         return output.modifiedData.reduce(
             (keysToModifiedEntries: any, entry: any) => {
-                return { ...keysToModifiedEntries, [entry.key]: entry.value  }
+                return { ...keysToModifiedEntries, [entry.key]: entry.value  };
             },
             {}
-        )
+        );
     },
 };

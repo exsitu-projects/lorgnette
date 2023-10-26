@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import * as moo from "moo";
 // Generated automatically by nearley, version 2.20.1
 // http://github.com/Hardmath123/nearley

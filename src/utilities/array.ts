@@ -1,5 +1,5 @@
 export function ensureArrayHasLength<T>(array: T[], targetLength: number, padElement: T): T[] {
-    const arrayLength = array.length
+    const arrayLength = array.length;
     
     if (arrayLength === targetLength) {
         return array;

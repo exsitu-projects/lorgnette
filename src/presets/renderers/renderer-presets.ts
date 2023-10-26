@@ -1,5 +1,3 @@
-import { LorgnetteEnvironment } from "../../core/lorgnette/LorgnetteEnvironment";
-import { ConfigurableRendererProvider } from "../../core/renderers/RendererProvider";
 import { ButtonPopoverRenderer } from "./popover/ButtonPopoverRenderer";
 import { ButtonPopupRenderer } from "./popup/ButtonPopupRenderer";
 import { SideRenderer } from "./side/SideRenderer";

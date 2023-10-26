@@ -11,7 +11,7 @@ export interface NumberInputProps extends FormElementProps<SupportedEntryTypes> 
     max?: number;
     step?: number;
     hideButtons?: boolean;
-};
+}
 
 export class NumberInput extends FormElement<SupportedEntryTypes, NumberInputProps> {
     protected readonly supportedFormEntryTypes = [FormEntryType.Number] as SupportedEntryTypes[];
@@ -46,6 +46,6 @@ export class NumberInput extends FormElement<SupportedEntryTypes, NumberInputPro
                 width: 60,
                 ...this.props.style
             }}
-        />
-    };
+        />;
+    }
 }

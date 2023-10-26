@@ -8,7 +8,7 @@ type SupportedEntryTypes = FormEntryType.Color;
 
 export interface ButtonProps extends FormElementProps<SupportedEntryTypes> {
     defaultValue?: Color;
-};
+}
 
 export class ButtonColorPicker extends FormElement<SupportedEntryTypes, ButtonProps> {
     protected readonly supportedFormEntryTypes = [FormEntryType.Color] as SupportedEntryTypes[];
@@ -36,6 +36,6 @@ export class ButtonColorPicker extends FormElement<SupportedEntryTypes, ButtonPr
             onOpen={() => beginTransientState()}
             onClose={() => endTransientState()}
             onChange={newColor => declareValueChange(newColor, this.supportedFormEntryTypes[0])}
-        />
-    };
+        />;
+    }
 }

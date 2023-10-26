@@ -132,7 +132,7 @@ export class Document {
         const offset =
             previousLines.reduce((sum, line) => sum + line.length, 0) + // Content of the lines before
             previousLines.length + // Nb. of newline characters
-            lastLine.slice(0, column).length // Nb. of characters on the last line
+            lastLine.slice(0, column).length; // Nb. of characters on the last line
 
         return new DocumentPosition(this, line, column, offset);
     }

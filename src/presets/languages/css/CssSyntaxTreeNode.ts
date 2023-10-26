@@ -41,10 +41,10 @@ export class CssSyntaxTreeNode extends SyntaxTreeNode {
             }
 
             if (childOrChildren instanceof List) {
-                childCssTreeNodes.push(...childOrChildren.toArray())
+                childCssTreeNodes.push(...childOrChildren.toArray());
             }
             else {
-                childCssTreeNodes.push(childOrChildren)
+                childCssTreeNodes.push(childOrChildren);
             }
         };
 

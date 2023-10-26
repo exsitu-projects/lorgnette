@@ -9,7 +9,7 @@ export interface TypescriptParserContext {
     text: string;
     sourceDocument: Document;
     offsetToPositionConverter: (offset: number) => Position;
-};
+}
 
 export class TypescriptParser implements Parser {
     private project: Project;
