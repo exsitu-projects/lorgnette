@@ -31,6 +31,7 @@
   },
   "scripts": {
     "start": "yarn run vite",
+    "lint": "yarn run eslint .",
     "build": "yarn run vite build",
     "bundle": "yarn run gulp"
   },
@@ -38,7 +39,10 @@
     "@types/css-tree": "^2.3.3",
     "@types/moo": "^0.5.5",
     "@types/nearley": "^2.11.2",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
     "@vitejs/plugin-react": "^4.1.0",
+    "eslint": "^8.52.0",
     "gulp": "^4.0.2",
     "gulp-inline-source": "^4.0.0",
     "gulp-rename": "^2.0.0",
