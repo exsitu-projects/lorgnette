@@ -35,7 +35,7 @@ jobs:
         git config --local user.name "github-action"
         git config --local user.email "<>"
         git rm -rf .
-        mv "./src/apps/playground/dist" "./playground"
+        mv ./src/apps/playground/dist ./playground
         git checkout HEAD -- "./playground"
         git add -f "./playground/*"
         git commit -m "Update the playground"
