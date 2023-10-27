@@ -5,7 +5,7 @@ export default defineConfig(({ command }) => {
     return {
         root: "./src/apps/playground/",
         base: command === "build"
-            ? "/playground/"
+            ? "/lorgnette/playground/"
             : "./",
         plugins: [
             react()
