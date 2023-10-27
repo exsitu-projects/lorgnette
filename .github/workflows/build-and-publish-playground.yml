@@ -37,7 +37,7 @@ jobs:
         git config --local user.email "<>"
         git add -f ./playground
         git rm -rf .
-        git commit -m "Update the playground"
+        git commit -m "Update the playground" ./playground
         git checkout HEAD -- ./playground
     
     - name: Push the commit to the CI branch
