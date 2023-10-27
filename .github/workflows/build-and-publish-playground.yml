@@ -25,19 +25,15 @@ jobs:
     - name: Install all the dependencies
       run: yarn
 
-    - name: Commit files to the CI branch (1)
-      run: |
-        git config --local user.name "github-action"
-        git config --local user.email "<>"
-        git rm -rf .
-    
     - name: Build the playground
       run: yarn run build
 
     # Note: the 'git rm -rf .' command is required because we are pushing to an orphan branch.
     # If the command is not used, all the files from the 'master' branch are staged and pushed.
-    - name: Commit files to the CI branch (2)
+    - name: Commit files to the CI branch
       run: |
+        git config --local user.name "github-action"
+        git config --local user.email "<>"
         git checkout HEAD -- ./src/apps/playground/dist
         git add -f ./src/apps/playground/dist
         git commit -m "Update the playground"
