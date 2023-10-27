@@ -36,11 +36,9 @@ jobs:
         git config --local user.name "github-action"
         git config --local user.email "<>"
         git add -f ./playground
-        git commit -m "Add the playground"
+        git commit -m "Update the playground"
         git rm -rf .
-        git add -f ./playground
         git checkout HEAD -- ./playground
-        git commit -m "Update the playground" ./playground
     
     - name: Push the commit to the CI branch
       uses: ad-m/github-push-action@master
