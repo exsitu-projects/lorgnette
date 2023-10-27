@@ -36,6 +36,7 @@ jobs:
         git config --local user.name "github-action"
         git config --local user.email "<>"
         git add -f ./playground
+        git commit -m "Add the playground"
         git rm -rf .
         git add -f ./playground
         git checkout HEAD -- ./playground
