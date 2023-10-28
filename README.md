@@ -7,7 +7,11 @@ Lorgnette is a research prototype, currently targeting code editors that run in 
   <img src="./misc/lorgnette-markdown-table-demo.gif" />
 </p>
 
+You can try out some of Lorgnette's projections by visiting the online playground environment (link below).
+At the moment, projections cannot be modified from within the playground itself.
+If you'd like to modify existing projections or specify your own, please clone the repository, modify the code according to the instructions below, and run your own build locally!
 
+[**Try Lorgnette's playground in your browser! 🎮**](https://exsitu-projects.github.io/lorgnette/playground/)
 
 
 
@@ -42,13 +46,11 @@ You can use the following BibTeX entry:
   booktitle = {Proceedings of the 36th Annual ACM Symposium on User Interface Software and Technology},
   articleno = {71},
   numpages = {16},
-  keywords = {Projection, Semantic interaction, Lorgnette},
+  series = {UIST '23},
   location = {San Francisco, CA, USA},
-  series = {UIST '23}
   publisher = {ACM},
   address = {New York, NY, USA},
-  url = {https://doi.org/10.1145/3586183.3606817},
-  doi = {10.1145/3586183.3606817},
+  doi = {10.1145/3586183.3606817}
 }
 ```
 
