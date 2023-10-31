@@ -72,7 +72,7 @@ export const interactiveMarkdownTableSpecification: ProjectionSpecification<Synt
     userInterface: "table",
     
     renderer: {
-        name: "side",
+        name: "button-popover",
         settings: {
             onlyShowWhenCursorIsInRange: false,
             position: SideRendererPosition.RightSideOfEditor,
