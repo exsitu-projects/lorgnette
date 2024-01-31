@@ -23,7 +23,6 @@ module.exports = {
         "build/",
         ".eslintrc.cjs",
         "build.js",
-        "gulpfile.js",
         "vite.config.ts"
     ]
 };
