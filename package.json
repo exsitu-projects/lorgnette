@@ -2,17 +2,18 @@
   "name": "monocle",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@blueprintjs/core": "^5.5.1",
     "@blueprintjs/select": "^5.0.16",
-    "@handsontable/react": "^13.1.0",
+    "@handsontable/react": "^14.1.0",
     "@monaco-editor/react": "^4.4.5",
     "@types/node": "^20.8.8",
     "@types/react": "^18.2.31",
     "@types/react-dom": "^18.2.14",
     "ajv": "^8.6.3",
     "css-tree": "^2.0.4",
-    "handsontable": "^13.1.0",
+    "handsontable": "^14.1.0",
     "mdast-util-from-markdown": "^2.0.0",
     "mdast-util-gfm": "^3.0.0",
     "mdast-util-to-markdown": "^2.1.0",
@@ -26,7 +27,7 @@
     "react-split": "^2.0.14",
     "react-string-diff": "^0.2.0",
     "recharts": "^2.1.13",
-    "ts-morph": "^20.0.0",
+    "ts-morph": "^21.0.1",
     "typescript": "^5.2.2"
   },
   "scripts": {
@@ -47,8 +48,9 @@
     "gulp-inline-source": "^4.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-replace": "^1.1.3",
-    "monaco-editor": "^0.44.0",
+    "monaco-editor": "^0.45.0",
     "nearley": "^2.20.1",
-    "vite": "^4.5.0"
+    "vite": "^5.0.12",
+    "vite-plugin-singlefile": "^1.0.0"
   }
 }

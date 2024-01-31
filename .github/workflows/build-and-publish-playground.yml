@@ -32,7 +32,7 @@ jobs:
     # If the command is not used, all the files from the 'master' branch are staged and pushed.
     - name: Commit files to the CI branch
       run: |
-        mv ./src/apps/playground/dist ./playground
+        mv ./src/apps/playground/build ./playground
         git config --local user.name "github-action"
         git config --local user.email "<>"
         git add -f ./playground
